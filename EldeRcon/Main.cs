@@ -155,10 +155,8 @@ namespace EldeRcon
         {
             // Close the existing connection if needed
             if (ws != null && ws.ReadyState == WebSocketState.Open)
-            {
                 ws.Close();
-            }
-            
+                        
             // Do it live!
             ConnectToServer(txtHostname.Text,Int32.Parse(txtPort.Text),txtPassword.Text);
             
@@ -168,9 +166,7 @@ namespace EldeRcon
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
             if (ws != null && ws.ReadyState == WebSocketState.Open)
-            {
                 ws.CloseAsync();
-            }
         }
 
        
@@ -216,7 +212,6 @@ namespace EldeRcon
         // Add this server to our saved list
         private void SaveServerToRecent (string hostname, string port, string password, bool save_password)
         {
-
             // Check if it's already on our list
             if (cmbLoadExisting.Items.Contains(hostname + "," + port + "," + password))
                 return;
@@ -263,9 +258,7 @@ namespace EldeRcon
         {
             // Don't process our built-in item
             if (cmbLoadExisting.SelectedItem.ToString().Contains("Load Existing..."))
-            {
-                return;
-            }
+                return;            
 
             // Load the fields
             string[] selected_server = cmbLoadExisting.SelectedItem.ToString().Split(',');
@@ -277,9 +270,8 @@ namespace EldeRcon
 
             // If we have the PW, try to connect now
             if (selected_server[2] != String.Empty)
-            {
                 ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text);
-            }
+            
         }
     }
 }

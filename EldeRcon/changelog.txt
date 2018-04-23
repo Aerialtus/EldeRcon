@@ -1,0 +1,9 @@
+﻿
+v2
+
+Added saving/loading servers you connect to. Gave it an icon to help it stick out.
+
+
+v1
+
+Basic functionality (can connect to a server, send commands, get responses, etc.)
