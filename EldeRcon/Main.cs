@@ -94,6 +94,21 @@ namespace EldeRcon
             cmbLoadExisting.Items.Add(text);
         }
 
+        // Remove an item from the combobox
+        private void RemoveFromComboBox(string text)
+        {
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(RemoveFromComboBox), new object[] { text });
+                return;
+            }
+
+            // Add the item
+            cmbLoadExisting.Items.Remove(text);
+        }
+
+
         // Connect to the server async 
         private void ConnectToServer (string hostname,int port,string password)
         {
@@ -128,7 +143,7 @@ namespace EldeRcon
                 UpdateWindowTitle("EldeRcon - " + hostname + ":" + port);
 
                 // Save the server to the recent list
-                SaveServerToRecent(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
+                UpdateServerList(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
             };
 
             // Attempt to connect
@@ -214,7 +229,7 @@ namespace EldeRcon
 
 
         // Add this server to our saved list
-        private void SaveServerToRecent (string hostname, string port, string password, bool save_password)
+        private void UpdateServerList (string hostname, string port, string password, bool save_password)
         {
             // Check if it's already on our list
             if (cmbLoadExisting.Items.Contains(hostname + "," + port + "," + password))
@@ -225,33 +240,64 @@ namespace EldeRcon
                 if (!save_password) // If we were asked to not save a pasword, we're set
                     return;
                 else // If we were asked to save the PW this time, remove the old version
-                    cmbLoadExisting.Items.Remove(hostname + "," + port + ",");
+                    RemoveFromComboBox(hostname + "," + port + ",");
             
             // Append it to our control
-            AddToComboBox(hostname + "," + port + "," + password);
+            if (save_password)
+                AddToComboBox(hostname + "," + port + "," + password);
+            else
+                AddToComboBox(hostname + "," + port + ",");
 
             // Set our path
             const string logpath = @".\servers.csv";
 
-            // Build our server's string
+            // Build our server's csv string
             string server_string = "\"" + hostname + "\",\"" + port + "\",";
 
             // Add password (if desired)
             if (save_password)
                 server_string += "\"" + password + "\"";
 
-            // Append the server
+            // Time to actually write it
             try
             {
-                // Write our headers
-                using (StreamWriter sw = File.AppendText(logpath))
+                // Write our servers
+                using (StreamWriter sw = File.CreateText(logpath))
                 {
-                    sw.WriteLine(server_string);
+                    // Go through the combobox
+                    foreach (string server in cmbLoadExisting.Items)
+                    {
+                        // Skip our dummy entry
+                        if (server == "Load Existing...")
+                            continue;
+                        else
+                        {   // In theory, there's a chance a password will have a comma in it (though I haven't tested this)
+                            // Since the hostname/port can't have commas (or I pray they don't), use them to figure out where the password starts
+
+                            // Split the line up 
+                            string[] server_parts = server.Split(',');
+
+                            // Figure out where the second comma is based on length
+                            int second_comma = server_parts[0].Length + server_parts[1].Length + 2;
+
+                            // Assign our values
+                            string cmb_host = server_parts[0];
+                            string cmb_port = server_parts[1];
+
+                            // If the second comma is at the end of the string, we don't have a password
+                            string cmb_pass = String.Empty;
+                            if (second_comma < server.Length)
+                                cmb_pass = server.Substring(second_comma);
+
+                            // Write it
+                            sw.WriteLine("\"" + cmb_host + "\",\"" + cmb_port + "\",\"" + cmb_pass + "\"");
+                        }
+                    }
                 }
             }
-            catch (Exception header_ex)
+            catch (Exception write_ex)
             {
-                MessageBox.Show("Error writing server file:\n\n" + header_ex.Message);
+                MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
                 return;
             }
 
@@ -275,6 +321,10 @@ namespace EldeRcon
             // If we have the PW, try to connect now
             if (selected_server[2] != String.Empty)
                 ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text);
+
+            // If we don't have a PW, uncheck the save box to avoid writing one on accident
+            else
+                cbSavePass.Checked = false;
             
         }
     }
