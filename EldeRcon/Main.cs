@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using WebSocketSharp;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
+using System.Security;
 
 namespace EldeRcon
 {
@@ -18,8 +19,10 @@ namespace EldeRcon
         // Hold our websockets
         List<WebSocket> websockets = new List<WebSocket>();
         List<WebSocket> bg_websockets = new List<WebSocket>();
+        List<String> bg_command_results = new List<String>();
 
-        //WebSocket ws;
+        // Hold our tab passwords for BG commands
+        List<SecureString> passwords = new List<SecureString>();
 
         
         public Main()
@@ -55,6 +58,55 @@ namespace EldeRcon
                 // Blank our command box
                 txtCommand.Text = "";
             }
+        }
+
+        // Function to send a command and process the response in the background
+        private void SendBGCommand(string command,int tab_num)
+        {
+
+            // Copy the hostname/port we need from the main websocket for that tab
+            string hostname = websockets[tab_num].Url.Host;
+            int port = websockets[tab_num].Url.Port;
+
+            try
+            {
+                // Create our background websocket
+                bg_websockets[tab_num] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
+            }
+            catch
+            {   // Happens with bad port #s and other oddities
+                UpdateConsole("Error creating bg websocket. Please check your hostname/port!", tab_num);
+                return;  
+            }
+
+
+            // Set up our return handler
+            bg_websockets[tab_num].OnMessage += (sender1, e1) =>
+            {
+                // Check if we've authenticated
+                if (e1.Data == "accept")
+                {
+                    // If so, send our command
+                    bg_websockets[tab_num].Send(command);
+                }
+
+                // If it's not an accept, it's our result! Copy it
+                else
+                    bg_command_results[tab_num] = e1.Data;
+            };
+
+            // Set up our authentication handler
+            bg_websockets[tab_num].OnOpen += (sender2, e2) =>
+            {
+                // Get the password from our securestring
+                // https://stackoverflow.com/a/25751722
+                bg_websockets[tab_num].Send(new System.Net.NetworkCredential(string.Empty, passwords[tab_num]).Password);
+            };
+
+            // Connect
+            bg_websockets[tab_num].ConnectAsync();
+
+
         }
 
         // Invoke function for our console
@@ -145,7 +197,27 @@ namespace EldeRcon
             // When we get something back, print it
             websockets[tab_index].OnMessage += (sender1, e1) =>
             {
-                UpdateConsole(e1.Data, tab_index);
+                // Most of the time, just pass along our response
+                if (e1.Data != "accept")
+                    UpdateConsole(e1.Data, tab_index);
+
+                // If we've just authenticated...
+                else
+                {
+                    // This was a triumph!
+                    UpdateConsole("Connected!", tab_index);
+
+                    // Securely hold the pw in memory
+                    SecureString sec_password = new SecureString();
+                    foreach (char c in txtPassword.Text)
+                    {
+                        sec_password.AppendChar(c);
+                    }
+
+                    // Add it to our list
+                    passwords[tab_index] = sec_password;
+                }
+                
             };
 
             // When it's opened, send our password

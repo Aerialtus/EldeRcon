@@ -46,6 +46,13 @@
             this.lvPlayers0 = new System.Windows.Forms.ListView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblSoonTM = new System.Windows.Forms.Label();
+            this.clmColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmKills = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmDeaths = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmAssists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmBetrayals = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -197,11 +204,20 @@
             // 
             this.lvPlayers0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvPlayers0.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clmColor,
+            this.clmName,
+            this.clmKills,
+            this.clmDeaths,
+            this.clmAssists,
+            this.clmBetrayals,
+            this.clmUID});
             this.lvPlayers0.Location = new System.Drawing.Point(678, 0);
             this.lvPlayers0.Name = "lvPlayers0";
             this.lvPlayers0.Size = new System.Drawing.Size(186, 485);
             this.lvPlayers0.TabIndex = 1;
             this.lvPlayers0.UseCompatibleStateImageBehavior = false;
+            this.lvPlayers0.View = System.Windows.Forms.View.Details;
             // 
             // tabPage2
             // 
@@ -223,6 +239,39 @@
             this.lblSoonTM.Size = new System.Drawing.Size(647, 51);
             this.lblSoonTM.TabIndex = 0;
             this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
+            // 
+            // clmColor
+            // 
+            this.clmColor.Text = "C";
+            this.clmColor.Width = 23;
+            // 
+            // clmName
+            // 
+            this.clmName.Text = "Name";
+            // 
+            // clmKills
+            // 
+            this.clmKills.Text = "K";
+            this.clmKills.Width = 25;
+            // 
+            // clmDeaths
+            // 
+            this.clmDeaths.Text = "D";
+            this.clmDeaths.Width = 22;
+            // 
+            // clmAssists
+            // 
+            this.clmAssists.Text = "A";
+            this.clmAssists.Width = 22;
+            // 
+            // clmBetrayals
+            // 
+            this.clmBetrayals.Text = "B";
+            this.clmBetrayals.Width = 22;
+            // 
+            // clmUID
+            // 
+            this.clmUID.Text = "UID";
             // 
             // Main
             // 
@@ -275,6 +324,13 @@
         private System.Windows.Forms.ListView lvPlayers0;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label lblSoonTM;
+        private System.Windows.Forms.ColumnHeader clmColor;
+        private System.Windows.Forms.ColumnHeader clmName;
+        private System.Windows.Forms.ColumnHeader clmKills;
+        private System.Windows.Forms.ColumnHeader clmDeaths;
+        private System.Windows.Forms.ColumnHeader clmAssists;
+        private System.Windows.Forms.ColumnHeader clmBetrayals;
+        private System.Windows.Forms.ColumnHeader clmUID;
     }
 }
 
