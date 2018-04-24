@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EldewritoJsonAPI.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
