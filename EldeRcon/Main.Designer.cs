@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.txtConsole = new System.Windows.Forms.TextBox();
+            this.txtConsole0 = new System.Windows.Forms.TextBox();
             this.txtCommand = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -41,19 +41,27 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.cmbLoadExisting = new System.Windows.Forms.ComboBox();
             this.cbSavePass = new System.Windows.Forms.CheckBox();
+            this.tabServers = new System.Windows.Forms.TabControl();
+            this.tab0 = new System.Windows.Forms.TabPage();
+            this.lvPlayers0 = new System.Windows.Forms.ListView();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblSoonTM = new System.Windows.Forms.Label();
+            this.tabServers.SuspendLayout();
+            this.tab0.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // txtConsole
+            // txtConsole0
             // 
-            this.txtConsole.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txtConsole0.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConsole.Location = new System.Drawing.Point(4, 32);
-            this.txtConsole.Multiline = true;
-            this.txtConsole.Name = "txtConsole";
-            this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtConsole.Size = new System.Drawing.Size(872, 512);
-            this.txtConsole.TabIndex = 0;
+            this.txtConsole0.Location = new System.Drawing.Point(0, 0);
+            this.txtConsole0.Multiline = true;
+            this.txtConsole0.Name = "txtConsole0";
+            this.txtConsole0.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtConsole0.Size = new System.Drawing.Size(672, 485);
+            this.txtConsole0.TabIndex = 0;
             // 
             // txtCommand
             // 
@@ -160,12 +168,69 @@
             this.cbSavePass.Text = "Save PW";
             this.cbSavePass.UseVisualStyleBackColor = true;
             // 
+            // tabServers
+            // 
+            this.tabServers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabServers.Controls.Add(this.tab0);
+            this.tabServers.Controls.Add(this.tabPage2);
+            this.tabServers.Location = new System.Drawing.Point(4, 33);
+            this.tabServers.Name = "tabServers";
+            this.tabServers.SelectedIndex = 0;
+            this.tabServers.Size = new System.Drawing.Size(872, 511);
+            this.tabServers.TabIndex = 14;
+            // 
+            // tab0
+            // 
+            this.tab0.Controls.Add(this.lvPlayers0);
+            this.tab0.Controls.Add(this.txtConsole0);
+            this.tab0.Location = new System.Drawing.Point(4, 22);
+            this.tab0.Name = "tab0";
+            this.tab0.Padding = new System.Windows.Forms.Padding(3);
+            this.tab0.Size = new System.Drawing.Size(864, 485);
+            this.tab0.TabIndex = 0;
+            this.tab0.Text = "Server 1";
+            this.tab0.UseVisualStyleBackColor = true;
+            // 
+            // lvPlayers0
+            // 
+            this.lvPlayers0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvPlayers0.Location = new System.Drawing.Point(678, 0);
+            this.lvPlayers0.Name = "lvPlayers0";
+            this.lvPlayers0.Size = new System.Drawing.Size(186, 485);
+            this.lvPlayers0.TabIndex = 1;
+            this.lvPlayers0.UseCompatibleStateImageBehavior = false;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.lblSoonTM);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(864, 485);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "New...";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // lblSoonTM
+            // 
+            this.lblSoonTM.AutoSize = true;
+            this.lblSoonTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoonTM.Location = new System.Drawing.Point(109, 217);
+            this.lblSoonTM.Name = "lblSoonTM";
+            this.lblSoonTM.Size = new System.Drawing.Size(647, 51);
+            this.lblSoonTM.TabIndex = 0;
+            this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 579);
+            this.Controls.Add(this.tabServers);
             this.Controls.Add(this.cbSavePass);
             this.Controls.Add(this.cmbLoadExisting);
             this.Controls.Add(this.btnConnect);
@@ -177,11 +242,15 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtCommand);
-            this.Controls.Add(this.txtConsole);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "EldeRcon";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosed);
+            this.tabServers.ResumeLayout(false);
+            this.tab0.ResumeLayout(false);
+            this.tab0.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -189,7 +258,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtConsole;
+        private System.Windows.Forms.TextBox txtConsole0;
         private System.Windows.Forms.TextBox txtCommand;
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.Label label1;
@@ -201,6 +270,11 @@
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.ComboBox cmbLoadExisting;
         private System.Windows.Forms.CheckBox cbSavePass;
+        private System.Windows.Forms.TabControl tabServers;
+        private System.Windows.Forms.TabPage tab0;
+        private System.Windows.Forms.ListView lvPlayers0;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label lblSoonTM;
     }
 }
 

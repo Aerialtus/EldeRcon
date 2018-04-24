@@ -15,8 +15,11 @@ namespace EldeRcon
 {
     public partial class Main : Form
     {
-        // Hold our websocket
-        WebSocket ws;
+        // Hold our websockets
+        List<WebSocket> websockets = new List<WebSocket>();
+        List<WebSocket> bg_websockets = new List<WebSocket>();
+
+        //WebSocket ws;
 
         
         public Main()
@@ -29,19 +32,25 @@ namespace EldeRcon
 
             // Grab our server list (if it exists)
             LoadRecentList();
+
+            // Create a websocket for the first tab
+            WebSocket ws = null;
+            websockets.Add(ws);
+            
         }
 
         // Send our command to the server
         private void btnSend_Click(object sender, EventArgs e)
         {
             // Only send if we have a command AND an open connection
-            if (txtCommand.Text.Trim() != String.Empty && ws.ReadyState == WebSocketState.Open)
+            if (txtCommand.Text.Trim() != String.Empty && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
             {
                 // Send the command
-                ws.Send(txtCommand.Text.Trim());
+                websockets[tabServers.SelectedIndex].Send(txtCommand.Text.Trim());
+                //ws.Send(txtCommand.Text.Trim());
 
                 // Print our command in the console
-                UpdateConsole("\n" + txtCommand.Text);
+                UpdateConsole("\n" + txtCommand.Text, tabServers.SelectedIndex);
 
                 // Blank our command box
                 txtCommand.Text = "";
@@ -49,20 +58,29 @@ namespace EldeRcon
         }
 
         // Invoke function for our console
-        private void UpdateConsole(string text_to_append)
+        private void UpdateConsole(string text_to_append,int target_console)
         {
             // Invoke if needed
             if (InvokeRequired)
             {
-                this.Invoke(new Action<string>(UpdateConsole), new object[] { text_to_append });
+                this.Invoke(new Action<string,int>(UpdateConsole), new object[] { text_to_append, target_console });
                 return;
             }
             
             // Get the time
             string time = GetTime();
+
+            // Figure out which control to write to
+            // Build the tab/console names
+            string tab_name = "tab" + target_console.ToString();
+            string console_name = "txtConsole" + target_console.ToString();
+            
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
             
             // Write our output
-            txtConsole.AppendText("\r\n" + text_to_append.Replace("\n", Environment.NewLine));
+            target_textbox.AppendText("\r\n" + text_to_append.Replace("\n", Environment.NewLine));
             
         }
 
@@ -110,34 +128,31 @@ namespace EldeRcon
 
 
         // Connect to the server async 
-        private void ConnectToServer (string hostname,int port,string password)
+        private void ConnectToServer (string hostname,int port,string password,int tab_index)
         {
             // Create the socket
             try
             {
-                // Close existing connection if needed
-                if (ws != null && ws.ReadyState == WebSocketState.Open)
-                    ws.Close();
-
-                ws = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
+                // Prepare the socket
+                websockets[tabServers.SelectedIndex] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
             }
             catch
             {   // Happens with bad port #s and other oddities
-                UpdateConsole("Error creating websocket. Please check your hostname/port!");
+                UpdateConsole("Error creating websocket. Please check your hostname/port!", tabServers.SelectedIndex);
                 return;
             }
 
             // When we get something back, print it
-            ws.OnMessage += (sender1, e1) =>
+            websockets[tab_index].OnMessage += (sender1, e1) =>
             {
-                UpdateConsole(e1.Data);
+                UpdateConsole(e1.Data, tab_index);
             };
 
             // When it's opened, send our password
-            ws.OnOpen += (sender2, e2) =>
+            websockets[tab_index].OnOpen += (sender2, e2) =>
             {
                 // The password has to be our first line to the server
-                ws.Send(password);
+                websockets[tab_index].Send(password);
 
                 // Update our window title
                 UpdateWindowTitle("EldeRcon - " + hostname + ":" + port);
@@ -149,15 +164,15 @@ namespace EldeRcon
             // Attempt to connect
             try
             {
-                UpdateConsole("\nConnecting to " + hostname + ":" + port + "...");
+                UpdateConsole("\nConnecting to " + hostname + ":" + port + "...", tabServers.SelectedIndex);
 
                 // Use Async to not freeze up if we timeout
-                ws.ConnectAsync();
+                websockets[tabServers.SelectedIndex].ConnectAsync();
             }
             catch (Exception connect_ex)
             {
                 // Nicely print errors
-                UpdateConsole("\nError connecting:\n\n" + connect_ex.Message);
+                UpdateConsole("\nError connecting:\n\n" + connect_ex.Message, tabServers.SelectedIndex);
             }
 
             
@@ -172,20 +187,23 @@ namespace EldeRcon
         // Connect!
         private void btnConnect_Click(object sender, EventArgs e)
         {
+            
+
             // Close the existing connection if needed
-            if (ws != null && ws.ReadyState == WebSocketState.Open)
-                ws.Close();
+            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+                    websockets[tabServers.SelectedIndex].Close();
                         
             // Do it live!
-            ConnectToServer(txtHostname.Text,Int32.Parse(txtPort.Text),txtPassword.Text);
+            ConnectToServer(txtHostname.Text,Int32.Parse(txtPort.Text),txtPassword.Text, tabServers.SelectedIndex);
             
         }
 
         // If we're closing the form, also check if we need to close the connection
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
-            if (ws != null && ws.ReadyState == WebSocketState.Open)
-                ws.CloseAsync();
+            foreach (WebSocket socket in websockets)
+            if (socket != null && socket.ReadyState == WebSocketState.Open)
+                socket.CloseAsync();
         }
 
        
@@ -205,7 +223,6 @@ namespace EldeRcon
             csvdata.Delimiters = new string[] { "," };
 
             // Go through the file
-            bool top_line = true;
             while (true)
             {
                 // Break up row into fields
@@ -320,7 +337,7 @@ namespace EldeRcon
 
             // If we have the PW, try to connect now
             if (selected_server[2] != String.Empty)
-                ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text);
+                ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text, tabServers.SelectedIndex);
 
             // If we don't have a PW, uncheck the save box to avoid writing one on accident
             else
