@@ -100,6 +100,10 @@ namespace EldeRcon
             // Create the socket
             try
             {
+                // Close existing connection if needed
+                if (ws != null && ws.ReadyState == WebSocketState.Open)
+                    ws.Close();
+
                 ws = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
             }
             catch
