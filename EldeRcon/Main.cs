@@ -19,11 +19,18 @@ namespace EldeRcon
         // Hold our websockets
         List<WebSocket> websockets = new List<WebSocket>();
         List<WebSocket> bg_websockets = new List<WebSocket>();
+
+        // Hold the workers
+        List<BackgroundWorker> bg_workers = new List<BackgroundWorker>();
+
+        // Background command results
         List<String> bg_command_results = new List<String>();
 
         // Hold our tab passwords for BG commands
         List<SecureString> passwords = new List<SecureString>();
 
+        // Color by number
+        Dictionary<int, string> team_colors;
         
         public Main()
         {
@@ -39,7 +46,25 @@ namespace EldeRcon
             // Create a websocket for the first tab
             WebSocket ws = null;
             websockets.Add(ws);
-            
+
+            // Create a BG websocket for the first tab
+            WebSocket bg_socket = null;
+            bg_websockets.Add(bg_socket);
+
+            // Create a BG worker for the first tab
+            BackgroundWorker bg = null;
+            bg_workers.Add(bg);
+
+            // Create a password slot for our first tab
+            SecureString pw = null;
+            passwords.Add(pw);
+
+            // Create a bgresults string for our first tab
+            String str = null;
+            bg_command_results.Add(str);
+
+            // Set up our teamcolors dictionary
+            team_colors = EldewritoJsonAPI.GetTeamColors();
         }
 
         // Send our command to the server
@@ -61,52 +86,207 @@ namespace EldeRcon
         }
 
         // Function to send a command and process the response in the background
-        private void SendBGCommand(string command,int tab_num)
+        private void SendBGCommand(string command,int tab_index)
         {
 
             // Copy the hostname/port we need from the main websocket for that tab
-            string hostname = websockets[tab_num].Url.Host;
-            int port = websockets[tab_num].Url.Port;
+            string hostname = websockets[tab_index].Url.Host;
+            int port = websockets[tab_index].Url.Port;
 
             try
             {
                 // Create our background websocket
-                bg_websockets[tab_num] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
+                bg_websockets[tab_index] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
             }
             catch
             {   // Happens with bad port #s and other oddities
-                UpdateConsole("Error creating bg websocket. Please check your hostname/port!", tab_num);
+                UpdateConsole("Error creating bg websocket. Please check your hostname/port!", tab_index);
                 return;  
             }
 
 
             // Set up our return handler
-            bg_websockets[tab_num].OnMessage += (sender1, e1) =>
+            bg_websockets[tab_index].OnMessage += (sender1, e1) =>
             {
                 // Check if we've authenticated
                 if (e1.Data == "accept")
                 {
                     // If so, send our command
-                    bg_websockets[tab_num].Send(command);
+                    bg_websockets[tab_index].Send(command);
                 }
 
                 // If it's not an accept, it's our result! Copy it
                 else
-                    bg_command_results[tab_num] = e1.Data;
+                    bg_command_results[tab_index] = e1.Data;
             };
 
             // Set up our authentication handler
-            bg_websockets[tab_num].OnOpen += (sender2, e2) =>
+            bg_websockets[tab_index].OnOpen += (sender2, e2) =>
             {
                 // Get the password from our securestring
                 // https://stackoverflow.com/a/25751722
-                bg_websockets[tab_num].Send(new System.Net.NetworkCredential(string.Empty, passwords[tab_num]).Password);
+                bg_websockets[tab_index].Send(new System.Net.NetworkCredential(string.Empty, passwords[tab_index]).Password);
             };
 
             // Connect
-            bg_websockets[tab_num].ConnectAsync();
+            bg_websockets[tab_index].ConnectAsync();
 
 
+        }
+
+        // Function to launch in a background thread to update server info from the
+        private void UpdateServerInfo(object sender, DoWorkEventArgs e)
+        {
+            // Blank out our bg result
+            int tab_index = Int32.Parse(e.Argument.ToString());
+            //MessageBox.Show("Got tab # " + tab_index);
+            bg_command_results[tab_index] = null;
+
+            // Send our command
+            SendBGCommand("Server.Port",tab_index);
+
+            // Wait for our result
+            while (bg_command_results[tab_index] == null)
+            {
+                // Wait between checks
+                System.Threading.Thread.Sleep(100);
+            }
+
+            // Copy the port
+            int port = Int32.Parse(bg_command_results[tab_index]);
+
+            // Copy the hostname we need from the main websocket for that tab
+            string hostname = websockets[tab_index].Url.Host;
+
+            // Figure out which control to read refresh time from
+            // Build the tab/console names
+            string tab_name = "tab" + tab_index.ToString();
+            string console_name = "txtRefreshSeconds" + tab_index.ToString();
+
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
+
+            // If we're not supposed to stop
+            while (bg_workers[tab_index].CancellationPending == false)
+            {
+                // Ask the server for more detailed information
+                var server_info = EldewritoJsonAPI.GetServerInfo(hostname, port);
+
+                // If we get a real response back
+                if (server_info != null)
+                {
+                    // Rename the tab
+                    string tab_label = null;
+
+                    if (server_info.status == "InLobby")
+                    {
+                        tab_label = server_info.name + ": In Lobby " + server_info.numPlayers + "/" + server_info.maxPlayers; 
+                    }
+                    else
+                    {
+                        tab_label = server_info.name + ": " + server_info.map + " - " + server_info.variant + server_info.numPlayers + "/" + server_info.maxPlayers;
+                    }
+
+                    // Update the tab's title
+                    UpdateTabTitle(tab_label, tab_index);
+
+                    // If we have players, get them ready for the LV
+                    if (server_info.players != null)
+                    {
+                        // Set up an array of LV items
+                        ListViewItem[] players = new ListViewItem[server_info.numPlayers];
+
+                        // Go through each player
+                        for (int ctr=0; ctr < server_info.numPlayers; ctr++)
+                        {
+                            // Create our array
+                            String[] lv_array = new string[7];
+
+
+                            // Copy our values into the right players
+                            lv_array[0] = String.Empty;
+                            lv_array[1] = server_info.players[ctr].name;
+                            lv_array[2] = server_info.players[ctr].kills.ToString();
+                            lv_array[2] = server_info.players[ctr].deaths.ToString();
+                            lv_array[2] = server_info.players[ctr].assists.ToString();
+                            lv_array[2] = server_info.players[ctr].betrayals.ToString();
+                            lv_array[6] = server_info.players[ctr].uid;
+
+                            // Convert that to a LV item
+                            ListViewItem row = new ListViewItem(lv_array);
+
+                            // Set color based on if we're on teams
+                            if (server_info.teams)
+                            {
+                                row.SubItems[0].BackColor = ColorTranslator.FromHtml(team_colors[server_info.players[ctr].team]);
+                            }
+
+                            // If we're not on a team, use our primarycolor
+                            else
+                            {
+                                row.SubItems[0].BackColor = ColorTranslator.FromHtml(server_info.players[ctr].primaryColor);
+                            }
+
+                            // Add that row to our list
+                            players[ctr] = row;
+                        }
+
+                        // Send the array off to a better place
+                        UpdatePlayerLV(players, tab_index);
+                    }
+                    else
+                    {
+                        // Send an empty array to clear the list out
+                        ListViewItem[] players = new ListViewItem[0];
+                        UpdatePlayerLV(players, tab_index);
+
+                    }
+                }
+
+
+                // Wait until our next scheduled refresh
+                // Attempt to parse the text in the field
+                if (!Int32.TryParse(target_textbox.Text, out int wait_time)) 
+                   wait_time = 5; // If we don't get a sensible value, use the default
+                
+                // Sleep it off!
+                System.Threading.Thread.Sleep(1000 * wait_time);
+            }
+        }
+
+        // Invoke function for our player listview
+        private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
+        {
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<ListViewItem[], int>(UpdatePlayerLV), new object[] { players, tab_index });
+                return;
+            }
+
+            // Grab the appropriate tab's LV
+            string tab_name = "tab" + tab_index.ToString();
+            string lv_name = "lvPlayers" + tab_index.ToString();
+
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            ListView target_lv = target_tab.Controls[lv_name] as ListView;
+
+            // Prepare the LV
+            target_lv.BeginUpdate();
+            target_lv.Items.Clear();
+
+            // Add our items
+            target_lv.Items.AddRange(players);
+
+            // Resize to fit contents and headers
+            target_lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            target_lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            target_lv.Columns[6].Width = 0;
+
+            // End the lv work
+            target_lv.EndUpdate();
         }
 
         // Invoke function for our console
@@ -137,17 +317,21 @@ namespace EldeRcon
         }
 
         // Rename the window on connecting
-        private void UpdateWindowTitle (string title_text)
+        private void UpdateTabTitle (string title_text, int tab_index)
         {
             // Invoke if needed
             if (InvokeRequired)
             {
-                this.Invoke(new Action<string>(UpdateWindowTitle), new object[] { title_text });
+                this.Invoke(new Action<string,int>(UpdateTabTitle), new object[] { title_text, tab_index });
                 return;
             }
 
+            // Figure out which tab we need to update
+            string tab_name = "tab" + tab_index.ToString();
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+
             // Update the text
-            Text = title_text;
+            target_tab.Text = title_text;
         }
 
         // Add an item to the combobox
@@ -208,14 +392,33 @@ namespace EldeRcon
                     UpdateConsole("Connected!", tab_index);
 
                     // Securely hold the pw in memory
+                    passwords[tab_index] = null;
                     SecureString sec_password = new SecureString();
                     foreach (char c in txtPassword.Text)
-                    {
                         sec_password.AppendChar(c);
-                    }
+                    
 
                     // Add it to our list
                     passwords[tab_index] = sec_password;
+
+                    // Stop any existing backgroundworker for this tab
+                    if (bg_workers[tab_index] != null && bg_workers[tab_index].IsBusy)
+                    {   
+                        // Stop the worker
+                        bg_workers[tab_index].CancelAsync();
+
+                        // Wait for it to stop (this shouldn't take long)
+                        while (bg_workers[tab_index].IsBusy)
+                            System.Threading.Thread.Sleep(50);
+                        
+                    }
+
+                    // Start our new background worker
+                    bg_workers[tab_index] = new BackgroundWorker();
+                    bg_workers[tab_index].WorkerSupportsCancellation = true;
+                    bg_workers[tab_index].DoWork += new DoWorkEventHandler(UpdateServerInfo);
+                    bg_workers[tab_index].RunWorkerAsync(tab_index);
+
                 }
                 
             };
@@ -226,11 +429,9 @@ namespace EldeRcon
                 // The password has to be our first line to the server
                 websockets[tab_index].Send(password);
 
-                // Update our window title
-                UpdateWindowTitle("EldeRcon - " + hostname + ":" + port);
-
                 // Save the server to the recent list
                 UpdateServerList(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
+
             };
 
             // Attempt to connect
@@ -238,7 +439,7 @@ namespace EldeRcon
             {
                 UpdateConsole("\nConnecting to " + hostname + ":" + port + "...", tabServers.SelectedIndex);
 
-                // Use Async to not freeze up if we timeout
+                // Use Async to not freeze up if we time out
                 websockets[tabServers.SelectedIndex].ConnectAsync();
             }
             catch (Exception connect_ex)
@@ -246,8 +447,6 @@ namespace EldeRcon
                 // Nicely print errors
                 UpdateConsole("\nError connecting:\n\n" + connect_ex.Message, tabServers.SelectedIndex);
             }
-
-            
         }
 
         // Formatted time
@@ -274,8 +473,11 @@ namespace EldeRcon
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
             foreach (WebSocket socket in websockets)
-            if (socket != null && socket.ReadyState == WebSocketState.Open)
-                socket.CloseAsync();
+                if (socket != null && socket.ReadyState == WebSocketState.Open)
+                    socket.CloseAsync();
+            foreach (WebSocket socket in bg_websockets)
+                if (socket != null && socket.ReadyState == WebSocketState.Open)
+                    socket.CloseAsync();
         }
 
        

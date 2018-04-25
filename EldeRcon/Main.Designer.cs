@@ -44,8 +44,6 @@
             this.tabServers = new System.Windows.Forms.TabControl();
             this.tab0 = new System.Windows.Forms.TabPage();
             this.lvPlayers0 = new System.Windows.Forms.ListView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.lblSoonTM = new System.Windows.Forms.Label();
             this.clmColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmKills = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,6 +51,11 @@
             this.clmAssists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmBetrayals = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblSoonTM = new System.Windows.Forms.Label();
+            this.lblRefresh0 = new System.Windows.Forms.Label();
+            this.txtRefreshSeconds0 = new System.Windows.Forms.TextBox();
+            this.lblSeconds0 = new System.Windows.Forms.Label();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -190,6 +193,9 @@
             // 
             // tab0
             // 
+            this.tab0.Controls.Add(this.lblSeconds0);
+            this.tab0.Controls.Add(this.txtRefreshSeconds0);
+            this.tab0.Controls.Add(this.lblRefresh0);
             this.tab0.Controls.Add(this.lvPlayers0);
             this.tab0.Controls.Add(this.txtConsole0);
             this.tab0.Location = new System.Drawing.Point(4, 22);
@@ -212,37 +218,18 @@
             this.clmAssists,
             this.clmBetrayals,
             this.clmUID});
+            this.lvPlayers0.FullRowSelect = true;
+            this.lvPlayers0.GridLines = true;
             this.lvPlayers0.Location = new System.Drawing.Point(678, 0);
             this.lvPlayers0.Name = "lvPlayers0";
-            this.lvPlayers0.Size = new System.Drawing.Size(186, 485);
+            this.lvPlayers0.Size = new System.Drawing.Size(186, 319);
             this.lvPlayers0.TabIndex = 1;
             this.lvPlayers0.UseCompatibleStateImageBehavior = false;
             this.lvPlayers0.View = System.Windows.Forms.View.Details;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.lblSoonTM);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(864, 485);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "New...";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // lblSoonTM
-            // 
-            this.lblSoonTM.AutoSize = true;
-            this.lblSoonTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoonTM.Location = new System.Drawing.Point(109, 217);
-            this.lblSoonTM.Name = "lblSoonTM";
-            this.lblSoonTM.Size = new System.Drawing.Size(647, 51);
-            this.lblSoonTM.TabIndex = 0;
-            this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
-            // 
             // clmColor
             // 
-            this.clmColor.Text = "C";
+            this.clmColor.Text = "   ";
             this.clmColor.Width = 23;
             // 
             // clmName
@@ -272,6 +259,53 @@
             // clmUID
             // 
             this.clmUID.Text = "UID";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.lblSoonTM);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(864, 485);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "New...";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // lblSoonTM
+            // 
+            this.lblSoonTM.AutoSize = true;
+            this.lblSoonTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoonTM.Location = new System.Drawing.Point(109, 217);
+            this.lblSoonTM.Name = "lblSoonTM";
+            this.lblSoonTM.Size = new System.Drawing.Size(647, 51);
+            this.lblSoonTM.TabIndex = 0;
+            this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
+            // 
+            // lblRefresh0
+            // 
+            this.lblRefresh0.AutoSize = true;
+            this.lblRefresh0.Location = new System.Drawing.Point(678, 326);
+            this.lblRefresh0.Name = "lblRefresh0";
+            this.lblRefresh0.Size = new System.Drawing.Size(79, 13);
+            this.lblRefresh0.TabIndex = 2;
+            this.lblRefresh0.Text = "Refresh every: ";
+            // 
+            // txtRefreshSeconds0
+            // 
+            this.txtRefreshSeconds0.Location = new System.Drawing.Point(758, 323);
+            this.txtRefreshSeconds0.Name = "txtRefreshSeconds0";
+            this.txtRefreshSeconds0.Size = new System.Drawing.Size(29, 20);
+            this.txtRefreshSeconds0.TabIndex = 3;
+            this.txtRefreshSeconds0.Text = "5";
+            // 
+            // lblSeconds0
+            // 
+            this.lblSeconds0.AutoSize = true;
+            this.lblSeconds0.Location = new System.Drawing.Point(793, 326);
+            this.lblSeconds0.Name = "lblSeconds0";
+            this.lblSeconds0.Size = new System.Drawing.Size(50, 13);
+            this.lblSeconds0.TabIndex = 4;
+            this.lblSeconds0.Text = "seconds.";
             // 
             // Main
             // 
@@ -331,6 +365,9 @@
         private System.Windows.Forms.ColumnHeader clmAssists;
         private System.Windows.Forms.ColumnHeader clmBetrayals;
         private System.Windows.Forms.ColumnHeader clmUID;
+        private System.Windows.Forms.Label lblSeconds0;
+        private System.Windows.Forms.TextBox txtRefreshSeconds0;
+        private System.Windows.Forms.Label lblRefresh0;
     }
 }
 
