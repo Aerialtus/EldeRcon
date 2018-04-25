@@ -43,8 +43,12 @@
             this.cbSavePass = new System.Windows.Forms.CheckBox();
             this.tabServers = new System.Windows.Forms.TabControl();
             this.tab0 = new System.Windows.Forms.TabPage();
+            this.btnKickPermBan = new System.Windows.Forms.Button();
+            this.btnKickTempBan = new System.Windows.Forms.Button();
+            this.btnSendMessage = new System.Windows.Forms.Button();
+            this.btnKick = new System.Windows.Forms.Button();
             this.lblSeconds0 = new System.Windows.Forms.Label();
-            this.txtRefreshSeconds0 = new System.Windows.Forms.TextBox();
+            this.txtRefreshSeconds = new System.Windows.Forms.TextBox();
             this.lblRefresh0 = new System.Windows.Forms.Label();
             this.lvPlayers0 = new System.Windows.Forms.ListView();
             this.clmColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -56,10 +60,6 @@
             this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblSoonTM = new System.Windows.Forms.Label();
-            this.btnKickTempBan0 = new System.Windows.Forms.Button();
-            this.btnSendMessage0 = new System.Windows.Forms.Button();
-            this.btnKick0 = new System.Windows.Forms.Button();
-            this.btnKickPermBan0 = new System.Windows.Forms.Button();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -197,12 +197,12 @@
             // 
             // tab0
             // 
-            this.tab0.Controls.Add(this.btnKickPermBan0);
-            this.tab0.Controls.Add(this.btnKickTempBan0);
-            this.tab0.Controls.Add(this.btnSendMessage0);
-            this.tab0.Controls.Add(this.btnKick0);
+            this.tab0.Controls.Add(this.btnKickPermBan);
+            this.tab0.Controls.Add(this.btnKickTempBan);
+            this.tab0.Controls.Add(this.btnSendMessage);
+            this.tab0.Controls.Add(this.btnKick);
             this.tab0.Controls.Add(this.lblSeconds0);
-            this.tab0.Controls.Add(this.txtRefreshSeconds0);
+            this.tab0.Controls.Add(this.txtRefreshSeconds);
             this.tab0.Controls.Add(this.lblRefresh0);
             this.tab0.Controls.Add(this.lvPlayers0);
             this.tab0.Controls.Add(this.txtConsole0);
@@ -214,6 +214,46 @@
             this.tab0.Text = "Server 1";
             this.tab0.UseVisualStyleBackColor = true;
             // 
+            // btnKickPermBan
+            // 
+            this.btnKickPermBan.Location = new System.Drawing.Point(711, 456);
+            this.btnKickPermBan.Name = "btnKickPermBan";
+            this.btnKickPermBan.Size = new System.Drawing.Size(114, 23);
+            this.btnKickPermBan.TabIndex = 5;
+            this.btnKickPermBan.Text = "Kick + Perma Ban";
+            this.btnKickPermBan.UseVisualStyleBackColor = true;
+            this.btnKickPermBan.Click += new System.EventHandler(this.btnKickPermBan_Click);
+            // 
+            // btnKickTempBan
+            // 
+            this.btnKickTempBan.Location = new System.Drawing.Point(712, 427);
+            this.btnKickTempBan.Name = "btnKickTempBan";
+            this.btnKickTempBan.Size = new System.Drawing.Size(114, 23);
+            this.btnKickTempBan.TabIndex = 5;
+            this.btnKickTempBan.Text = "Kick + Temp Ban";
+            this.btnKickTempBan.UseVisualStyleBackColor = true;
+            this.btnKickTempBan.Click += new System.EventHandler(this.btnKickTempBan_Click);
+            // 
+            // btnSendMessage
+            // 
+            this.btnSendMessage.Location = new System.Drawing.Point(711, 349);
+            this.btnSendMessage.Name = "btnSendMessage";
+            this.btnSendMessage.Size = new System.Drawing.Size(114, 23);
+            this.btnSendMessage.TabIndex = 5;
+            this.btnSendMessage.Text = "Send Priv. Message";
+            this.btnSendMessage.UseVisualStyleBackColor = true;
+            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
+            // 
+            // btnKick
+            // 
+            this.btnKick.Location = new System.Drawing.Point(711, 398);
+            this.btnKick.Name = "btnKick";
+            this.btnKick.Size = new System.Drawing.Size(114, 23);
+            this.btnKick.TabIndex = 5;
+            this.btnKick.Text = "Kick (No Ban)";
+            this.btnKick.UseVisualStyleBackColor = true;
+            this.btnKick.Click += new System.EventHandler(this.btnKick_Click);
+            // 
             // lblSeconds0
             // 
             this.lblSeconds0.AutoSize = true;
@@ -223,13 +263,13 @@
             this.lblSeconds0.TabIndex = 4;
             this.lblSeconds0.Text = "seconds.";
             // 
-            // txtRefreshSeconds0
+            // txtRefreshSeconds
             // 
-            this.txtRefreshSeconds0.Location = new System.Drawing.Point(758, 323);
-            this.txtRefreshSeconds0.Name = "txtRefreshSeconds0";
-            this.txtRefreshSeconds0.Size = new System.Drawing.Size(29, 20);
-            this.txtRefreshSeconds0.TabIndex = 3;
-            this.txtRefreshSeconds0.Text = "5";
+            this.txtRefreshSeconds.Location = new System.Drawing.Point(758, 323);
+            this.txtRefreshSeconds.Name = "txtRefreshSeconds";
+            this.txtRefreshSeconds.Size = new System.Drawing.Size(29, 20);
+            this.txtRefreshSeconds.TabIndex = 3;
+            this.txtRefreshSeconds.Text = "5";
             // 
             // lblRefresh0
             // 
@@ -315,46 +355,6 @@
             this.lblSoonTM.TabIndex = 0;
             this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
             // 
-            // btnKickTempBan0
-            // 
-            this.btnKickTempBan0.Location = new System.Drawing.Point(712, 427);
-            this.btnKickTempBan0.Name = "btnKickTempBan0";
-            this.btnKickTempBan0.Size = new System.Drawing.Size(114, 23);
-            this.btnKickTempBan0.TabIndex = 5;
-            this.btnKickTempBan0.Text = "Kick + Temp Ban";
-            this.btnKickTempBan0.UseVisualStyleBackColor = true;
-            this.btnKickTempBan0.Click += new System.EventHandler(this.btnKickTempBan_Click);
-            // 
-            // btnSendMessage0
-            // 
-            this.btnSendMessage0.Location = new System.Drawing.Point(711, 349);
-            this.btnSendMessage0.Name = "btnSendMessage0";
-            this.btnSendMessage0.Size = new System.Drawing.Size(114, 23);
-            this.btnSendMessage0.TabIndex = 5;
-            this.btnSendMessage0.Text = "Send Message";
-            this.btnSendMessage0.UseVisualStyleBackColor = true;
-            this.btnSendMessage0.Click += new System.EventHandler(this.btnSendMessage_Click);
-            // 
-            // btnKick0
-            // 
-            this.btnKick0.Location = new System.Drawing.Point(711, 398);
-            this.btnKick0.Name = "btnKick0";
-            this.btnKick0.Size = new System.Drawing.Size(114, 23);
-            this.btnKick0.TabIndex = 5;
-            this.btnKick0.Text = "Kick (No Ban)";
-            this.btnKick0.UseVisualStyleBackColor = true;
-            this.btnKick0.Click += new System.EventHandler(this.btnKick_Click);
-            // 
-            // btnKickPermBan0
-            // 
-            this.btnKickPermBan0.Location = new System.Drawing.Point(711, 456);
-            this.btnKickPermBan0.Name = "btnKickPermBan0";
-            this.btnKickPermBan0.Size = new System.Drawing.Size(114, 23);
-            this.btnKickPermBan0.TabIndex = 5;
-            this.btnKickPermBan0.Text = "Kick + Perma Ban";
-            this.btnKickPermBan0.UseVisualStyleBackColor = true;
-            this.btnKickPermBan0.Click += new System.EventHandler(this.btnKickPermBan_Click);
-            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
@@ -414,12 +414,12 @@
         private System.Windows.Forms.ColumnHeader clmBetrayals;
         private System.Windows.Forms.ColumnHeader clmUID;
         private System.Windows.Forms.Label lblSeconds0;
-        private System.Windows.Forms.TextBox txtRefreshSeconds0;
+        private System.Windows.Forms.TextBox txtRefreshSeconds;
         private System.Windows.Forms.Label lblRefresh0;
-        private System.Windows.Forms.Button btnKickPermBan0;
-        private System.Windows.Forms.Button btnKickTempBan0;
-        private System.Windows.Forms.Button btnSendMessage0;
-        private System.Windows.Forms.Button btnKick0;
+        private System.Windows.Forms.Button btnKickPermBan;
+        private System.Windows.Forms.Button btnKickTempBan;
+        private System.Windows.Forms.Button btnSendMessage;
+        private System.Windows.Forms.Button btnKick;
     }
 }
 

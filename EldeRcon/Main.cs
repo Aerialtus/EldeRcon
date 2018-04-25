@@ -29,6 +29,9 @@ namespace EldeRcon
         // Hold our tab passwords for BG commands
         List<SecureString> passwords = new List<SecureString>();
 
+        // Hold our player LV arrays
+        List<ListViewItem[]> player_lv_items = new List<ListViewItem[]>();
+
         // Color by number
         Dictionary<int, string> team_colors;
         
@@ -161,7 +164,7 @@ namespace EldeRcon
             // Figure out which control to read refresh time from
             // Build the tab/console names
             string tab_name = "tab" + tab_index.ToString();
-            string console_name = "txtRefreshSeconds" + tab_index.ToString();
+            string console_name = "txtRefreshSeconds";// + tab_index.ToString();
 
             // Target our textbox, which is under a tabcontrol
             TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
