@@ -371,6 +371,7 @@ namespace EldeRcon
             {
                 // Prepare the socket
                 websockets[tabServers.SelectedIndex] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
+                UpdateTabTitle("Connecting...", tab_index);
             }
             catch
             {   // Happens with bad port #s and other oddities
@@ -618,5 +619,98 @@ namespace EldeRcon
                 cbSavePass.Checked = false;
             
         }
+
+        // Message button handler
+        private void btnSendMessage_Click(object sender, EventArgs e) { SendMessage(tabServers.SelectedIndex); }
+        
+        // Kick button handlers
+        private void btnKick_Click(object sender, EventArgs e) {        KickPlayer(tabServers.SelectedIndex, 0); }
+        private void btnKickTempBan_Click(object sender, EventArgs e) { KickPlayer(tabServers.SelectedIndex, 1); }
+        private void btnKickPermBan_Click(object sender, EventArgs e) { KickPlayer(tabServers.SelectedIndex, 2); }
+        
+        // Function to send a PM to a player
+        // We'll fill in the command and player name in the console
+        private void SendMessage(int tab_index)
+        {
+            // Grab the appropriate tab's LV
+            string tab_name = "tab" + tab_index.ToString();
+            string lv_name = "lvPlayers" + tab_index.ToString();
+
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            ListView target_lv = target_tab.Controls[lv_name] as ListView;
+
+            // Grab our selected row
+            ListViewItem row = target_lv.SelectedItems[0];
+            string player_name = row.SubItems[1].Text;
+
+            // Set up the PM command
+            txtCommand.Text = "Server.PM " + player_name + "\" \"";
+        }
+
+        // Function to send kick commands
+        // Ban types are:
+        //  0: None
+        //  1: Temp
+        //  2: Perm
+        private void KickPlayer(int tab_index, int ban_type)
+        {
+            // Grab the appropriate tab's LV
+            string tab_name = "tab" + tab_index.ToString();
+            string lv_name = "lvPlayers" + tab_index.ToString();
+
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            ListView target_lv = target_tab.Controls[lv_name] as ListView;
+
+            // Grab our selected row
+            ListViewItem row = target_lv.SelectedItems[0];
+
+            // Figure out the identity of our player
+            string player_name = row.SubItems[1].Text;
+            string player_uid = row.SubItems[6].Text;
+
+            // Prepare our ban prompt/command
+            string kick_prompt = null;
+            string kick_command = null;
+
+            // Figure out which prompt/command to use
+            switch (ban_type)
+            {
+                case 0:
+                    kick_prompt = "kick";
+                    kick_command = "Server.KickUid";
+                    break;
+
+                case 1:
+                    kick_prompt = "kick and temporarily ban (for 2 games by default)";
+                    kick_command = "Server.TempBanUid";
+                    break;
+
+                case 2:
+                    kick_prompt = "kick and permanently ban";
+                    kick_command = "Server.BanUid";
+                    break;
+            }
+
+            // Prompt
+            DialogResult result = MessageBox.Show("Are you sure you want to " + kick_prompt + " " + player_name + " ?", "EldeRcon", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            // Execute Order 66
+            if (result == DialogResult.Yes)
+            {
+                // Build the command
+                string command = kick_command + " " + player_uid;
+
+                // Send the command
+                websockets[tabServers.SelectedIndex].Send(command);
+                
+                // Print our command in the console
+                UpdateConsole("\n" + txtCommand.Text, tabServers.SelectedIndex);
+
+            }
+
+        }
+        
     }
 }
