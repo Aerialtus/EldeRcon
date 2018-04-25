@@ -20,4 +20,4 @@ In no particular order, I'd like to:
 * Add buttons for common game commands. 
 * Get a player list in with teams.
 * Make it easier to manage more than one server in a window. 
-
+* Learning not to fail at git ;)
