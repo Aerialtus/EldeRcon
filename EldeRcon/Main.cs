@@ -188,11 +188,17 @@ namespace EldeRcon
                     }
                     else
                     {
-                        tab_label = server_info.name + ": " + server_info.map + " - " + server_info.variant + server_info.numPlayers + "/" + server_info.maxPlayers;
+                        tab_label = server_info.name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
                     }
 
                     // Update the tab's title
                     UpdateTabTitle(tab_label, tab_index);
+
+
+                    //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
+
+                    server_info.players = server_info.players.OrderBy(o => o.team).ThenBy(o => o.kills).ToList();
+
 
                     // If we have players, get them ready for the LV
                     if (server_info.players != null)
@@ -211,18 +217,19 @@ namespace EldeRcon
                             lv_array[0] = String.Empty;
                             lv_array[1] = server_info.players[ctr].name;
                             lv_array[2] = server_info.players[ctr].kills.ToString();
-                            lv_array[2] = server_info.players[ctr].deaths.ToString();
-                            lv_array[2] = server_info.players[ctr].assists.ToString();
-                            lv_array[2] = server_info.players[ctr].betrayals.ToString();
+                            lv_array[3] = server_info.players[ctr].deaths.ToString();
+                            lv_array[4] = server_info.players[ctr].assists.ToString();
+                            lv_array[5] = server_info.players[ctr].betrayals.ToString();
                             lv_array[6] = server_info.players[ctr].uid;
 
                             // Convert that to a LV item
                             ListViewItem row = new ListViewItem(lv_array);
+                            row.UseItemStyleForSubItems = false;
 
                             // Set color based on if we're on teams
                             if (server_info.teams)
                             {
-                                row.SubItems[0].BackColor = ColorTranslator.FromHtml(team_colors[server_info.players[ctr].team]);
+                                row.SubItems[0].BackColor = ColorTranslator.FromHtml("#" + team_colors[server_info.players[ctr].team]);
                             }
 
                             // If we're not on a team, use our primarycolor
@@ -476,6 +483,9 @@ namespace EldeRcon
         // If we're closing the form, also check if we need to close the connection
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
+            foreach (BackgroundWorker bw in bg_workers)
+                if (bw != null && bw.IsBusy)
+                    bw.CancelAsync();
             foreach (WebSocket socket in websockets)
                 if (socket != null && socket.ReadyState == WebSocketState.Open)
                     socket.CloseAsync();
