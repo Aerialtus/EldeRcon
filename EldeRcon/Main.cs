@@ -724,6 +724,12 @@ namespace EldeRcon
             }
 
         }
-        
+
+        private void btnManage_Click(object sender, EventArgs e)
+        {
+            // Open the server management form
+            Form ServerManager = new Server_List_Manager();
+            ServerManager.ShowDialog();
+        }
     }
 }

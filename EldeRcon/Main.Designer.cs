@@ -32,11 +32,11 @@
             this.txtConsole0 = new System.Windows.Forms.TextBox();
             this.txtCommand = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblHostname = new System.Windows.Forms.Label();
             this.txtHostname = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblPort = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnConnect = new System.Windows.Forms.Button();
             this.cmbLoadExisting = new System.Windows.Forms.ComboBox();
@@ -60,6 +60,7 @@
             this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblSoonTM = new System.Windows.Forms.Label();
+            this.btnManage = new System.Windows.Forms.Button();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -97,53 +98,53 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
-            // label1
+            // lblHostname
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(148, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Hostname:";
+            this.lblHostname.Location = new System.Drawing.Point(205, 4);
+            this.lblHostname.Name = "lblHostname";
+            this.lblHostname.Size = new System.Drawing.Size(58, 20);
+            this.lblHostname.TabIndex = 4;
+            this.lblHostname.Text = "Hostname:";
+            this.lblHostname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtHostname
             // 
-            this.txtHostname.Location = new System.Drawing.Point(212, 5);
+            this.txtHostname.Location = new System.Drawing.Point(269, 5);
             this.txtHostname.Name = "txtHostname";
             this.txtHostname.Size = new System.Drawing.Size(166, 20);
             this.txtHostname.TabIndex = 5;
             // 
-            // label2
+            // lblPort
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(384, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Port:";
+            this.lblPort.Location = new System.Drawing.Point(441, 4);
+            this.lblPort.Name = "lblPort";
+            this.lblPort.Size = new System.Drawing.Size(29, 20);
+            this.lblPort.TabIndex = 6;
+            this.lblPort.Text = "Port:";
+            this.lblPort.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtPort
             // 
-            this.txtPort.Location = new System.Drawing.Point(419, 5);
+            this.txtPort.Location = new System.Drawing.Point(476, 5);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(51, 20);
             this.txtPort.TabIndex = 7;
             this.txtPort.Text = "11776";
             // 
-            // label3
+            // lblPassword
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(477, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Password:";
+            this.lblPassword.Location = new System.Drawing.Point(533, 4);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(56, 20);
+            this.lblPassword.TabIndex = 8;
+            this.lblPassword.Text = "Password:";
+            this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(538, 5);
+            this.txtPassword.Location = new System.Drawing.Point(596, 5);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(176, 20);
+            this.txtPassword.Size = new System.Drawing.Size(118, 20);
             this.txtPassword.TabIndex = 9;
             this.txtPassword.UseSystemPasswordChar = true;
             // 
@@ -166,7 +167,7 @@
             this.cmbLoadExisting.Location = new System.Drawing.Point(4, 5);
             this.cmbLoadExisting.MaxDropDownItems = 100;
             this.cmbLoadExisting.Name = "cmbLoadExisting";
-            this.cmbLoadExisting.Size = new System.Drawing.Size(141, 21);
+            this.cmbLoadExisting.Size = new System.Drawing.Size(114, 21);
             this.cmbLoadExisting.TabIndex = 12;
             this.cmbLoadExisting.SelectedIndexChanged += new System.EventHandler(this.cmbLoadExisting_SelectedIndexChanged);
             // 
@@ -355,22 +356,34 @@
             this.lblSoonTM.TabIndex = 0;
             this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
             // 
+            // btnManage
+            // 
+            this.btnManage.Enabled = false;
+            this.btnManage.Location = new System.Drawing.Point(124, 5);
+            this.btnManage.Name = "btnManage";
+            this.btnManage.Size = new System.Drawing.Size(75, 22);
+            this.btnManage.TabIndex = 15;
+            this.btnManage.Text = "Manage...";
+            this.btnManage.UseVisualStyleBackColor = true;
+            this.btnManage.Click += new System.EventHandler(this.btnManage_Click);
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 579);
+            this.Controls.Add(this.btnManage);
             this.Controls.Add(this.tabServers);
             this.Controls.Add(this.cbSavePass);
             this.Controls.Add(this.cmbLoadExisting);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.txtPort);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblPort);
             this.Controls.Add(this.txtHostname);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblHostname);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtCommand);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -392,11 +405,11 @@
         private System.Windows.Forms.TextBox txtConsole0;
         private System.Windows.Forms.TextBox txtCommand;
         private System.Windows.Forms.Button btnSend;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblHostname;
         private System.Windows.Forms.TextBox txtHostname;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblPort;
         private System.Windows.Forms.TextBox txtPort;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.ComboBox cmbLoadExisting;
@@ -420,6 +433,7 @@
         private System.Windows.Forms.Button btnKickTempBan;
         private System.Windows.Forms.Button btnSendMessage;
         private System.Windows.Forms.Button btnKick;
+        private System.Windows.Forms.Button btnManage;
     }
 }
 
