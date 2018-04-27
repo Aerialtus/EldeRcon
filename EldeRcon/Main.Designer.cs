@@ -98,7 +98,7 @@
             // 
             // lblHostname
             // 
-            this.lblHostname.Location = new System.Drawing.Point(205, 4);
+            this.lblHostname.Location = new System.Drawing.Point(205, 5);
             this.lblHostname.Name = "lblHostname";
             this.lblHostname.Size = new System.Drawing.Size(58, 20);
             this.lblHostname.TabIndex = 4;
@@ -107,14 +107,14 @@
             // 
             // txtHostname
             // 
-            this.txtHostname.Location = new System.Drawing.Point(269, 5);
+            this.txtHostname.Location = new System.Drawing.Point(269, 6);
             this.txtHostname.Name = "txtHostname";
             this.txtHostname.Size = new System.Drawing.Size(166, 20);
             this.txtHostname.TabIndex = 5;
             // 
             // lblPort
             // 
-            this.lblPort.Location = new System.Drawing.Point(441, 4);
+            this.lblPort.Location = new System.Drawing.Point(441, 5);
             this.lblPort.Name = "lblPort";
             this.lblPort.Size = new System.Drawing.Size(29, 20);
             this.lblPort.TabIndex = 6;
@@ -123,7 +123,7 @@
             // 
             // txtPort
             // 
-            this.txtPort.Location = new System.Drawing.Point(476, 5);
+            this.txtPort.Location = new System.Drawing.Point(476, 6);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(51, 20);
             this.txtPort.TabIndex = 7;
@@ -131,7 +131,7 @@
             // 
             // lblPassword
             // 
-            this.lblPassword.Location = new System.Drawing.Point(533, 4);
+            this.lblPassword.Location = new System.Drawing.Point(533, 5);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(56, 20);
             this.lblPassword.TabIndex = 8;
@@ -140,7 +140,7 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(596, 5);
+            this.txtPassword.Location = new System.Drawing.Point(596, 6);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(118, 20);
             this.txtPassword.TabIndex = 9;
@@ -148,7 +148,7 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(720, 3);
+            this.btnConnect.Location = new System.Drawing.Point(720, 4);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 10;
@@ -174,7 +174,7 @@
             this.cbSavePass.AutoSize = true;
             this.cbSavePass.Checked = true;
             this.cbSavePass.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSavePass.Location = new System.Drawing.Point(801, 7);
+            this.cbSavePass.Location = new System.Drawing.Point(801, 8);
             this.cbSavePass.Name = "cbSavePass";
             this.cbSavePass.Size = new System.Drawing.Size(72, 17);
             this.cbSavePass.TabIndex = 13;
@@ -218,10 +218,9 @@
             // 
             // btnManage
             // 
-            this.btnManage.Enabled = false;
-            this.btnManage.Location = new System.Drawing.Point(124, 5);
+            this.btnManage.Location = new System.Drawing.Point(124, 4);
             this.btnManage.Name = "btnManage";
-            this.btnManage.Size = new System.Drawing.Size(75, 22);
+            this.btnManage.Size = new System.Drawing.Size(75, 23);
             this.btnManage.TabIndex = 15;
             this.btnManage.Text = "Manage...";
             this.btnManage.UseVisualStyleBackColor = true;

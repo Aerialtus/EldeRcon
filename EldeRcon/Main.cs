@@ -148,136 +148,157 @@ namespace EldeRcon
         // Function to launch in a background thread to update server info from the
         private void UpdateServerInfo(object sender, DoWorkEventArgs e)
         {
-            // Blank out our bg result
+
+            // Figure out what tab we came from
             int tab_index = Int32.Parse(e.Argument.ToString());
-            //MessageBox.Show("Got tab # " + tab_index);
-            bg_command_results[tab_index] = null;
 
-            // Send our command
-            SendBGCommand("Server.Port",tab_index);
-
-            // Wait for our result
-            while (bg_command_results[tab_index] == null)
+            try
             {
-                // Wait between checks
-                System.Threading.Thread.Sleep(100);
-            }
+                // Blank out our bg result
+                bg_command_results[tab_index] = null;
 
-            // Copy the port
-            int port = Int32.Parse(bg_command_results[tab_index]);
+                // Send our command
+                SendBGCommand("Server.Port", tab_index);
 
-            // Copy the hostname we need from the main websocket for that tab
-            string hostname = websockets[tab_index].Url.Host;
-
-            // Figure out which control to read refresh time from
-            // Build the tab/console names
-            string tab_name = "tab" + tab_index.ToString();
-            string console_name = "txtRefreshSeconds";// + tab_index.ToString();
-
-            // Target our textbox, which is under a tabcontrol
-            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-            TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
-
-            // If we're not supposed to stop
-            while (bg_workers[tab_index].CancellationPending == false)
-            {
-                // Ask the server for more detailed information
-                var server_info = EldewritoJsonAPI.GetServerInfo(hostname, port);
-
-                // If we get a real response back
-                if (server_info != null)
+                // Wait for our result
+                while (bg_command_results[tab_index] == null)
                 {
-                    // Rename the tab
-                    string tab_label = null;
-
-                    if (server_info.status == "InLobby")
-                    {
-                        tab_label = server_info.name + ": In Lobby " + server_info.numPlayers + "/" + server_info.maxPlayers; 
-                    }
-                    else
-                    {
-                        tab_label = server_info.name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
-                    }
-
-                    // Update the tab's title
-                    UpdateTabTitle(tab_label, tab_index);
-
-
-                    //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
-
-                    server_info.players = server_info.players.OrderBy(a => a.team).ThenBy(b => b.kills).ToList();
-
-
-                    // If we have players, get them ready for the LV
-                    if (server_info.players != null)
-                    {
-                        // Set up an array of LV items
-                        ListViewItem[] players = new ListViewItem[server_info.numPlayers];
-
-                        // Go through each player
-                        for (int ctr=0; ctr < server_info.numPlayers; ctr++)
-                        {
-                            // Create our array
-                            String[] lv_array = new string[7];
-
-
-                            // Copy our values into the right players
-                            lv_array[0] = String.Empty;
-                            lv_array[1] = server_info.players[ctr].name;
-                            lv_array[2] = server_info.players[ctr].kills.ToString();
-                            lv_array[3] = server_info.players[ctr].deaths.ToString();
-                            lv_array[4] = server_info.players[ctr].assists.ToString();
-                            lv_array[5] = server_info.players[ctr].betrayals.ToString();
-                            lv_array[6] = server_info.players[ctr].uid;
-
-                            // Convert that to a LV item
-                            ListViewItem row = new ListViewItem(lv_array);
-                            row.UseItemStyleForSubItems = false;
-
-                            // Set color based on if we're on teams
-                            if (server_info.teams)
-                            {
-                                row.SubItems[0].BackColor = ColorTranslator.FromHtml("#" + team_colors[server_info.players[ctr].team]);
-                            }
-
-                            // If we're not on a team, use our primarycolor
-                            else
-                            {
-                                row.SubItems[0].BackColor = ColorTranslator.FromHtml(server_info.players[ctr].primaryColor);
-                            }
-
-                            // Add that row to our list
-                            players[ctr] = row;
-                        }
-
-                        // Send the array off to a better place
-                        UpdatePlayerLV(players, tab_index);
-                    }
-                    else
-                    {
-                        // Send an empty array to clear the list out
-                        ListViewItem[] players = new ListViewItem[0];
-
-                        // If this is the active tab, update the lv now
-                        if (tabServers.SelectedIndex == tab_index)
-                        {
-                            UpdatePlayerLV(players, tab_index);
-                        }
-
-                        // Update the stored info regardless
-                        player_lv_items[tab_index] = players;
-
-                    }
+                    // Wait between checks
+                    System.Threading.Thread.Sleep(100);
                 }
 
+                // Copy the port
+                int port = Int32.Parse(bg_command_results[tab_index]);
 
-                // Wait until our next scheduled refresh
-                // Attempt to parse the text in the field
-                if (!Int32.TryParse(txtRefreshSeconds.Text, out int wait_time)) 
-                   wait_time = 5; // If we don't get a sensible value, use the default
-                
-                // Sleep it off!
-                System.Threading.Thread.Sleep(1000 * wait_time);
+                // Copy the hostname we need from the main websocket for that tab
+                string hostname = websockets[tab_index].Url.Host;
+
+                // Figure out which control to read refresh time from
+                // Build the tab/console names
+                string tab_name = "tab" + tab_index.ToString();
+                string console_name = "txtRefreshSeconds";// + tab_index.ToString();
+
+                // Target our textbox, which is under a tabcontrol
+                TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+                TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
+
+                // If we're not supposed to stop
+                while (bg_workers[tab_index].CancellationPending == false)
+                {
+                    // Ask the server for more detailed information
+                    var server_info = EldewritoJsonAPI.GetServerInfo(hostname, port);
+
+                    // If we get a real response back
+                    if (server_info != null)
+                    {
+                        // Rename the tab
+                        string tab_label = null;
+
+                        if (server_info.status == "InLobby")
+                        {
+                            tab_label = server_info.name + ": In Lobby " + server_info.numPlayers + "/" + server_info.maxPlayers;
+                        }
+                        else
+                        {
+                            tab_label = server_info.name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
+                        }
+
+                        // Update the tab's title
+                        UpdateTabTitle(tab_label, tab_index);
+
+
+                        //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
+
+                        server_info.players = server_info.players.OrderBy(a => a.team).ThenBy(b => b.kills).ToList();
+
+
+                        // If we have players, get them ready for the LV
+                        if (server_info.players != null)
+                        {
+                            // Set up an array of LV items
+                            ListViewItem[] players = new ListViewItem[server_info.numPlayers];
+
+                            // Go through each player
+                            for (int ctr = 0; ctr < server_info.numPlayers; ctr++)
+                            {
+                                // Create our array
+                                String[] lv_array = new string[7];
+
+
+                                // Copy our values into the right players
+                                lv_array[0] = String.Empty;
+                                lv_array[1] = server_info.players[ctr].name;
+                                lv_array[2] = server_info.players[ctr].kills.ToString();
+                                lv_array[3] = server_info.players[ctr].deaths.ToString();
+                                lv_array[4] = server_info.players[ctr].assists.ToString();
+                                lv_array[5] = server_info.players[ctr].betrayals.ToString();
+                                lv_array[6] = server_info.players[ctr].uid;
+
+                                // Convert that to a LV item
+                                ListViewItem row = new ListViewItem(lv_array);
+                                row.UseItemStyleForSubItems = false;
+
+                                // Set color based on if we're on teams
+                                if (server_info.teams)
+                                {
+                                    row.SubItems[0].BackColor = ColorTranslator.FromHtml("#" + team_colors[server_info.players[ctr].team]);
+                                }
+
+                                // If we're not on a team, use our primarycolor
+                                else
+                                {
+                                    row.SubItems[0].BackColor = ColorTranslator.FromHtml(server_info.players[ctr].primaryColor);
+                                }
+
+                                // Add that row to our list
+                                players[ctr] = row;
+                            }
+
+                            // Send the array off to a better place
+                            UpdatePlayerLV(players, tab_index);
+                        }
+                        else
+                        {
+                            // Send an empty array to clear the list out
+                            ListViewItem[] players = new ListViewItem[0];
+
+                            // If this is the active tab, update the lv now
+                            if (tabServers.SelectedIndex == tab_index)
+                            {
+                                UpdatePlayerLV(players, tab_index);
+                            }
+
+                            // Update the stored info regardless
+                            player_lv_items[tab_index] = players;
+
+                        }
+                    }
+
+
+                    // Wait until our next scheduled refresh
+                    // Attempt to parse the text in the field
+                    if (!Int32.TryParse(txtRefreshSeconds.Text, out int wait_time))
+                        wait_time = 5; // If we don't get a sensible value, use the default
+
+                    // Sleep it off!
+                    System.Threading.Thread.Sleep(1000 * wait_time);
+                }
+            }
+            catch (Exception update_ex)
+            {
+                // If something goes wrong, at least report it
+
+                // Build the error
+                ListViewItem sad_row = new ListViewItem();
+                sad_row.SubItems[1].Text = "Unable to connect or process HTTP json";
+
+                // Add it to our standard lv arrangement
+                ListViewItem[] lv = new ListViewItem[1];
+                lv[0] = sad_row;
+
+                // Copy it to our multi-tab lv list
+                player_lv_items[tab_index] = lv;
+
             }
         }
 
@@ -541,7 +562,9 @@ namespace EldeRcon
 
                // Add the PW if we have it
                 if (fields.Count() == 3)
-                    server_string += fields[2];               
+                    server_string += fields[2];
+
+                
 
                 // Add it to our list
                 AddToComboBox(server_string);
@@ -569,6 +592,7 @@ namespace EldeRcon
             else
                 AddToComboBox(hostname + "," + port + ",");
 
+            // Now we can update our copy on disk
             // Set our path
             const string logpath = @".\servers.csv";
 
