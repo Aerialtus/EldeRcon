@@ -28,41 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lvServers = new System.Windows.Forms.ListView();
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnEdit = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.clmNickName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clmHost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clmPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clmPassword = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dgvServers = new System.Windows.Forms.DataGridView();
+            this.clmAutoconnect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.clmNick = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmHostname = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmPortNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmPass = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblHelp = new System.Windows.Forms.Label();
+            this.lblAdd = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvServers)).BeginInit();
             this.SuspendLayout();
-            // 
-            // lvServers
-            // 
-            this.lvServers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvServers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clmNickName,
-            this.clmHost,
-            this.clmPort,
-            this.clmPassword});
-            this.lvServers.Location = new System.Drawing.Point(12, 12);
-            this.lvServers.Name = "lvServers";
-            this.lvServers.Size = new System.Drawing.Size(587, 213);
-            this.lvServers.TabIndex = 0;
-            this.lvServers.UseCompatibleStateImageBehavior = false;
-            this.lvServers.View = System.Windows.Forms.View.Details;
             // 
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnUp.Location = new System.Drawing.Point(12, 231);
+            this.btnUp.Location = new System.Drawing.Point(12, 239);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(75, 23);
             this.btnUp.TabIndex = 1;
@@ -72,39 +57,19 @@
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDown.Location = new System.Drawing.Point(94, 231);
+            this.btnDown.Location = new System.Drawing.Point(94, 239);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(75, 23);
             this.btnDown.TabIndex = 2;
             this.btnDown.Text = "Move Down";
             this.btnDown.UseVisualStyleBackColor = true;
             // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnAdd.Location = new System.Drawing.Point(218, 231);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(53, 23);
-            this.btnAdd.TabIndex = 3;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnEdit.Location = new System.Drawing.Point(277, 231);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(47, 23);
-            this.btnEdit.TabIndex = 4;
-            this.btnEdit.Text = "Edit";
-            this.btnEdit.UseVisualStyleBackColor = true;
-            // 
             // btnRemove
             // 
             this.btnRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnRemove.Location = new System.Drawing.Point(330, 231);
+            this.btnRemove.Location = new System.Drawing.Point(268, 239);
             this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(63, 23);
+            this.btnRemove.Size = new System.Drawing.Size(75, 23);
             this.btnRemove.TabIndex = 5;
             this.btnRemove.Text = "Remove";
             this.btnRemove.UseVisualStyleBackColor = true;
@@ -112,74 +77,130 @@
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(524, 231);
+            this.btnClose.Location = new System.Drawing.Point(524, 239);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 6;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(443, 231);
+            this.btnSave.Location = new System.Drawing.Point(443, 239);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             // 
-            // clmNickName
+            // dgvServers
             // 
-            this.clmNickName.Text = "Nickname";
-            this.clmNickName.Width = 86;
+            this.dgvServers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvServers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvServers.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.dgvServers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvServers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.clmAutoconnect,
+            this.clmNick,
+            this.clmHostname,
+            this.clmPortNum,
+            this.clmPass});
+            this.dgvServers.Location = new System.Drawing.Point(12, 53);
+            this.dgvServers.Name = "dgvServers";
+            this.dgvServers.Size = new System.Drawing.Size(583, 180);
+            this.dgvServers.TabIndex = 8;
             // 
-            // clmHost
+            // clmAutoconnect
             // 
-            this.clmHost.Text = "Hostname";
-            this.clmHost.Width = 143;
+            this.clmAutoconnect.HeaderText = "Autoconnect";
+            this.clmAutoconnect.Name = "clmAutoconnect";
+            this.clmAutoconnect.Width = 74;
             // 
-            // clmPort
+            // clmNick
             // 
-            this.clmPort.Text = "Port";
+            this.clmNick.HeaderText = "Nickname";
+            this.clmNick.Name = "clmNick";
+            this.clmNick.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.clmNick.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.clmNick.Width = 61;
             // 
-            // clmPassword
+            // clmHostname
             // 
-            this.clmPassword.Text = "Password";
-            this.clmPassword.Width = 226;
+            this.clmHostname.HeaderText = "Hostname";
+            this.clmHostname.Name = "clmHostname";
+            this.clmHostname.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.clmHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.clmHostname.Width = 61;
+            // 
+            // clmPortNum
+            // 
+            this.clmPortNum.HeaderText = "Port";
+            this.clmPortNum.Name = "clmPortNum";
+            this.clmPortNum.Width = 51;
+            // 
+            // clmPass
+            // 
+            this.clmPass.HeaderText = "Password";
+            this.clmPass.Name = "clmPass";
+            this.clmPass.Width = 78;
+            // 
+            // lblHelp
+            // 
+            this.lblHelp.AutoSize = true;
+            this.lblHelp.Location = new System.Drawing.Point(9, 29);
+            this.lblHelp.Name = "lblHelp";
+            this.lblHelp.Size = new System.Drawing.Size(528, 13);
+            this.lblHelp.TabIndex = 9;
+            this.lblHelp.Text = "To edit a row, double click the cell you want to edit. DON\'T FORGET TO CLICK SAVE" +
+    " BEFORE YOU CLOSE!";
+            // 
+            // lblAdd
+            // 
+            this.lblAdd.AutoSize = true;
+            this.lblAdd.Location = new System.Drawing.Point(9, 9);
+            this.lblAdd.Name = "lblAdd";
+            this.lblAdd.Size = new System.Drawing.Size(276, 13);
+            this.lblAdd.TabIndex = 10;
+            this.lblAdd.Text = "To add a server, click on the bottom row and start typing.";
             // 
             // Server_List_Manager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(611, 271);
+            this.ClientSize = new System.Drawing.Size(611, 279);
+            this.Controls.Add(this.lblAdd);
+            this.Controls.Add(this.lblHelp);
+            this.Controls.Add(this.dgvServers);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnRemove);
-            this.Controls.Add(this.btnEdit);
-            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
-            this.Controls.Add(this.lvServers);
             this.Name = "Server_List_Manager";
             this.Text = "Server List Manager";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvServers)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ListView lvServers;
-        private System.Windows.Forms.ColumnHeader clmNickName;
-        private System.Windows.Forms.ColumnHeader clmHost;
-        private System.Windows.Forms.ColumnHeader clmPort;
-        private System.Windows.Forms.ColumnHeader clmPassword;
         private System.Windows.Forms.Button btnUp;
         private System.Windows.Forms.Button btnDown;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.DataGridView dgvServers;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn clmAutoconnect;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmNick;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmHostname;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmPortNum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmPass;
+        private System.Windows.Forms.Label lblHelp;
+        private System.Windows.Forms.Label lblAdd;
     }
 }
