@@ -34,6 +34,10 @@ namespace EldeRcon
 
         // Color by number
         Dictionary<int, string> team_colors;
+
+        // Store the index of our "New..." tab, since clicking on that makes a new one
+        int new_tab_index = 1;
+
         
         public Main()
         {
@@ -65,6 +69,10 @@ namespace EldeRcon
             // Create a bgresults string for our first tab
             String str = null;
             bg_command_results.Add(str);
+
+            // Create an empty player list for the tab
+            ListViewItem[] players = new ListViewItem[0];
+            player_lv_items.Add(players);
 
             // Set up our teamcolors dictionary
             team_colors = EldewritoJsonAPI.GetTeamColors();
@@ -249,7 +257,15 @@ namespace EldeRcon
                     {
                         // Send an empty array to clear the list out
                         ListViewItem[] players = new ListViewItem[0];
-                        UpdatePlayerLV(players, tab_index);
+
+                        // If this is the active tab, update the lv now
+                        if (tabServers.SelectedIndex == tab_index)
+                        {
+                            UpdatePlayerLV(players, tab_index);
+                        }
+
+                        // Update the stored info regardless
+                        player_lv_items[tab_index] = players;
 
                     }
                 }
@@ -257,7 +273,7 @@ namespace EldeRcon
 
                 // Wait until our next scheduled refresh
                 // Attempt to parse the text in the field
-                if (!Int32.TryParse(target_textbox.Text, out int wait_time)) 
+                if (!Int32.TryParse(txtRefreshSeconds.Text, out int wait_time)) 
                    wait_time = 5; // If we don't get a sensible value, use the default
                 
                 // Sleep it off!
@@ -276,27 +292,27 @@ namespace EldeRcon
             }
 
             // Grab the appropriate tab's LV
-            string tab_name = "tab" + tab_index.ToString();
-            string lv_name = "lvPlayers" + tab_index.ToString();
+            //string tab_name = "tab" + tab_index.ToString();
+            //string lv_name = "lvPlayers" + tab_index.ToString();
 
-            // Target our textbox, which is under a tabcontrol
-            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-            ListView target_lv = target_tab.Controls[lv_name] as ListView;
+            // Target our lv, which is under a tabcontrol
+            //TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            //ListView lvPlayers = target_tab.Controls[lv_name] as ListView;
 
             // Prepare the LV
-            target_lv.BeginUpdate();
-            target_lv.Items.Clear();
+            lvPlayers.BeginUpdate();
+            lvPlayers.Items.Clear();
 
             // Add our items
-            target_lv.Items.AddRange(players);
+            lvPlayers.Items.AddRange(players);
 
             // Resize to fit contents and headers
-            target_lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            target_lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            target_lv.Columns[6].Width = 0;
+            lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvPlayers.Columns[6].Width = 0;
 
             // End the lv work
-            target_lv.EndUpdate();
+            lvPlayers.EndUpdate();
         }
 
         // Invoke function for our console
@@ -730,6 +746,86 @@ namespace EldeRcon
             // Open the server management form
             Form ServerManager = new Server_List_Manager();
             ServerManager.ShowDialog();
+        }
+
+        // If someone tries to change tabs
+        private void tabServers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            // If we need to, create a new tab, which is just a textbox with a few properties adjusted.
+            if (tabServers.SelectedIndex == new_tab_index)
+            {
+                // Create the tabpage
+                // https://stackoverflow.com/a/3737259
+                TabPage new_page = new TabPage("Server " + (new_tab_index + 1));
+                new_page.Name = "tab" + new_tab_index;
+
+                // Create our control
+                string console_name = "txtConsole" + new_tab_index.ToString();
+                TextBox new_console = new TextBox();
+                new_page.Controls.Add(new_console);
+
+                // Set its properties
+                new_console.Name = console_name;
+                new_console.Multiline = true;
+                new_console.Width = new_page.Width;
+                new_console.Height = new_page.Height;
+                new_console.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+                new_console.ScrollBars = ScrollBars.Both;
+
+                // Add the page to the tabcontrol
+                // Keep our "new tab"
+                TabPage newtab = tabServers.TabPages[new_tab_index];
+
+                // Remove the "new tab"
+                tabServers.TabPages.Remove(tabServers.TabPages[new_tab_index]);
+
+                // Add what we just built
+                tabServers.TabPages.Add(new_page);
+
+                // Add our "New..." back
+                tabServers.TabPages.Add(newtab);                
+
+                // Create a websocket for the tab
+                WebSocket ws = null;
+                websockets.Add(ws);
+
+                // Create a BG websocket for the tab
+                WebSocket bg_socket = null;
+                bg_websockets.Add(bg_socket);
+
+                // Create a BG worker for the tab
+                BackgroundWorker bg = null;
+                bg_workers.Add(bg);
+
+                // Create a password slot for our tab
+                SecureString pw = null;
+                passwords.Add(pw);
+
+                // Create a bgresults string for our tab
+                String str = null;
+                bg_command_results.Add(str);
+
+                // Create an empty player list for the tab
+                ListViewItem[] players = new ListViewItem[0];
+                player_lv_items.Add(players);
+
+                // Increment our new tab index
+                // Incrementing before activating prevents this function from firing again
+                new_tab_index++;
+
+                // Activate our new tab
+                tabServers.SelectedTab = tabServers.TabPages[new_tab_index - 1];
+            }
+            else
+            {
+                // Send an empty array to clear the list out
+                ListViewItem[] players = new ListViewItem[0];
+                UpdatePlayerLV(players, tabServers.SelectedIndex);
+
+                // Switch the LV to that tab's info
+                UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
+            }
         }
     }
 }

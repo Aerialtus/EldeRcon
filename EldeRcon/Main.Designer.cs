@@ -43,8 +43,7 @@
             this.cbSavePass = new System.Windows.Forms.CheckBox();
             this.tabServers = new System.Windows.Forms.TabControl();
             this.tab0 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.lblSoonTM = new System.Windows.Forms.Label();
+            this.tabNew = new System.Windows.Forms.TabPage();
             this.btnManage = new System.Windows.Forms.Button();
             this.btnKickPermBan = new System.Windows.Forms.Button();
             this.btnKickTempBan = new System.Windows.Forms.Button();
@@ -53,7 +52,7 @@
             this.lblSeconds0 = new System.Windows.Forms.Label();
             this.txtRefreshSeconds = new System.Windows.Forms.TextBox();
             this.lblRefresh0 = new System.Windows.Forms.Label();
-            this.lvPlayers0 = new System.Windows.Forms.ListView();
+            this.lvPlayers = new System.Windows.Forms.ListView();
             this.clmColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmKills = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -63,7 +62,6 @@
             this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtConsole0
@@ -74,7 +72,7 @@
             this.txtConsole0.Location = new System.Drawing.Point(0, 0);
             this.txtConsole0.Multiline = true;
             this.txtConsole0.Name = "txtConsole0";
-            this.txtConsole0.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtConsole0.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtConsole0.Size = new System.Drawing.Size(663, 485);
             this.txtConsole0.TabIndex = 0;
             // 
@@ -189,12 +187,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabServers.Controls.Add(this.tab0);
-            this.tabServers.Controls.Add(this.tabPage2);
+            this.tabServers.Controls.Add(this.tabNew);
             this.tabServers.Location = new System.Drawing.Point(4, 33);
             this.tabServers.Name = "tabServers";
             this.tabServers.SelectedIndex = 0;
             this.tabServers.Size = new System.Drawing.Size(671, 511);
             this.tabServers.TabIndex = 14;
+            this.tabServers.SelectedIndexChanged += new System.EventHandler(this.tabServers_SelectedIndexChanged);
             // 
             // tab0
             // 
@@ -207,26 +206,15 @@
             this.tab0.Text = "Server 1";
             this.tab0.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // tabNew
             // 
-            this.tabPage2.Controls.Add(this.lblSoonTM);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(663, 485);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "New...";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // lblSoonTM
-            // 
-            this.lblSoonTM.AutoSize = true;
-            this.lblSoonTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoonTM.Location = new System.Drawing.Point(109, 217);
-            this.lblSoonTM.Name = "lblSoonTM";
-            this.lblSoonTM.Size = new System.Drawing.Size(647, 51);
-            this.lblSoonTM.TabIndex = 0;
-            this.lblSoonTM.Text = "Tabs hopefully coming soon(tm)!";
+            this.tabNew.Location = new System.Drawing.Point(4, 22);
+            this.tabNew.Name = "tabNew";
+            this.tabNew.Padding = new System.Windows.Forms.Padding(3);
+            this.tabNew.Size = new System.Drawing.Size(663, 485);
+            this.tabNew.TabIndex = 1;
+            this.tabNew.Text = "New...";
+            this.tabNew.UseVisualStyleBackColor = true;
             // 
             // btnManage
             // 
@@ -241,6 +229,7 @@
             // 
             // btnKickPermBan
             // 
+            this.btnKickPermBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnKickPermBan.Location = new System.Drawing.Point(723, 511);
             this.btnKickPermBan.Name = "btnKickPermBan";
             this.btnKickPermBan.Size = new System.Drawing.Size(114, 23);
@@ -250,6 +239,7 @@
             // 
             // btnKickTempBan
             // 
+            this.btnKickTempBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnKickTempBan.Location = new System.Drawing.Point(723, 482);
             this.btnKickTempBan.Name = "btnKickTempBan";
             this.btnKickTempBan.Size = new System.Drawing.Size(114, 23);
@@ -259,6 +249,7 @@
             // 
             // btnSendMessage
             // 
+            this.btnSendMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSendMessage.Location = new System.Drawing.Point(723, 404);
             this.btnSendMessage.Name = "btnSendMessage";
             this.btnSendMessage.Size = new System.Drawing.Size(114, 23);
@@ -268,6 +259,7 @@
             // 
             // btnKick
             // 
+            this.btnKick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnKick.Location = new System.Drawing.Point(723, 453);
             this.btnKick.Name = "btnKick";
             this.btnKick.Size = new System.Drawing.Size(114, 23);
@@ -277,6 +269,7 @@
             // 
             // lblSeconds0
             // 
+            this.lblSeconds0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeconds0.AutoSize = true;
             this.lblSeconds0.Location = new System.Drawing.Point(813, 381);
             this.lblSeconds0.Name = "lblSeconds0";
@@ -286,6 +279,7 @@
             // 
             // txtRefreshSeconds
             // 
+            this.txtRefreshSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRefreshSeconds.Location = new System.Drawing.Point(778, 378);
             this.txtRefreshSeconds.Name = "txtRefreshSeconds";
             this.txtRefreshSeconds.Size = new System.Drawing.Size(29, 20);
@@ -294,6 +288,7 @@
             // 
             // lblRefresh0
             // 
+            this.lblRefresh0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRefresh0.AutoSize = true;
             this.lblRefresh0.Location = new System.Drawing.Point(698, 381);
             this.lblRefresh0.Name = "lblRefresh0";
@@ -301,11 +296,11 @@
             this.lblRefresh0.TabIndex = 18;
             this.lblRefresh0.Text = "Refresh every: ";
             // 
-            // lvPlayers0
+            // lvPlayers
             // 
-            this.lvPlayers0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lvPlayers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPlayers0.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lvPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clmColor,
             this.clmName,
             this.clmKills,
@@ -313,14 +308,14 @@
             this.clmAssists,
             this.clmBetrayals,
             this.clmUID});
-            this.lvPlayers0.FullRowSelect = true;
-            this.lvPlayers0.GridLines = true;
-            this.lvPlayers0.Location = new System.Drawing.Point(687, 55);
-            this.lvPlayers0.Name = "lvPlayers0";
-            this.lvPlayers0.Size = new System.Drawing.Size(186, 319);
-            this.lvPlayers0.TabIndex = 17;
-            this.lvPlayers0.UseCompatibleStateImageBehavior = false;
-            this.lvPlayers0.View = System.Windows.Forms.View.Details;
+            this.lvPlayers.FullRowSelect = true;
+            this.lvPlayers.GridLines = true;
+            this.lvPlayers.Location = new System.Drawing.Point(687, 55);
+            this.lvPlayers.Name = "lvPlayers";
+            this.lvPlayers.Size = new System.Drawing.Size(186, 319);
+            this.lvPlayers.TabIndex = 17;
+            this.lvPlayers.UseCompatibleStateImageBehavior = false;
+            this.lvPlayers.View = System.Windows.Forms.View.Details;
             // 
             // clmColor
             // 
@@ -368,7 +363,7 @@
             this.Controls.Add(this.lblSeconds0);
             this.Controls.Add(this.txtRefreshSeconds);
             this.Controls.Add(this.lblRefresh0);
-            this.Controls.Add(this.lvPlayers0);
+            this.Controls.Add(this.lvPlayers);
             this.Controls.Add(this.btnManage);
             this.Controls.Add(this.tabServers);
             this.Controls.Add(this.cbSavePass);
@@ -389,8 +384,6 @@
             this.tabServers.ResumeLayout(false);
             this.tab0.ResumeLayout(false);
             this.tab0.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -412,8 +405,7 @@
         private System.Windows.Forms.CheckBox cbSavePass;
         private System.Windows.Forms.TabControl tabServers;
         private System.Windows.Forms.TabPage tab0;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Label lblSoonTM;
+        private System.Windows.Forms.TabPage tabNew;
         private System.Windows.Forms.Button btnManage;
         private System.Windows.Forms.Button btnKickPermBan;
         private System.Windows.Forms.Button btnKickTempBan;
@@ -422,7 +414,7 @@
         private System.Windows.Forms.Label lblSeconds0;
         private System.Windows.Forms.TextBox txtRefreshSeconds;
         private System.Windows.Forms.Label lblRefresh0;
-        private System.Windows.Forms.ListView lvPlayers0;
+        private System.Windows.Forms.ListView lvPlayers;
         private System.Windows.Forms.ColumnHeader clmColor;
         private System.Windows.Forms.ColumnHeader clmName;
         private System.Windows.Forms.ColumnHeader clmKills;
