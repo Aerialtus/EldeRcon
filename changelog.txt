@@ -1,4 +1,12 @@
 ﻿
+v4
+
+Added tabs!
+
+v3
+
+Added the player list + player command buttons.
+
 v2
 
 Added saving/loading servers you connect to. Gave it an icon to help it stick out.
