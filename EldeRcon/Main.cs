@@ -38,6 +38,8 @@ namespace EldeRcon
         // Store the index of our "New..." tab, since clicking on that makes a new one
         int new_tab_index = 1;
 
+        // Help background threads figure out what tab we're on
+        int selected_tab_index = 0;
         
         public Main()
         {
@@ -145,6 +147,7 @@ namespace EldeRcon
 
         }
 
+
         // Function to launch in a background thread to update server info from the
         private void UpdateServerInfo(object sender, DoWorkEventArgs e)
         {
@@ -152,8 +155,8 @@ namespace EldeRcon
             // Figure out what tab we came from
             int tab_index = Int32.Parse(e.Argument.ToString());
 
-            try
-            {
+            //try
+           // {
                 // Blank out our bg result
                 bg_command_results[tab_index] = null;
 
@@ -254,8 +257,14 @@ namespace EldeRcon
                                 players[ctr] = row;
                             }
 
-                            // Send the array off to a better place
-                            UpdatePlayerLV(players, tab_index);
+                            // If we're the current tab, update now
+                            if (selected_tab_index == tab_index)
+                            {
+                                UpdatePlayerLV(players, tab_index);
+                            }
+
+                            // Update the stored info regardless
+                            player_lv_items[tab_index] = players;
                         }
                         else
                         {
@@ -263,15 +272,16 @@ namespace EldeRcon
                             ListViewItem[] players = new ListViewItem[0];
 
                             // If this is the active tab, update the lv now
-                            if (tabServers.SelectedIndex == tab_index)
+                            if (selected_tab_index == tab_index)
                             {
                                 UpdatePlayerLV(players, tab_index);
                             }
 
                             // Update the stored info regardless
                             player_lv_items[tab_index] = players;
-
                         }
+
+                        
                     }
 
 
@@ -283,27 +293,28 @@ namespace EldeRcon
                     // Sleep it off!
                     System.Threading.Thread.Sleep(1000 * wait_time);
                 }
+                /*}
+
+               catch (Exception update_ex)
+               {
+                   // If something goes wrong, at least report it
+
+                   // Build the error
+                   ListViewItem sad_row = new ListViewItem();
+                   sad_row.Text = "Unable to connect or process HTTP json";
+
+                   // Add it to our standard lv arrangement
+                   ListViewItem[] lv = new ListViewItem[1];
+                   lv[0] = sad_row;
+
+                   // Copy it to our multi-tab lv list
+                   player_lv_items[tab_index] = lv;
+
+               }*/
             }
-            catch (Exception update_ex)
-            {
-                // If something goes wrong, at least report it
-
-                // Build the error
-                ListViewItem sad_row = new ListViewItem();
-                sad_row.SubItems[1].Text = "Unable to connect or process HTTP json";
-
-                // Add it to our standard lv arrangement
-                ListViewItem[] lv = new ListViewItem[1];
-                lv[0] = sad_row;
-
-                // Copy it to our multi-tab lv list
-                player_lv_items[tab_index] = lv;
-
-            }
-        }
 
         // Invoke function for our player listview
-        private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
+            private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
         {
             // Invoke if needed
             if (InvokeRequired)
@@ -329,7 +340,7 @@ namespace EldeRcon
 
             // Resize to fit contents and headers
             lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            //lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             lvPlayers.Columns[6].Width = 0;
 
             // End the lv work
@@ -377,8 +388,9 @@ namespace EldeRcon
             string tab_name = "tab" + tab_index.ToString();
             TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
 
-            // Update the text
-            target_tab.Text = title_text;
+            // Update the text if needed
+            if (target_tab.Text != title_text)
+                target_tab.Text = title_text;
         }
 
         // Add an item to the combobox
@@ -840,9 +852,13 @@ namespace EldeRcon
 
                 // Activate our new tab
                 tabServers.SelectedTab = tabServers.TabPages[new_tab_index - 1];
+                
             }
             else
             {
+                // Store the index for our BG threads
+                selected_tab_index = tabServers.SelectedIndex;
+
                 // Send an empty array to clear the list out
                 ListViewItem[] players = new ListViewItem[0];
                 UpdatePlayerLV(players, tabServers.SelectedIndex);

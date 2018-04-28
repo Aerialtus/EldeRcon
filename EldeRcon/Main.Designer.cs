@@ -218,6 +218,7 @@
             // 
             // btnManage
             // 
+            this.btnManage.Enabled = false;
             this.btnManage.Location = new System.Drawing.Point(124, 4);
             this.btnManage.Name = "btnManage";
             this.btnManage.Size = new System.Drawing.Size(75, 23);
@@ -324,16 +325,17 @@
             // clmName
             // 
             this.clmName.Text = "Name";
+            this.clmName.Width = 90;
             // 
             // clmKills
             // 
             this.clmKills.Text = "K";
-            this.clmKills.Width = 25;
+            this.clmKills.Width = 28;
             // 
             // clmDeaths
             // 
             this.clmDeaths.Text = "D";
-            this.clmDeaths.Width = 22;
+            this.clmDeaths.Width = 27;
             // 
             // clmAssists
             // 
