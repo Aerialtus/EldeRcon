@@ -62,10 +62,10 @@ namespace EldeRcon
                 if (fields.Count() == 3)
                 {
                     // Copy our values
-                    lv_row_string[0] = String.Empty;
-                    lv_row_string[1] = fields[0];
-                    lv_row_string[2] = fields[1];
-                    lv_row_string[3] = fields[2];
+                 //   lv_row_string[0] = String.Empty;
+                 //   lv_row_string[1] = fields[0];
+                 //   lv_row_string[2] = fields[1];
+                 //   lv_row_string[3] = fields[2];
 
                     dgvServers.Rows.Add(
                         false, 
@@ -92,10 +92,10 @@ namespace EldeRcon
                         fields[4]);
 
 
-                    lv_row_string[0] = fields[2];
-                    lv_row_string[1] = fields[3];
-                    lv_row_string[2] = fields[4];
-                    lv_row_string[3] = fields[5];
+                   // lv_row_string[0] = fields[2];
+                   // lv_row_string[1] = fields[3];
+                   // lv_row_string[2] = fields[4];
+                    //lv_row_string[3] = fields[5];
                 }
 
                 // Add this row to the list
@@ -107,10 +107,120 @@ namespace EldeRcon
             }
         }
 
+        private void btnUp_Click(object sender, EventArgs e)
+        {
+            // https://stackoverflow.com/a/9930585
+            DataGridView dgv = dgvServers;
+            try
+            {
+                int totalRows = dgv.Rows.Count;
+                // get index of the row for the selected cell
+                int rowIndex = dgv.SelectedCells[0].OwningRow.Index;
+                if (rowIndex == 0)
+                    return;
+                // get index of the column for the selected cell
+                int colIndex = dgv.SelectedCells[0].OwningColumn.Index;
+                DataGridViewRow selectedRow = dgv.Rows[rowIndex];
+                dgv.Rows.Remove(selectedRow);
+                dgv.Rows.Insert(rowIndex - 1, selectedRow);
+                dgv.ClearSelection();
+                dgv.Rows[rowIndex - 1].Cells[colIndex].Selected = true;
+            }
+            catch { }
 
+        }
 
-        
+        private void btnDown_Click(object sender, EventArgs e)
+        {
+            // https://stackoverflow.com/a/9930585
+            DataGridView dgv = dgvServers;
+            try
+            {
+                int totalRows = dgv.Rows.Count;
+                // get index of the row for the selected cell
+                int rowIndex = dgv.SelectedCells[0].OwningRow.Index;
+                if (rowIndex == totalRows - 1)
+                    return;
+                // get index of the column for the selected cell
+                int colIndex = dgv.SelectedCells[0].OwningColumn.Index;
+                DataGridViewRow selectedRow = dgv.Rows[rowIndex];
+                dgv.Rows.Remove(selectedRow);
+                dgv.Rows.Insert(rowIndex + 1, selectedRow);
+                dgv.ClearSelection();
+                dgv.Rows[rowIndex + 1].Cells[colIndex].Selected = true;
+            }
+            catch { }
+        }
 
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            // get index of the row for the selected cell
+            DataGridView dgv = dgvServers;
+            int rowIndex = dgv.SelectedCells[0].OwningRow.Index;
 
+            // Remove it
+            DataGridViewRow selectedRow = dgv.Rows[rowIndex];
+            dgv.Rows.Remove(selectedRow);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // Use a list to hold the strings
+            List<string> servers = new List<string>();
+
+            // Go through each row
+            foreach (DataGridViewRow row in dgvServers.Rows)
+            {
+                // Hold our cell values
+                string auto;
+                string nickname = row.Cells[1].Value.ToString();
+                string hostname = row.Cells[2].Value.ToString();
+                string port = row.Cells[3].Value.ToString();
+                string password = row.Cells[4].Value.ToString();
+
+                // Make sure port is a number
+                try
+                {
+                    Int32.Parse(port);
+                }
+                catch
+                {
+                    MessageBox.Show("'" + port + "' is not a valid port number!");
+                    return;
+                }
+
+                // Store autoconnect as 0/1
+                if (Convert.ToBoolean(row.Cells[0].Value) == false)
+                {
+                    auto = "0";
+                }
+                else
+                {
+                    auto = "1";
+                }
+
+                // Add it to our list
+                servers.Add("\"" + auto + "\"," + nickname + "\"," + hostname + "\"," + port + "\"," + password + "\"");
+            }
+
+            // Write our list to disk
+            try
+            {
+                // Write our servers
+                using (StreamWriter sw = File.CreateText(@".\servers.csv"))
+                {
+                    foreach (string line in servers)
+                    {
+                        sw.WriteLine(line);
+                    }
+                }
+
+                MessageBox.Show("List saved!");
+            }
+            catch (Exception write_ex)
+            {
+                MessageBox.Show("Error writing server list to disk:\n\n" + write_ex.Message);
+            }
+        }
     }
 }
