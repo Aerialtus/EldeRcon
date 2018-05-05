@@ -1,4 +1,13 @@
 ﻿
+v5
+
+Added the server list manager, which you can use to:
+* Add multiple servers easily 
+* Set nicknames for your servers
+* Set servers to automatically connect when the program starts.
+
+I also fixed the kick/message buttons, which I broke at some point.
+
 v4
 
 Added tabs!
