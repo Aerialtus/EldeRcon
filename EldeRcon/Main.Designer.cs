@@ -218,7 +218,6 @@
             // 
             // btnManage
             // 
-            this.btnManage.Enabled = false;
             this.btnManage.Location = new System.Drawing.Point(124, 4);
             this.btnManage.Name = "btnManage";
             this.btnManage.Size = new System.Drawing.Size(75, 23);
@@ -236,6 +235,7 @@
             this.btnKickPermBan.TabIndex = 21;
             this.btnKickPermBan.Text = "Kick + Perma Ban";
             this.btnKickPermBan.UseVisualStyleBackColor = true;
+            this.btnKickPermBan.Click += new System.EventHandler(this.btnKickPermBan_Click);
             // 
             // btnKickTempBan
             // 
@@ -246,6 +246,7 @@
             this.btnKickTempBan.TabIndex = 22;
             this.btnKickTempBan.Text = "Kick + Temp Ban";
             this.btnKickTempBan.UseVisualStyleBackColor = true;
+            this.btnKickTempBan.Click += new System.EventHandler(this.btnKickTempBan_Click);
             // 
             // btnSendMessage
             // 
@@ -256,6 +257,7 @@
             this.btnSendMessage.TabIndex = 23;
             this.btnSendMessage.Text = "Send Priv. Message";
             this.btnSendMessage.UseVisualStyleBackColor = true;
+            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
             // 
             // btnKick
             // 
@@ -266,6 +268,7 @@
             this.btnKick.TabIndex = 24;
             this.btnKick.Text = "Kick (No Ban)";
             this.btnKick.UseVisualStyleBackColor = true;
+            this.btnKick.Click += new System.EventHandler(this.btnKick_Click);
             // 
             // lblSeconds0
             // 
@@ -380,8 +383,10 @@
             this.Controls.Add(this.txtCommand);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EldeRcon";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosed);
+            this.Shown += new System.EventHandler(this.Main_Shown);
             this.tabServers.ResumeLayout(false);
             this.tab0.ResumeLayout(false);
             this.tab0.PerformLayout();

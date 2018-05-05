@@ -14,6 +14,7 @@ namespace EldeRcon
 {
     public partial class Server_List_Manager : Form
     {
+
         public Server_List_Manager()
         {
             InitializeComponent();
@@ -61,11 +62,6 @@ namespace EldeRcon
                 // If we're in 3 field format, load it into 5 field style
                 if (fields.Count() == 3)
                 {
-                    // Copy our values
-                 //   lv_row_string[0] = String.Empty;
-                 //   lv_row_string[1] = fields[0];
-                 //   lv_row_string[2] = fields[1];
-                 //   lv_row_string[3] = fields[2];
 
                     dgvServers.Rows.Add(
                         false, 
@@ -91,19 +87,8 @@ namespace EldeRcon
                         fields[3],
                         fields[4]);
 
-
-                   // lv_row_string[0] = fields[2];
-                   // lv_row_string[1] = fields[3];
-                   // lv_row_string[2] = fields[4];
-                    //lv_row_string[3] = fields[5];
                 }
 
-                // Add this row to the list
-                //int new_row = dgvServers.Rows.Add(lv_row_string);
-                
-                // Figure out if we need to check the box
-                //if (fields.Count() == 5 && fields[0] == "1")
-                //    dgvServers.Rows[new_row].Cells[0].Value = true;
             }
         }
 
@@ -171,12 +156,20 @@ namespace EldeRcon
             // Go through each row
             foreach (DataGridViewRow row in dgvServers.Rows)
             {
+                // No hostname = no save
+                if (row.Cells[2].Value == null)
+                    continue;
+
                 // Hold our cell values
                 string auto;
                 string nickname = row.Cells[1].Value.ToString();
                 string hostname = row.Cells[2].Value.ToString();
                 string port = row.Cells[3].Value.ToString();
-                string password = row.Cells[4].Value.ToString();
+                string password = String.Empty;
+
+                // Save the password if needed
+                if (row.Cells[4].Value != null)
+                    password = row.Cells[4].Value.ToString();
 
                 // Make sure port is a number
                 try
@@ -200,7 +193,7 @@ namespace EldeRcon
                 }
 
                 // Add it to our list
-                servers.Add("\"" + auto + "\"," + nickname + "\"," + hostname + "\"," + port + "\"," + password + "\"");
+                servers.Add("\"" + auto + "\",\"" + nickname + "\",\"" + hostname + "\",\"" + port + "\",\"" + password + "\"");
             }
 
             // Write our list to disk
@@ -215,7 +208,8 @@ namespace EldeRcon
                     }
                 }
 
-                MessageBox.Show("List saved!");
+                //MessageBox.Show("List saved!");
+                Close();
             }
             catch (Exception write_ex)
             {

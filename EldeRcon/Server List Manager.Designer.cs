@@ -84,18 +84,18 @@
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 6;
-            this.btnClose.Text = "Close";
+            this.btnClose.Text = "Cancel";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(443, 239);
+            this.btnSave.Location = new System.Drawing.Point(431, 239);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.Size = new System.Drawing.Size(87, 23);
             this.btnSave.TabIndex = 6;
-            this.btnSave.Text = "Save";
+            this.btnSave.Text = "Save + Close";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -157,19 +157,20 @@
             this.lblHelp.AutoSize = true;
             this.lblHelp.Location = new System.Drawing.Point(9, 29);
             this.lblHelp.Name = "lblHelp";
-            this.lblHelp.Size = new System.Drawing.Size(528, 13);
+            this.lblHelp.Size = new System.Drawing.Size(418, 13);
             this.lblHelp.TabIndex = 9;
             this.lblHelp.Text = "To edit a row, double click the cell you want to edit. DON\'T FORGET TO CLICK SAVE" +
-    " BEFORE YOU CLOSE!";
+    "!";
             // 
             // lblAdd
             // 
             this.lblAdd.AutoSize = true;
             this.lblAdd.Location = new System.Drawing.Point(9, 9);
             this.lblAdd.Name = "lblAdd";
-            this.lblAdd.Size = new System.Drawing.Size(276, 13);
+            this.lblAdd.Size = new System.Drawing.Size(474, 13);
             this.lblAdd.TabIndex = 10;
-            this.lblAdd.Text = "To add a server, click on the bottom row and start typing.";
+            this.lblAdd.Text = "To add a server, click on the bottom row and start typing. Rows without a hostnam" +
+    "e will be ignored.";
             // 
             // Server_List_Manager
             // 
@@ -185,6 +186,7 @@
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
             this.Name = "Server_List_Manager";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Server List Manager";
             ((System.ComponentModel.ISupportInitialize)(this.dgvServers)).EndInit();
             this.ResumeLayout(false);

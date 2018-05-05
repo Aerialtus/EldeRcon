@@ -32,6 +32,12 @@ namespace EldeRcon
         // Hold our player LV arrays
         List<ListViewItem[]> player_lv_items = new List<ListViewItem[]>();
 
+        // Hold servers
+        List<rcon_server> rcon_server_list;
+
+        // Hold server name to index
+        Dictionary<string, int> server_dictionary;
+
         // Color by number
         Dictionary<int, string> team_colors;
 
@@ -47,10 +53,9 @@ namespace EldeRcon
             InitializeComponent();
 
             // Set the combobox to "Load"
-            cmbLoadExisting.SelectedIndex = 0;
+           // cmbLoadExisting.SelectedIndex = 0;
 
-            // Grab our server list (if it exists)
-            LoadRecentList();
+            
 
             // Create a websocket for the first tab
             WebSocket ws = null;
@@ -78,6 +83,13 @@ namespace EldeRcon
 
             // Set up our teamcolors dictionary
             team_colors = EldewritoJsonAPI.GetTeamColors();
+        }
+
+
+        private void Main_Shown(object sender, EventArgs e)
+        {
+            // Grab our server list (if it exists)
+            LoadServerList(true);
         }
 
         // Send our command to the server
@@ -490,7 +502,7 @@ namespace EldeRcon
                 websockets[tab_index].Send(password);
 
                 // Save the server to the recent list
-                UpdateServerList(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
+                SaveRecentServer(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
 
             };
 
@@ -543,11 +555,19 @@ namespace EldeRcon
                     socket.CloseAsync();
         }
 
-       
+
 
         // Load recent list
-        private void LoadRecentList()
+        private void LoadServerList(bool autoconnect = false)
         {
+            // Remove any existing servers from our lists
+            cmbLoadExisting.Items.Clear();
+            AddToComboBox("Load Existing...");
+            cmbLoadExisting.SelectedIndex = 0;
+
+            server_dictionary = new Dictionary<string, int>();
+            rcon_server_list = new List<rcon_server>();            
+
             // Path
             const string path = @".\servers.csv";
 
@@ -560,6 +580,8 @@ namespace EldeRcon
             csvdata.Delimiters = new string[] { "," };
 
             // Go through the file
+            int line = 0;
+            int num_autoconnects = 0;
             while (true)
             {
                 // Break up row into fields
@@ -569,51 +591,144 @@ namespace EldeRcon
                 if (fields == null)
                     break;
 
-                // Build the base string
-                string server_string = fields[0] + "," + fields[1] + ",";
+                // Add it to our list
+                rcon_server current_server = new rcon_server();
 
-               // Add the PW if we have it
+                // Grab the name
+                string server_name = String.Empty;
+                string server_string = String.Empty; 
+
+                // Old format
                 if (fields.Count() == 3)
-                    server_string += fields[2];
+                {
+                    // Make the name the host:port
+                    server_name = fields[0] + ":" + fields[1];
 
+                    // Old format defaults
+                    current_server.autoconnect = 0;
+                    current_server.nickname = String.Empty;
+
+                    // Copy the other settings
+                    current_server.hostname = fields[0];
+                    current_server.port = Int32.Parse(fields[1]);
+                    current_server.password = fields[2];
+                } 
                 
+                // New format
+                else if (fields.Count() == 5)
+                {
+                    // Copy the name
+                    if (fields[1] != String.Empty)
+                        server_name = fields[1];
+                    else
+                        server_name = fields[2] + ":" + fields[3];
+
+                    // Set our other fields
+                    current_server.autoconnect = Int32.Parse(fields[0]);
+                    current_server.nickname = fields[1];
+                    current_server.hostname = fields[2];
+                    current_server.port = Int32.Parse(fields[3]);
+                    current_server.password = fields[4];
+                }
+
+                // Add the server to our dictionary
+                server_dictionary.Add(server_name, line);
 
                 // Add it to our list
-                AddToComboBox(server_string);
+                rcon_server_list.Add(current_server);
+
+                // Add it to our combobox
+                AddToComboBox(server_name);
+
+                // If we're set to autoconnect, do it now
+                if (autoconnect && current_server.autoconnect == 1)
+                {
+                    // Switch to the "New..." tab if we're past the first tab
+                    if (num_autoconnects > 0)
+                        tabServers.SelectedIndex = new_tab_index;
+
+                    // Change to that entry in the combobox
+                    cmbLoadExisting.SelectedIndex = line + 1;
+
+                    // Increment our # of autoconnects
+                    num_autoconnects++;
+
+                }
+
+                // Increment our index
+                line++;
+            }
+
+            // If we autoconnected, go back to the first tab/combo entry when we're done
+            if (autoconnect)
+            {
+                tabServers.SelectedIndex = 0;
+                cmbLoadExisting.SelectedIndex = 0;
             }
         }
 
 
         // Add this server to our saved list
-        private void UpdateServerList (string hostname, string port, string password, bool save_password)
+        private void SaveRecentServer (string hostname, string port, string password, bool save_password)
         {
-            // Check if it's already on our list
-            if (cmbLoadExisting.Items.Contains(hostname + "," + port + "," + password))
-                return;
-
-            // Check if the no password version is on our list
-            else if (cmbLoadExisting.Items.Contains(hostname + "," + port + ","))
-                if (!save_password) // If we were asked to not save a pasword, we're set
-                    return;
-                else // If we were asked to save the PW this time, remove the old version
-                    RemoveFromComboBox(hostname + "," + port + ",");
+            // Prepare a new rcon server object
+            rcon_server new_server = new rcon_server();
             
-            // Append it to our control
-            if (save_password)
-                AddToComboBox(hostname + "," + port + "," + password);
-            else
-                AddToComboBox(hostname + "," + port + ",");
+            // Check if this item is in our list
+            int existing_index = -1;
+            for (int server_index = 0;server_index < rcon_server_list.Count;server_index++)
+            {
+                // Check for a hostname and port match
+                if (rcon_server_list[server_index].hostname == hostname)
+                {
+                    if (rcon_server_list[server_index].port == Int32.Parse(port))
+                    {
+                        // Check if our saved copy matches the passed checkbox
+                        // If it does, bail out now
+                        if (rcon_server_list[server_index].password == String.Empty && save_password == false)
+                            return;
+                        else if (rcon_server_list[server_index].password != String.Empty && save_password == true)
+                            return;
+                        else // If we got a hostname/port match and we need to update if the password should be stored or not, copy it
+                            existing_index = server_index;
+                    }
+                }
+            }
 
-            // Now we can update our copy on disk
+            // If there were no matches, copy what was passed to us
+            if (existing_index == -1)
+            {
+                // Create our server object
+                new_server.autoconnect = 0;
+                new_server.nickname = String.Empty;
+                new_server.hostname = hostname;
+                new_server.port = Int32.Parse(port);
+
+                // Include the password (if desired)
+                if (save_password)
+                    new_server.password = password;
+                else 
+                    new_server.password = String.Empty;
+
+                // Add it to our list
+                rcon_server_list.Add(new_server);
+            }
+
+            // If we have an existing server, update that entry
+            else
+            {
+                // Include the password (if desired)
+                if (save_password)
+                    rcon_server_list[existing_index].password = password;
+
+                // Erase it if it's already there
+                else
+                    rcon_server_list[existing_index].password = String.Empty;
+            }
+
+            // Update our copy on disk
             // Set our path
             const string logpath = @".\servers.csv";
-
-            // Build our server's csv string
-            string server_string = "\"" + hostname + "\",\"" + port + "\",";
-
-            // Add password (if desired)
-            if (save_password)
-                server_string += "\"" + password + "\"";
 
             // Time to actually write it
             try
@@ -621,36 +736,16 @@ namespace EldeRcon
                 // Write our servers
                 using (StreamWriter sw = File.CreateText(logpath))
                 {
-                    // Go through the combobox
-                    foreach (string server in cmbLoadExisting.Items)
+                    // Go through the list
+                    foreach (rcon_server current_server in rcon_server_list)
                     {
-                        // Skip our dummy entry
-                        if (server == "Load Existing...")
-                            continue;
-                        else
-                        {   // In theory, there's a chance a password will have a comma in it (though I haven't tested this)
-                            // Since the hostname/port can't have commas (or I pray they don't), use them to figure out where the password starts
-
-                            // Split the line up 
-                            string[] server_parts = server.Split(',');
-
-                            // Figure out where the second comma is based on length
-                            int second_comma = server_parts[0].Length + server_parts[1].Length + 2;
-
-                            // Assign our values
-                            string cmb_host = server_parts[0];
-                            string cmb_port = server_parts[1];
-
-                            // If the second comma is at the end of the string, we don't have a password
-                            string cmb_pass = String.Empty;
-                            if (second_comma < server.Length)
-                                cmb_pass = server.Substring(second_comma);
-
-                            // Write it
-                            sw.WriteLine("\"" + cmb_host + "\",\"" + cmb_port + "\",\"" + cmb_pass + "\"");
-                        }
+                        // Write it
+                        sw.WriteLine("\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + current_server.password + "\"");
                     }
                 }
+
+                // Update the combobox
+                LoadServerList();
             }
             catch (Exception write_ex)
             {
@@ -665,18 +760,19 @@ namespace EldeRcon
         {
             // Don't process our built-in item
             if (cmbLoadExisting.SelectedItem.ToString().Contains("Load Existing..."))
-                return;            
+                return;
 
             // Load the fields
-            string[] selected_server = cmbLoadExisting.SelectedItem.ToString().Split(',');
+            string selected_name = cmbLoadExisting.SelectedItem.ToString();
+            rcon_server selected_server = rcon_server_list[cmbLoadExisting.SelectedIndex - 1];// ; server_dictionary[selected_name].Split(',');
 
             // Copy the fields
-            txtHostname.Text = selected_server[0];
-            txtPort.Text = selected_server[1];
-            txtPassword.Text = selected_server[2];
+            txtHostname.Text = selected_server.hostname;
+            txtPort.Text = selected_server.port.ToString();
+            txtPassword.Text = selected_server.password;
 
             // If we have the PW, try to connect now
-            if (selected_server[2] != String.Empty)
+            if (selected_server.password != String.Empty)
                 ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text, tabServers.SelectedIndex);
 
             // If we don't have a PW, uncheck the save box to avoid writing one on accident
@@ -781,7 +877,10 @@ namespace EldeRcon
         {
             // Open the server management form
             Form ServerManager = new Server_List_Manager();
-            ServerManager.ShowDialog();
+            ServerManager.ShowDialog(this);
+
+            // Update the combobox
+            LoadServerList();
         }
 
         // If someone tries to change tabs
@@ -866,6 +965,18 @@ namespace EldeRcon
                 // Switch the LV to that tab's info
                 UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
             }
+        }
+
+
+        // Custom class to hold server information
+        public class rcon_server
+        {
+            public int index;
+            public int autoconnect;
+            public string nickname;
+            public string hostname;
+            public int port;
+            public string password;
         }
     }
 }
