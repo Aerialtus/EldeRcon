@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.txtConsole0 = new System.Windows.Forms.TextBox();
             this.txtCommand = new System.Windows.Forms.TextBox();
@@ -60,8 +61,14 @@
             this.clmAssists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmBetrayals = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmUID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cmsPlayerLV = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.sendMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kickNoBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kickTempBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kickPermaBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
+            this.cmsPlayerLV.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtConsole0
@@ -319,6 +326,7 @@
             this.lvPlayers.TabIndex = 17;
             this.lvPlayers.UseCompatibleStateImageBehavior = false;
             this.lvPlayers.View = System.Windows.Forms.View.Details;
+            this.lvPlayers.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvPlayers_MouseUp);
             // 
             // clmColor
             // 
@@ -353,6 +361,44 @@
             // clmUID
             // 
             this.clmUID.Text = "UID";
+            // 
+            // cmsPlayerLV
+            // 
+            this.cmsPlayerLV.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sendMessageToolStripMenuItem,
+            this.kickNoBanToolStripMenuItem,
+            this.kickTempBanToolStripMenuItem,
+            this.kickPermaBanToolStripMenuItem});
+            this.cmsPlayerLV.Name = "cmsPlayerLV";
+            this.cmsPlayerLV.Size = new System.Drawing.Size(165, 92);
+            // 
+            // sendMessageToolStripMenuItem
+            // 
+            this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.sendMessageToolStripMenuItem.Text = "Send Message";
+            this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
+            // 
+            // kickNoBanToolStripMenuItem
+            // 
+            this.kickNoBanToolStripMenuItem.Name = "kickNoBanToolStripMenuItem";
+            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.kickNoBanToolStripMenuItem.Text = "Kick (No Ban)";
+            this.kickNoBanToolStripMenuItem.Click += new System.EventHandler(this.kickNoBanToolStripMenuItem_Click);
+            // 
+            // kickTempBanToolStripMenuItem
+            // 
+            this.kickTempBanToolStripMenuItem.Name = "kickTempBanToolStripMenuItem";
+            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.kickTempBanToolStripMenuItem.Text = "Kick (Temp Ban)";
+            this.kickTempBanToolStripMenuItem.Click += new System.EventHandler(this.kickTempBanToolStripMenuItem_Click);
+            // 
+            // kickPermaBanToolStripMenuItem
+            // 
+            this.kickPermaBanToolStripMenuItem.Name = "kickPermaBanToolStripMenuItem";
+            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.kickPermaBanToolStripMenuItem.Text = "Kick (Perma Ban)";
+            this.kickPermaBanToolStripMenuItem.Click += new System.EventHandler(this.kickPermaBanToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -390,6 +436,7 @@
             this.tabServers.ResumeLayout(false);
             this.tab0.ResumeLayout(false);
             this.tab0.PerformLayout();
+            this.cmsPlayerLV.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -428,6 +475,11 @@
         private System.Windows.Forms.ColumnHeader clmAssists;
         private System.Windows.Forms.ColumnHeader clmBetrayals;
         private System.Windows.Forms.ColumnHeader clmUID;
+        private System.Windows.Forms.ContextMenuStrip cmsPlayerLV;
+        private System.Windows.Forms.ToolStripMenuItem sendMessageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kickNoBanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kickTempBanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kickPermaBanToolStripMenuItem;
     }
 }
 
