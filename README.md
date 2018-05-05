@@ -2,13 +2,14 @@
 EldeRcon is a simple tool I made to help me admin my [Eldewrito](https://github.com/ElDewrito/ElDorito/) servers. I thought I'd share!
 
 ## So, what does it look like?
-<img src="https://i.imgur.com/ZX1JO4W.png" width="1193" height="634" align="left">
+<img src="https://i.imgur.com/ZX1JO4W.png" width="1193" height="634">
+<img src="https://i.imgur.com/h8oX4Hy.png" width="611" height="310">
+<br />
+<br />
 
 Please keep in mind it doesn't normally look squished and funny like this. I took the screenshot too wide! [Click here for the unsquished version](https://i.imgur.com/ZX1JO4W.png).
 
 The server list manager:
-<img src="https://i.imgur.com/h8oX4Hy.png" width="611" height="310"><br />< br />
-
 
 ## How do I use it?
 Put in the hostname/IP address of your server, the RCON port (look for "Game.RconPort"  in your "dewrito_prefs.cfg"), the password, click Connect, and you're good to go.
