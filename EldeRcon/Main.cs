@@ -56,11 +56,6 @@ namespace EldeRcon
             
             InitializeComponent();
 
-            // Set the combobox to "Load"
-           // cmbLoadExisting.SelectedIndex = 0;
-
-            
-
             // Create a websocket for the first tab
             WebSocket ws = null;
             websockets.Add(ws);
@@ -361,14 +356,6 @@ namespace EldeRcon
                 this.Invoke(new Action<ListViewItem[], int>(UpdatePlayerLV), new object[] { players, tab_index });
                 return;
             }
-
-            // Grab the appropriate tab's LV
-            //string tab_name = "tab" + tab_index.ToString();
-            //string lv_name = "lvPlayers" + tab_index.ToString();
-
-            // Target our lv, which is under a tabcontrol
-            //TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-            //ListView lvPlayers = target_tab.Controls[lv_name] as ListView;
 
             // Prepare the LV
             lvPlayers.BeginUpdate();
@@ -843,16 +830,9 @@ namespace EldeRcon
         // We'll fill in the command and player name in the console
         private void SendMessage(int tab_index)
         {
+            // Bail out if nobody is selected
             if (lvPlayers.SelectedItems.Count == 0)
                 return;
-
-            // Grab the appropriate tab's LV
-           // string tab_name = "tab" + tab_index.ToString();
-            //string lv_name = "lvPlayers" + tab_index.ToString();
-
-            // Target our textbox, which is under a tabcontrol
-            //TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-           // ListView target_lv = target_tab.Controls[lv_name] as ListView;
 
             // Grab our selected row
             ListViewItem row = lvPlayers.SelectedItems[0];
@@ -870,17 +850,9 @@ namespace EldeRcon
         //  2: Perm
         private void KickPlayer(int tab_index, int ban_type)
         {
+            // Bail out if nobody is selected
             if (lvPlayers.SelectedItems.Count == 0)
                 return;
-
-            // Grab the appropriate tab's LV
-            //string tab_name = "tab" + tab_index.ToString();
-            //string lv_name = "lvPlayers" + tab_index.ToString();
-
-            // Target our textbox, which is under a tabcontrol
-            //TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-            //ListView target_lv = target_tab.Controls[lv_name] as ListView;
-            //ListView lvPlayers = this.lvPlayers as ListView;
 
             // Grab our selected row
             ListViewItem row = lvPlayers.SelectedItems[0];
@@ -1048,24 +1020,12 @@ namespace EldeRcon
             }
         }
 
-        private void sendMessageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SendMessage(tabServers.SelectedIndex);
-        }
+        // Tool strip menu equivalents of the buttons
+        private void sendMessageToolStripMenuItem_Click(object sender, EventArgs e) {   SendMessage(tabServers.SelectedIndex) ; }
+        private void kickNoBanToolStripMenuItem_Click(object sender, EventArgs e) {     KickPlayer(tabServers.SelectedIndex, 0); }
+        private void kickTempBanToolStripMenuItem_Click(object sender, EventArgs e) {   KickPlayer(tabServers.SelectedIndex, 1); }
+        private void kickPermaBanToolStripMenuItem_Click(object sender, EventArgs e) {  KickPlayer(tabServers.SelectedIndex, 2); }
 
-        private void kickNoBanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KickPlayer(tabServers.SelectedIndex, 0);
-        }
-
-        private void kickTempBanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KickPlayer(tabServers.SelectedIndex, 1);
-        }
-
-        private void kickPermaBanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KickPlayer(tabServers.SelectedIndex, 2);
-        }
+        
     }
 }
