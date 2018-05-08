@@ -66,6 +66,8 @@
             this.kickNoBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kickTempBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kickPermaBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbTrimChat = new System.Windows.Forms.CheckBox();
+            this.clmScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -80,7 +82,7 @@
             this.txtConsole0.Multiline = true;
             this.txtConsole0.Name = "txtConsole0";
             this.txtConsole0.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtConsole0.Size = new System.Drawing.Size(663, 485);
+            this.txtConsole0.Size = new System.Drawing.Size(638, 462);
             this.txtConsole0.TabIndex = 0;
             // 
             // txtCommand
@@ -198,7 +200,7 @@
             this.tabServers.Location = new System.Drawing.Point(4, 33);
             this.tabServers.Name = "tabServers";
             this.tabServers.SelectedIndex = 0;
-            this.tabServers.Size = new System.Drawing.Size(671, 511);
+            this.tabServers.Size = new System.Drawing.Size(646, 488);
             this.tabServers.TabIndex = 14;
             this.tabServers.SelectedIndexChanged += new System.EventHandler(this.tabServers_SelectedIndexChanged);
             // 
@@ -208,7 +210,7 @@
             this.tab0.Location = new System.Drawing.Point(4, 22);
             this.tab0.Name = "tab0";
             this.tab0.Padding = new System.Windows.Forms.Padding(3);
-            this.tab0.Size = new System.Drawing.Size(663, 485);
+            this.tab0.Size = new System.Drawing.Size(638, 462);
             this.tab0.TabIndex = 0;
             this.tab0.Text = "Server 1";
             this.tab0.UseVisualStyleBackColor = true;
@@ -236,7 +238,7 @@
             // btnKickPermBan
             // 
             this.btnKickPermBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKickPermBan.Location = new System.Drawing.Point(723, 511);
+            this.btnKickPermBan.Location = new System.Drawing.Point(710, 511);
             this.btnKickPermBan.Name = "btnKickPermBan";
             this.btnKickPermBan.Size = new System.Drawing.Size(114, 23);
             this.btnKickPermBan.TabIndex = 21;
@@ -247,7 +249,7 @@
             // btnKickTempBan
             // 
             this.btnKickTempBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKickTempBan.Location = new System.Drawing.Point(723, 482);
+            this.btnKickTempBan.Location = new System.Drawing.Point(710, 482);
             this.btnKickTempBan.Name = "btnKickTempBan";
             this.btnKickTempBan.Size = new System.Drawing.Size(114, 23);
             this.btnKickTempBan.TabIndex = 22;
@@ -258,7 +260,7 @@
             // btnSendMessage
             // 
             this.btnSendMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendMessage.Location = new System.Drawing.Point(723, 404);
+            this.btnSendMessage.Location = new System.Drawing.Point(710, 424);
             this.btnSendMessage.Name = "btnSendMessage";
             this.btnSendMessage.Size = new System.Drawing.Size(114, 23);
             this.btnSendMessage.TabIndex = 23;
@@ -269,7 +271,7 @@
             // btnKick
             // 
             this.btnKick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKick.Location = new System.Drawing.Point(723, 453);
+            this.btnKick.Location = new System.Drawing.Point(710, 453);
             this.btnKick.Name = "btnKick";
             this.btnKick.Size = new System.Drawing.Size(114, 23);
             this.btnKick.TabIndex = 24;
@@ -281,7 +283,7 @@
             // 
             this.lblSeconds0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeconds0.AutoSize = true;
-            this.lblSeconds0.Location = new System.Drawing.Point(813, 381);
+            this.lblSeconds0.Location = new System.Drawing.Point(800, 401);
             this.lblSeconds0.Name = "lblSeconds0";
             this.lblSeconds0.Size = new System.Drawing.Size(50, 13);
             this.lblSeconds0.TabIndex = 20;
@@ -290,7 +292,7 @@
             // txtRefreshSeconds
             // 
             this.txtRefreshSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRefreshSeconds.Location = new System.Drawing.Point(778, 378);
+            this.txtRefreshSeconds.Location = new System.Drawing.Point(765, 398);
             this.txtRefreshSeconds.Name = "txtRefreshSeconds";
             this.txtRefreshSeconds.Size = new System.Drawing.Size(29, 20);
             this.txtRefreshSeconds.TabIndex = 19;
@@ -300,7 +302,7 @@
             // 
             this.lblRefresh0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRefresh0.AutoSize = true;
-            this.lblRefresh0.Location = new System.Drawing.Point(698, 381);
+            this.lblRefresh0.Location = new System.Drawing.Point(685, 401);
             this.lblRefresh0.Name = "lblRefresh0";
             this.lblRefresh0.Size = new System.Drawing.Size(79, 13);
             this.lblRefresh0.TabIndex = 18;
@@ -313,6 +315,7 @@
             this.lvPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clmColor,
             this.clmName,
+            this.clmScore,
             this.clmKills,
             this.clmDeaths,
             this.clmAssists,
@@ -320,9 +323,9 @@
             this.clmUID});
             this.lvPlayers.FullRowSelect = true;
             this.lvPlayers.GridLines = true;
-            this.lvPlayers.Location = new System.Drawing.Point(687, 55);
+            this.lvPlayers.Location = new System.Drawing.Point(656, 55);
             this.lvPlayers.Name = "lvPlayers";
-            this.lvPlayers.Size = new System.Drawing.Size(186, 319);
+            this.lvPlayers.Size = new System.Drawing.Size(217, 319);
             this.lvPlayers.TabIndex = 17;
             this.lvPlayers.UseCompatibleStateImageBehavior = false;
             this.lvPlayers.View = System.Windows.Forms.View.Details;
@@ -371,35 +374,52 @@
             this.kickPermaBanToolStripMenuItem});
             this.cmsPlayerLV.Name = "cmsPlayerLV";
             this.cmsPlayerLV.ShowImageMargin = false;
-            this.cmsPlayerLV.Size = new System.Drawing.Size(156, 114);
+            this.cmsPlayerLV.Size = new System.Drawing.Size(140, 92);
             // 
             // sendMessageToolStripMenuItem
             // 
             this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
-            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.sendMessageToolStripMenuItem.Text = "Send Message";
             this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
             // 
             // kickNoBanToolStripMenuItem
             // 
             this.kickNoBanToolStripMenuItem.Name = "kickNoBanToolStripMenuItem";
-            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickNoBanToolStripMenuItem.Text = "Kick (No Ban)";
             this.kickNoBanToolStripMenuItem.Click += new System.EventHandler(this.kickNoBanToolStripMenuItem_Click);
             // 
             // kickTempBanToolStripMenuItem
             // 
             this.kickTempBanToolStripMenuItem.Name = "kickTempBanToolStripMenuItem";
-            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickTempBanToolStripMenuItem.Text = "Kick (Temp Ban)";
             this.kickTempBanToolStripMenuItem.Click += new System.EventHandler(this.kickTempBanToolStripMenuItem_Click);
             // 
             // kickPermaBanToolStripMenuItem
             // 
             this.kickPermaBanToolStripMenuItem.Name = "kickPermaBanToolStripMenuItem";
-            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickPermaBanToolStripMenuItem.Text = "Kick (Perma Ban)";
             this.kickPermaBanToolStripMenuItem.Click += new System.EventHandler(this.kickPermaBanToolStripMenuItem_Click);
+            // 
+            // cbTrimChat
+            // 
+            this.cbTrimChat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbTrimChat.Checked = true;
+            this.cbTrimChat.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbTrimChat.Location = new System.Drawing.Point(536, 522);
+            this.cbTrimChat.Name = "cbTrimChat";
+            this.cbTrimChat.Size = new System.Drawing.Size(110, 22);
+            this.cbTrimChat.TabIndex = 25;
+            this.cbTrimChat.Text = "Remove UID/IP";
+            this.cbTrimChat.UseVisualStyleBackColor = true;
+            // 
+            // clmScore
+            // 
+            this.clmScore.Text = "S";
+            this.clmScore.Width = 21;
             // 
             // Main
             // 
@@ -407,6 +427,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(879, 579);
+            this.Controls.Add(this.cbTrimChat);
             this.Controls.Add(this.btnKickPermBan);
             this.Controls.Add(this.btnKickTempBan);
             this.Controls.Add(this.btnSendMessage);
@@ -481,6 +502,8 @@
         private System.Windows.Forms.ToolStripMenuItem kickNoBanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kickTempBanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kickPermaBanToolStripMenuItem;
+        private System.Windows.Forms.CheckBox cbTrimChat;
+        private System.Windows.Forms.ColumnHeader clmScore;
     }
 }
 

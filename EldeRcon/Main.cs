@@ -241,7 +241,7 @@ namespace EldeRcon
 
                     //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
 
-                    server_info.players = server_info.players.OrderBy(a => a.team).ThenBy(b => b.kills).ToList();
+                    server_info.players = server_info.players.OrderBy(a => a.team).ThenBy(a => a.score).ToList();
 
 
                     // If we have players, get them ready for the LV
@@ -254,17 +254,18 @@ namespace EldeRcon
                         for (int ctr = 0; ctr < server_info.numPlayers; ctr++)
                         {
                             // Create our array
-                            String[] lv_array = new string[7];
+                            String[] lv_array = new string[8];
 
 
                             // Copy our values into the right players
                             lv_array[0] = String.Empty;
                             lv_array[1] = server_info.players[ctr].name;
-                            lv_array[2] = server_info.players[ctr].kills.ToString();
-                            lv_array[3] = server_info.players[ctr].deaths.ToString();
-                            lv_array[4] = server_info.players[ctr].assists.ToString();
-                            lv_array[5] = server_info.players[ctr].betrayals.ToString();
-                            lv_array[6] = server_info.players[ctr].uid;
+                            lv_array[2] = server_info.players[ctr].score.ToString();
+                            lv_array[3] = server_info.players[ctr].kills.ToString();
+                            lv_array[4] = server_info.players[ctr].deaths.ToString();
+                            lv_array[5] = server_info.players[ctr].assists.ToString();
+                            lv_array[6] = server_info.players[ctr].betrayals.ToString();
+                            lv_array[7] = server_info.players[ctr].uid;
 
                             // Convert that to a LV item
                             ListViewItem row = new ListViewItem(lv_array);
@@ -367,7 +368,7 @@ namespace EldeRcon
             // Resize to fit contents and headers
             lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             //lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            lvPlayers.Columns[6].Width = 0;
+            lvPlayers.Columns[7].Width = 0;
 
             // End the lv work
            lvPlayers.EndUpdate();
@@ -483,12 +484,29 @@ namespace EldeRcon
             // When we get something back, print it
             websockets[tab_index].OnMessage += (sender1, e1) =>
             {
-                // Most of the time, just pass along our response
-                if (e1.Data != "accept")
-                    UpdateConsole(e1.Data, tab_index);
+                // If we got an incoming chat message and we're set to clean those up
+                if (cbTrimChat.Checked && e1.Data.Length > 0 && e1.Data.Substring(0,1).Equals("["))
+                {   
+                    // Confirm it with a ] at 18
+                    if (e1.Data.Substring(18,1).Equals("]"))
+                    {
+                        // Figure out where some of our important points are
+                        // Doing it this way allows for forward slashes in names and messages without breaking the feature
+                        int closing_arrow = e1.Data.IndexOf('>');
+                        int last_slash = e1.Data.LastIndexOf('/',closing_arrow);
+                        int second_last_slash = e1.Data.LastIndexOf('/', last_slash - 1 );
+
+                        // Split it up into parts
+                        string part1 = e1.Data.Substring(0, second_last_slash);
+                        string part2 = e1.Data.Substring(closing_arrow);
+                        
+                        // Print it
+                        UpdateConsole(part1 + part2,tab_index);
+                    }
+                }
 
                 // If we've just authenticated...
-                else
+                else if (e1.Data.Equals("accept"))
                 {
                     // This was a triumph!
                     UpdateConsole("Connected!", tab_index);
@@ -522,7 +540,18 @@ namespace EldeRcon
                     bg_workers[tab_index].RunWorkerAsync(tab_index);
 
                 }
-                
+
+                // If we got a deny
+                else if (e1.Data.Equals("deny"))
+                {
+                    UpdateConsole("Access Denied! Check your settings and try again.",tab_index);
+                }
+
+                // Most of the time, just pass along our response
+                else
+                    UpdateConsole(e1.Data, tab_index);
+
+
             };
 
             // When it's opened, send our password
@@ -539,6 +568,18 @@ namespace EldeRcon
             websockets[tab_index].OnClose += (sender3, e3) =>
             {
                 UpdateConsole("\nDisconnected from server!",tab_index);
+
+
+                // If we do have a nickname, use it
+                string server_name;
+                if (rcon_server_list[tab_index].nickname != String.Empty)
+                    server_name = rcon_server_list[tab_index].nickname;
+
+                // If we don't have a nickname, user the server's name
+                else
+                    server_name = "Server " + tab_index;
+
+                UpdateTabTitle( server_name + ": Disconnected", tab_index);
             };
 
             // Attempt to connect
@@ -875,7 +916,7 @@ namespace EldeRcon
 
                 case 1:
                     kick_prompt = "kick and temporarily ban (for 2 games by default)";
-                    kick_command = "Server.TempBanUid";
+                    kick_command = "Server.KickTempBanUid";
                     break;
 
                 case 2:
