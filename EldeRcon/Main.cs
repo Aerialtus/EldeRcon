@@ -241,7 +241,7 @@ namespace EldeRcon
 
                     //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
 
-                    server_info.players = server_info.players.OrderBy(a => a.team).ThenBy(a => a.score).ToList();
+                    server_info.players = server_info.players.OrderBy(a => a.team).ThenByDescending(a => a.score).ToList();
 
 
                     // If we have players, get them ready for the LV
@@ -900,7 +900,7 @@ namespace EldeRcon
 
             // Figure out the identity of our player
             string player_name = row.SubItems[1].Text;
-            string player_uid = row.SubItems[6].Text;
+            string player_uid = row.SubItems[7].Text;
 
             // Prepare our ban prompt/command
             string kick_prompt = null;
