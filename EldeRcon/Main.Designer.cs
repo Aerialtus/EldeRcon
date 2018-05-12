@@ -46,16 +46,13 @@
             this.tab0 = new System.Windows.Forms.TabPage();
             this.tabNew = new System.Windows.Forms.TabPage();
             this.btnManage = new System.Windows.Forms.Button();
-            this.btnKickPermBan = new System.Windows.Forms.Button();
-            this.btnKickTempBan = new System.Windows.Forms.Button();
-            this.btnSendMessage = new System.Windows.Forms.Button();
-            this.btnKick = new System.Windows.Forms.Button();
             this.lblSeconds0 = new System.Windows.Forms.Label();
             this.txtRefreshSeconds = new System.Windows.Forms.TextBox();
             this.lblRefresh0 = new System.Windows.Forms.Label();
             this.lvPlayers = new System.Windows.Forms.ListView();
             this.clmColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmKills = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmDeaths = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmAssists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -67,7 +64,15 @@
             this.kickTempBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kickPermaBanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbTrimChat = new System.Windows.Forms.CheckBox();
-            this.clmScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnEndGame = new System.Windows.Forms.Button();
+            this.btnShuffle = new System.Windows.Forms.Button();
+            this.lvTeamScore = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnReloadVotingJson = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -220,7 +225,7 @@
             this.tabNew.Location = new System.Drawing.Point(4, 22);
             this.tabNew.Name = "tabNew";
             this.tabNew.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNew.Size = new System.Drawing.Size(663, 485);
+            this.tabNew.Size = new System.Drawing.Size(638, 462);
             this.tabNew.TabIndex = 1;
             this.tabNew.Text = "New...";
             this.tabNew.UseVisualStyleBackColor = true;
@@ -235,55 +240,11 @@
             this.btnManage.UseVisualStyleBackColor = true;
             this.btnManage.Click += new System.EventHandler(this.btnManage_Click);
             // 
-            // btnKickPermBan
-            // 
-            this.btnKickPermBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKickPermBan.Location = new System.Drawing.Point(710, 511);
-            this.btnKickPermBan.Name = "btnKickPermBan";
-            this.btnKickPermBan.Size = new System.Drawing.Size(114, 23);
-            this.btnKickPermBan.TabIndex = 21;
-            this.btnKickPermBan.Text = "Kick + Perma Ban";
-            this.btnKickPermBan.UseVisualStyleBackColor = true;
-            this.btnKickPermBan.Click += new System.EventHandler(this.btnKickPermBan_Click);
-            // 
-            // btnKickTempBan
-            // 
-            this.btnKickTempBan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKickTempBan.Location = new System.Drawing.Point(710, 482);
-            this.btnKickTempBan.Name = "btnKickTempBan";
-            this.btnKickTempBan.Size = new System.Drawing.Size(114, 23);
-            this.btnKickTempBan.TabIndex = 22;
-            this.btnKickTempBan.Text = "Kick + Temp Ban";
-            this.btnKickTempBan.UseVisualStyleBackColor = true;
-            this.btnKickTempBan.Click += new System.EventHandler(this.btnKickTempBan_Click);
-            // 
-            // btnSendMessage
-            // 
-            this.btnSendMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendMessage.Location = new System.Drawing.Point(710, 424);
-            this.btnSendMessage.Name = "btnSendMessage";
-            this.btnSendMessage.Size = new System.Drawing.Size(114, 23);
-            this.btnSendMessage.TabIndex = 23;
-            this.btnSendMessage.Text = "Send Priv. Message";
-            this.btnSendMessage.UseVisualStyleBackColor = true;
-            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
-            // 
-            // btnKick
-            // 
-            this.btnKick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKick.Location = new System.Drawing.Point(710, 453);
-            this.btnKick.Name = "btnKick";
-            this.btnKick.Size = new System.Drawing.Size(114, 23);
-            this.btnKick.TabIndex = 24;
-            this.btnKick.Text = "Kick (No Ban)";
-            this.btnKick.UseVisualStyleBackColor = true;
-            this.btnKick.Click += new System.EventHandler(this.btnKick_Click);
-            // 
             // lblSeconds0
             // 
             this.lblSeconds0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeconds0.AutoSize = true;
-            this.lblSeconds0.Location = new System.Drawing.Point(800, 401);
+            this.lblSeconds0.Location = new System.Drawing.Point(796, 525);
             this.lblSeconds0.Name = "lblSeconds0";
             this.lblSeconds0.Size = new System.Drawing.Size(50, 13);
             this.lblSeconds0.TabIndex = 20;
@@ -292,7 +253,7 @@
             // txtRefreshSeconds
             // 
             this.txtRefreshSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRefreshSeconds.Location = new System.Drawing.Point(765, 398);
+            this.txtRefreshSeconds.Location = new System.Drawing.Point(761, 522);
             this.txtRefreshSeconds.Name = "txtRefreshSeconds";
             this.txtRefreshSeconds.Size = new System.Drawing.Size(29, 20);
             this.txtRefreshSeconds.TabIndex = 19;
@@ -302,7 +263,7 @@
             // 
             this.lblRefresh0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRefresh0.AutoSize = true;
-            this.lblRefresh0.Location = new System.Drawing.Point(685, 401);
+            this.lblRefresh0.Location = new System.Drawing.Point(681, 525);
             this.lblRefresh0.Name = "lblRefresh0";
             this.lblRefresh0.Size = new System.Drawing.Size(79, 13);
             this.lblRefresh0.TabIndex = 18;
@@ -340,6 +301,11 @@
             // 
             this.clmName.Text = "Name";
             this.clmName.Width = 90;
+            // 
+            // clmScore
+            // 
+            this.clmScore.Text = "S";
+            this.clmScore.Width = 21;
             // 
             // clmKills
             // 
@@ -416,10 +382,84 @@
             this.cbTrimChat.Text = "Remove UID/IP";
             this.cbTrimChat.UseVisualStyleBackColor = true;
             // 
-            // clmScore
+            // btnEndGame
             // 
-            this.clmScore.Text = "S";
-            this.clmScore.Width = 21;
+            this.btnEndGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEndGame.Location = new System.Drawing.Point(798, 494);
+            this.btnEndGame.Name = "btnEndGame";
+            this.btnEndGame.Size = new System.Drawing.Size(75, 23);
+            this.btnEndGame.TabIndex = 26;
+            this.btnEndGame.Text = "End Game";
+            this.btnEndGame.UseVisualStyleBackColor = true;
+            this.btnEndGame.Click += new System.EventHandler(this.btnEndGame_Click);
+            // 
+            // btnShuffle
+            // 
+            this.btnShuffle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShuffle.Location = new System.Drawing.Point(798, 397);
+            this.btnShuffle.Name = "btnShuffle";
+            this.btnShuffle.Size = new System.Drawing.Size(75, 23);
+            this.btnShuffle.TabIndex = 27;
+            this.btnShuffle.Text = "Shuffle";
+            this.btnShuffle.UseVisualStyleBackColor = true;
+            this.btnShuffle.Click += new System.EventHandler(this.btnShuffle_Click);
+            // 
+            // lvTeamScore
+            // 
+            this.lvTeamScore.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.lvTeamScore.GridLines = true;
+            this.lvTeamScore.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvTeamScore.Location = new System.Drawing.Point(656, 397);
+            this.lvTeamScore.MultiSelect = false;
+            this.lvTeamScore.Name = "lvTeamScore";
+            this.lvTeamScore.Scrollable = false;
+            this.lvTeamScore.Size = new System.Drawing.Size(118, 74);
+            this.lvTeamScore.TabIndex = 29;
+            this.lvTeamScore.UseCompatibleStateImageBehavior = false;
+            this.lvTeamScore.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "   ";
+            this.columnHeader1.Width = 23;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "";
+            this.columnHeader2.Width = 25;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "   ";
+            this.columnHeader3.Width = 23;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "";
+            this.columnHeader4.Width = 25;
+            // 
+            // btnReloadVotingJson
+            // 
+            this.btnReloadVotingJson.Location = new System.Drawing.Point(798, 426);
+            this.btnReloadVotingJson.Name = "btnReloadVotingJson";
+            this.btnReloadVotingJson.Size = new System.Drawing.Size(75, 23);
+            this.btnReloadVotingJson.TabIndex = 30;
+            this.btnReloadVotingJson.Text = "RL Voting";
+            this.btnReloadVotingJson.UseVisualStyleBackColor = true;
+            this.btnReloadVotingJson.Click += new System.EventHandler(this.btnReloadVotingJson_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(653, 380);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.TabIndex = 31;
+            this.label1.Text = "Team Scores:";
             // 
             // Main
             // 
@@ -427,11 +467,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(879, 579);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnReloadVotingJson);
+            this.Controls.Add(this.lvTeamScore);
+            this.Controls.Add(this.btnShuffle);
+            this.Controls.Add(this.btnEndGame);
             this.Controls.Add(this.cbTrimChat);
-            this.Controls.Add(this.btnKickPermBan);
-            this.Controls.Add(this.btnKickTempBan);
-            this.Controls.Add(this.btnSendMessage);
-            this.Controls.Add(this.btnKick);
             this.Controls.Add(this.lblSeconds0);
             this.Controls.Add(this.txtRefreshSeconds);
             this.Controls.Add(this.lblRefresh0);
@@ -482,10 +523,6 @@
         private System.Windows.Forms.TabPage tab0;
         private System.Windows.Forms.TabPage tabNew;
         private System.Windows.Forms.Button btnManage;
-        private System.Windows.Forms.Button btnKickPermBan;
-        private System.Windows.Forms.Button btnKickTempBan;
-        private System.Windows.Forms.Button btnSendMessage;
-        private System.Windows.Forms.Button btnKick;
         private System.Windows.Forms.Label lblSeconds0;
         private System.Windows.Forms.TextBox txtRefreshSeconds;
         private System.Windows.Forms.Label lblRefresh0;
@@ -504,6 +541,15 @@
         private System.Windows.Forms.ToolStripMenuItem kickPermaBanToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbTrimChat;
         private System.Windows.Forms.ColumnHeader clmScore;
+        private System.Windows.Forms.Button btnEndGame;
+        private System.Windows.Forms.Button btnShuffle;
+        private System.Windows.Forms.ListView lvTeamScore;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.Button btnReloadVotingJson;
+        private System.Windows.Forms.Label label1;
     }
 }
 

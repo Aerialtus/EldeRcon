@@ -20,22 +20,29 @@ By default, it will save servers you've connected to in a "servers.csv" file. If
 
 If you have "Server.SendChatToRconClients" enabled in your "dewrito_prefs.cfg", you'll see player chat on the server.
 
-The program attempts to connect to your server's HTTP port to get detailed player activity. It will indicate player or team color depending on the mode. Please note that I've only tested this on my team servers so far.
+The program attempts to connect to your server's HTTP port to get detailed player activity. It will indicate player or team color depending on the mode. If you right click on a player, you can send them a PM (it prepares the command in the bottom box), kick them, or kick and ban them.
 
 Click on the "New..." tab to open a tab that lets you connect to another server inside the same window.
 
 Click on the "Manage" button near the top left corner to use the "Server Manager", which lets you easily add multiple servers and set some of them to automatically connect at program startup.
 
+I'm working on buttons (or similar) for simple commands that might be useful to have quick access to. Please send any suggestions though the issue tracker.
+
 ## How do I not use it?
 There's plenty of code that expects your port to be a number and could very well crash the program if you don't put in a number. I'll fix this at some point, but in the meantime, make sure your ports are numbers!
 
 ## What other tools do you know of?
-Pauwlo has written a web based tool over at https://eldewrito.pauwlo.fr/rcon . If web management is your thing or you want something more elaborate that what's here, you should definitely check it out!
+
+Desktop:
+* HORC: http://download.magicbennie.com/HaloOnline/HORC
+* RconTool: https://github.com/jaron780/RconTool
+
+Web:
+* Pauwlo: https://eldewrito.pauwlo.fr/rcon 
 
 ## What's next?
 In no particular order, I'd like to:
-* Add buttons for common game commands. 
-* Server list file protection
+* Add buttons (or some other simple method) for common game commands. 
+* Server list file protection (not a high priority right now).
 * Highlight server tabs with new messages?
-* Hide UIDs/IPs from incoming chat messages (on by default?)
 * Learn not to fail at git ;)

@@ -30,8 +30,9 @@ namespace EldeRcon
         // Hold our tab passwords for BG commands
         List<SecureString> passwords = new List<SecureString>();
 
-        // Hold our player LV arrays
+        // Hold our LV arrays
         List<ListViewItem[]> player_lv_items = new List<ListViewItem[]>();
+        List<ListViewItem[]> teamscore_lv_items = new List<ListViewItem[]>();
 
         // Hold servers
         List<rcon_server> rcon_server_list;
@@ -78,7 +79,9 @@ namespace EldeRcon
 
             // Create an empty player list for the tab
             ListViewItem[] players = new ListViewItem[0];
+            ListViewItem[] scores = new ListViewItem[0];
             player_lv_items.Add(players);
+            teamscore_lv_items.Add(scores);
 
             // Set up our teamcolors dictionary
             team_colors = EldewritoJsonAPI.GetTeamColors();
@@ -92,6 +95,11 @@ namespace EldeRcon
             // https://stackoverflow.com/a/15268338
             var doubleBufferPropertyInfo = lvPlayers.GetType().GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
             doubleBufferPropertyInfo.SetValue(lvPlayers, true, null);
+
+            // Prevents flickering in team score LV by enabling doublebuffering through reflection
+            // https://stackoverflow.com/a/15268338
+            doubleBufferPropertyInfo = lvTeamScore.GetType().GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            doubleBufferPropertyInfo.SetValue(lvTeamScore, true, null);
 
             // Grab our server list (if it exists)
             LoadServerList(true);
@@ -239,8 +247,8 @@ namespace EldeRcon
                     UpdateTabTitle(tab_label, tab_index);
 
 
-                    //server_info.players = server_info.players.OrderBy(o => o.team).ToList();
-
+                    
+                    // Sort
                     server_info.players = server_info.players.OrderBy(a => a.team).ThenByDescending(a => a.score).ToList();
 
 
@@ -249,6 +257,7 @@ namespace EldeRcon
                     {
                         // Set up an array of LV items
                         ListViewItem[] players = new ListViewItem[server_info.numPlayers];
+                        ListViewItem[] scores = new ListViewItem[8];
 
                         // Go through each player
                         for (int ctr = 0; ctr < server_info.numPlayers; ctr++)
@@ -287,28 +296,99 @@ namespace EldeRcon
                             players[ctr] = row;
                         }
 
+                        // Team scores LV!
+                        if (server_info.teams)
+                        {
+                            // Send an empty array to clear the list out
+                            scores = new ListViewItem[0];
+                            //Dictionary<int, int> teamscores = new Dictionary<int, int>();
+                            List<teamscore> teamscores = new List<teamscore>();
+                            
+                            // Add the scores to the dictionary
+                            for (int ctr = 0; ctr < 8; ctr++)
+                            {
+                                // Create a teamscore
+                                teamscore current_team = new teamscore();
+
+                                // Add our properties
+                                current_team.team_num = ctr;
+
+                                // Check if we can find a single team member
+                                var team_member = server_info.players.Find(a => a.team == ctr);
+
+                                // Empty teams have a score of -1
+                                if (team_member == null)// || current_team.team_score == -1)
+                                    current_team.team_score = -1;
+                                else
+                                    current_team.team_score = Int32.Parse(server_info.teamScores[ctr]);
+
+                                // Add it to the list
+                                teamscores.Add(current_team);
+                            }
+
+                            // Sort 
+                            // https://stackoverflow.com/questions/3062513/how-can-i-sort-generic-list-desc-and-asc#3062524
+                            teamscores.Sort(); // descending sort
+                            
+                            // create lv array
+                            scores = new ListViewItem[4];
+
+                            // Prepare our rows
+                            ListViewItem row1 = new ListViewItem();
+                                row1.UseItemStyleForSubItems = false;
+                            ListViewItem row2 = new ListViewItem();
+                                row2.UseItemStyleForSubItems = false;
+                            ListViewItem row3 = new ListViewItem();
+                                row3.UseItemStyleForSubItems = false;
+                            ListViewItem row4 = new ListViewItem();
+                                row4.UseItemStyleForSubItems = false;
+
+                            // Put our stuff in our cells
+                            row1 = BuildTwoColumnTeamScore(teamscores, 0, 4);
+                            row2 = BuildTwoColumnTeamScore(teamscores, 1, 5);
+                            row3 = BuildTwoColumnTeamScore(teamscores, 2, 6);
+                            row4 = BuildTwoColumnTeamScore(teamscores, 3, 7);
+
+
+                            // Add the rows to the array
+                            scores[0] = row1;
+                            scores[1] = row2;
+                            scores[2] = row3;
+                            scores[3] = row4;
+                        }
+                        else
+                        {
+                            // Send an empty array to clear the list out
+                            scores = new ListViewItem[0];
+                        }
+
                         // If we're the current tab, update now
                         if (selected_tab_index == tab_index)
                         {
                             UpdatePlayerLV(players, tab_index);
+                            UpdateScoreLV(scores, tab_index);
                         }
 
                         // Update the stored info regardless
                         player_lv_items[tab_index] = players;
+                        teamscore_lv_items[tab_index] = scores;
                     }
                     else
                     {
                         // Send an empty array to clear the list out
                         ListViewItem[] players = new ListViewItem[0];
+                        ListViewItem[] scores = new ListViewItem[0];
 
                         // If this is the active tab, update the lv now
                         if (selected_tab_index == tab_index)
                         {
                             UpdatePlayerLV(players, tab_index);
+                            UpdateScoreLV(scores, tab_index);
                         }
 
                         // Update the stored info regardless
                         player_lv_items[tab_index] = players;
+                        teamscore_lv_items[tab_index] = players;
                     }
 
                         
@@ -343,6 +423,32 @@ namespace EldeRcon
                }*/
         }
 
+        // Function to construct a 2 column team score LV item
+        private ListViewItem BuildTwoColumnTeamScore(List<teamscore> teamscores, int team1, int team2)
+        {
+            // Create the LV item
+            String[] lv_row = new String[4];
+            ListViewItem row = new ListViewItem(lv_row);
+                row.UseItemStyleForSubItems = false;
+
+            // Assemble the row
+            if (teamscores[team1].team_score != -1)
+            {
+                row.SubItems[0].BackColor = ColorTranslator.FromHtml("#" + team_colors[teamscores[team1].team_num]);
+                row.SubItems[1].Text = teamscores[team1].team_score.ToString();
+            }
+            if (teamscores[team2].team_score != -1)
+            {
+                row.SubItems[2].BackColor = ColorTranslator.FromHtml("#" + team_colors[teamscores[team2].team_num]);
+                row.SubItems[3].Text = teamscores[team2].team_score.ToString();
+            }
+
+            // Send it back
+            return row;
+
+        }
+
+
         // Invoke function for our player listview
             private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
         {
@@ -373,6 +479,52 @@ namespace EldeRcon
             // End the lv work
            lvPlayers.EndUpdate();
         }
+
+        // Invoke function for our score listview
+        private void UpdateScoreLV(ListViewItem[] team_scores, int tab_index)
+        {
+
+            // Bail out if the form is closing
+            if (form_closing)
+                return;
+
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<ListViewItem[], int>(UpdateScoreLV), new object[] { team_scores, tab_index });
+                return;
+            }
+
+            // If there are no teams or scores, clear/hide the LV
+            if (team_scores.Count() == 0)
+            {
+                lvTeamScore.Items.Clear();
+                lvTeamScore.Enabled = false;
+            }
+            else
+            {
+                // Enable
+                lvTeamScore.Enabled = true;
+
+                // Prepare the LV
+                lvTeamScore.BeginUpdate();
+                lvTeamScore.Items.Clear();
+
+                // Add our items
+                lvTeamScore.Items.AddRange(team_scores);
+
+                // Resize to fit contents and headers
+                lvTeamScore.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //lvPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                //lvPlayers.Columns[7].Width = 0;
+
+                // End the lv work
+                lvTeamScore.EndUpdate();
+            }
+
+        }
+
+
 
         // Invoke function for our console
         private void UpdateConsole(string text_to_append,int target_console)
@@ -502,6 +654,12 @@ namespace EldeRcon
                         
                         // Print it
                         UpdateConsole(part1 + part2,tab_index);
+                    }
+
+                    // If the message that started with a bracket doesn't appear to be a time message, print it as is
+                    else
+                    {
+                        UpdateConsole(e1.Data,tab_index);
                     }
                 }
 
@@ -1015,6 +1173,8 @@ namespace EldeRcon
                 // Create an empty player list for the tab
                 ListViewItem[] players = new ListViewItem[0];
                 player_lv_items.Add(players);
+                ListViewItem[] scores = new ListViewItem[0];
+                teamscore_lv_items.Add(scores);
 
                 // Increment our new tab index
                 // Incrementing before activating prevents this function from firing again
@@ -1035,6 +1195,7 @@ namespace EldeRcon
 
                 // Switch the LV to that tab's info
                 UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
+                UpdateScoreLV(teamscore_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
             }
         }
 
@@ -1066,6 +1227,65 @@ namespace EldeRcon
         private void kickNoBanToolStripMenuItem_Click(object sender, EventArgs e) {     KickPlayer(tabServers.SelectedIndex, 0); }
         private void kickTempBanToolStripMenuItem_Click(object sender, EventArgs e) {   KickPlayer(tabServers.SelectedIndex, 1); }
         private void kickPermaBanToolStripMenuItem_Click(object sender, EventArgs e) {  KickPlayer(tabServers.SelectedIndex, 2); }
+
+        private void btnShuffle_Click(object sender, EventArgs e)
+        {
+            // Only send if we have a command AND an open connection
+            if (websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+            {
+                // Send the command
+                websockets[tabServers.SelectedIndex].Send("Server.ShuffleTeams");
+                //ws.Send(txtCommand.Text.Trim());
+
+                // Print our command in the console
+                UpdateConsole("\nServer.ShuffleTeams", tabServers.SelectedIndex);
+            }
+        }
+
+        private void btnEndGame_Click(object sender, EventArgs e)
+        {
+            // Only send if we have a command AND an open connection
+            if (websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+            {
+                // Send the command
+                websockets[tabServers.SelectedIndex].Send("Game.Stop");
+                //ws.Send(txtCommand.Text.Trim());
+
+                // Print our command in the console
+                UpdateConsole("\nGame.Stop", tabServers.SelectedIndex);
+            }
+        }
+
+        private void btnReloadVotingJson_Click(object sender, EventArgs e)
+        {
+            // Only send if we have a command AND an open connection
+            if (websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+            {
+                // Send the command
+                websockets[tabServers.SelectedIndex].Send("Server.ReloadVotingJson");
+                //ws.Send(txtCommand.Text.Trim());
+
+                // Print our command in the console
+                UpdateConsole("\nServer.ReloadVotingJson", tabServers.SelectedIndex);
+            }
+        }
+
+        // Custom class to hold contacts, users, and group information
+        // http://stackoverflow.com/questions/4188013/how-to-implement-icomparable-interface#4188041
+        public class teamscore: IComparable<teamscore>
+        {
+            public int team_num;
+            public int team_score;
+
+            // Define how we want comparisons (such as sort) to work
+            public int CompareTo(teamscore that)
+            {
+                // When sorting, do it by name
+                if (this.team_score > that.team_score) return -1;
+                if (this.team_score == that.team_score) return 0;
+                return 1;
+            }
+        }
 
         
     }
