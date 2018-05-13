@@ -253,7 +253,7 @@ namespace EldeRcon
 
 
                     // If we have players, get them ready for the LV
-                    if (server_info.players != null)
+                    if (server_info.players.Count > 0)
                     {
                         // Set up an array of LV items
                         ListViewItem[] players = new ListViewItem[server_info.numPlayers];
@@ -1186,12 +1186,15 @@ namespace EldeRcon
             }
             else
             {
+
+
                 // Store the index for our BG threads
                 selected_tab_index = tabServers.SelectedIndex;
 
                 // Send an empty array to clear the list out
-                ListViewItem[] players = new ListViewItem[0];
-                UpdatePlayerLV(players, tabServers.SelectedIndex);
+                // Probably not needed anymore
+                //ListViewItem[] players = new ListViewItem[0];
+                //UpdatePlayerLV(players, tabServers.SelectedIndex);
 
                 // Switch the LV to that tab's info
                 UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);

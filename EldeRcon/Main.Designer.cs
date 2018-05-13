@@ -406,6 +406,7 @@
             // 
             // lvTeamScore
             // 
+            this.lvTeamScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lvTeamScore.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -430,7 +431,7 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "";
-            this.columnHeader2.Width = 25;
+            this.columnHeader2.Width = 33;
             // 
             // columnHeader3
             // 
@@ -440,10 +441,11 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "";
-            this.columnHeader4.Width = 25;
+            this.columnHeader4.Width = 33;
             // 
             // btnReloadVotingJson
             // 
+            this.btnReloadVotingJson.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnReloadVotingJson.Location = new System.Drawing.Point(798, 426);
             this.btnReloadVotingJson.Name = "btnReloadVotingJson";
             this.btnReloadVotingJson.Size = new System.Drawing.Size(75, 23);
@@ -454,6 +456,7 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(653, 380);
             this.label1.Name = "label1";
