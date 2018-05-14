@@ -249,8 +249,10 @@ namespace EldeRcon
 
                     
                     // Sort
-                    server_info.players = server_info.players.OrderBy(a => a.team).ThenByDescending(a => a.score).ToList();
-
+                    if (server_info.teams)
+                        server_info.players = server_info.players.OrderBy(a => a.team).ThenByDescending(a => a.score).ToList();
+                    else
+                        server_info.players = server_info.players.OrderByDescending(a => a.score).ToList();
 
                     // If we have players, get them ready for the LV
                     if (server_info.players.Count > 0)
