@@ -51,6 +51,9 @@ namespace EldeRcon
 
         // Stop our asyncs from trying to write fields when we're trying to close
         bool form_closing = false;
+
+        // Flag to not refresh the player LV if we're in the right click menu
+        bool playerLV_cmsOpen = false;
         
         public Main()
         {
@@ -85,6 +88,8 @@ namespace EldeRcon
 
             // Set up our teamcolors dictionary
             team_colors = EldewritoJsonAPI.GetTeamColors();
+
+           
         }
 
 
@@ -465,6 +470,9 @@ namespace EldeRcon
                 this.Invoke(new Action<ListViewItem[], int>(UpdatePlayerLV), new object[] { players, tab_index });
                 return;
             }
+
+            if (playerLV_cmsOpen)
+                return;
 
             // Prepare the LV
             lvPlayers.BeginUpdate();
@@ -1039,6 +1047,9 @@ namespace EldeRcon
             ListViewItem row = lvPlayers.SelectedItems[0];
             string player_name = row.SubItems[1].Text;
 
+            // Force an update
+            UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
+
             // Set up the PM command
             txtCommand.Text = "Server.PM " + player_name + " \"   \"";
             txtCommand.Focus();
@@ -1062,6 +1073,9 @@ namespace EldeRcon
             string player_name = row.SubItems[1].Text;
             string player_uid = row.SubItems[7].Text;
 
+            // Force an update after we unpaused
+            UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
+
             // Prepare our ban prompt/command
             string kick_prompt = null;
             string kick_command = null;
@@ -1081,7 +1095,7 @@ namespace EldeRcon
 
                 case 2:
                     kick_prompt = "kick and permanently ban";
-                    kick_command = "Server.BanUid";
+                    kick_command = "Server.KickBanUid";
                     break;
             }
 
@@ -1222,8 +1236,9 @@ namespace EldeRcon
             // Based on: http://stackoverflow.com/questions/1718389/right-click-context-menu-for-datagridview
             if (e.Button == MouseButtons.Right)
             {
-                // Show our menu
+                // Show our menu                
                 cmsPlayerLV.Show(lvPlayers, new Point(e.X, e.Y));
+               
             }
         }
 
@@ -1292,6 +1307,16 @@ namespace EldeRcon
             }
         }
 
-        
+        // Disable LV updates while the right click menu is open
+        private void cmsPlayerLV_Opening(object sender, CancelEventArgs e)
+        {
+            playerLV_cmsOpen = true;
+        }
+
+        // Re-enable player LV updates after and force an update immediately
+        private void cmsPlayerLV_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            playerLV_cmsOpen = false;
+        }
     }
 }

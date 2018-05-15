@@ -340,33 +340,35 @@
             this.kickPermaBanToolStripMenuItem});
             this.cmsPlayerLV.Name = "cmsPlayerLV";
             this.cmsPlayerLV.ShowImageMargin = false;
-            this.cmsPlayerLV.Size = new System.Drawing.Size(140, 92);
+            this.cmsPlayerLV.Size = new System.Drawing.Size(156, 114);
+            this.cmsPlayerLV.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.cmsPlayerLV_Closing);
+            this.cmsPlayerLV.Opening += new System.ComponentModel.CancelEventHandler(this.cmsPlayerLV_Opening);
             // 
             // sendMessageToolStripMenuItem
             // 
             this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
-            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.sendMessageToolStripMenuItem.Text = "Send Message";
             this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
             // 
             // kickNoBanToolStripMenuItem
             // 
             this.kickNoBanToolStripMenuItem.Name = "kickNoBanToolStripMenuItem";
-            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.kickNoBanToolStripMenuItem.Text = "Kick (No Ban)";
             this.kickNoBanToolStripMenuItem.Click += new System.EventHandler(this.kickNoBanToolStripMenuItem_Click);
             // 
             // kickTempBanToolStripMenuItem
             // 
             this.kickTempBanToolStripMenuItem.Name = "kickTempBanToolStripMenuItem";
-            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.kickTempBanToolStripMenuItem.Text = "Kick (Temp Ban)";
             this.kickTempBanToolStripMenuItem.Click += new System.EventHandler(this.kickTempBanToolStripMenuItem_Click);
             // 
             // kickPermaBanToolStripMenuItem
             // 
             this.kickPermaBanToolStripMenuItem.Name = "kickPermaBanToolStripMenuItem";
-            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.kickPermaBanToolStripMenuItem.Text = "Kick (Perma Ban)";
             this.kickPermaBanToolStripMenuItem.Click += new System.EventHandler(this.kickPermaBanToolStripMenuItem_Click);
             // 
