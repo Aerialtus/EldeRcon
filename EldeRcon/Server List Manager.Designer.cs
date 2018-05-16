@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Server_List_Manager));
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
@@ -185,6 +186,7 @@
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Server_List_Manager";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Server List Manager";
