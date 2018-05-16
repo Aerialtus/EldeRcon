@@ -43,6 +43,9 @@ namespace EldeRcon
         // Color by number
         Dictionary<int, string> team_colors;
 
+        // Track which server is connected in which tab
+        List<rcon_server> server_tabs = new List<rcon_server>();
+
         // Store the index of our "New..." tab, since clicking on that makes a new one
         int new_tab_index = 1;
 
@@ -54,10 +57,10 @@ namespace EldeRcon
 
         // Flag to not refresh the player LV if we're in the right click menu
         bool playerLV_cmsOpen = false;
-        
+
         public Main()
         {
-            
+
             InitializeComponent();
 
             // Create a websocket for the first tab
@@ -76,6 +79,10 @@ namespace EldeRcon
             SecureString pw = null;
             passwords.Add(pw);
 
+            // Create a server entry for the tab
+            rcon_server server = new rcon_server();
+            server_tabs.Add(server);
+
             // Create a bgresults string for our first tab
             String str = null;
             bg_command_results.Add(str);
@@ -89,7 +96,7 @@ namespace EldeRcon
             // Set up our teamcolors dictionary
             team_colors = EldewritoJsonAPI.GetTeamColors();
 
-           
+
         }
 
 
@@ -129,7 +136,7 @@ namespace EldeRcon
         }
 
         // Function to send a command and process the response in the background
-        private void SendBGCommand(string command,int tab_index)
+        private void SendBGCommand(string command, int tab_index)
         {
 
             // Copy the hostname/port we need from the main websocket for that tab
@@ -144,7 +151,7 @@ namespace EldeRcon
             catch
             {   // Happens with bad port #s and other oddities
                 UpdateConsole("Error creating bg websocket. Please check your hostname/port!", tab_index);
-                return;  
+                return;
             }
 
 
@@ -186,40 +193,40 @@ namespace EldeRcon
             int tab_index = Int32.Parse(e.Argument.ToString());
 
             //try
-           // {
-                // Blank out our bg result
-                bg_command_results[tab_index] = null;
+            // {
+            // Blank out our bg result
+            bg_command_results[tab_index] = null;
 
-                // Send our command
-                SendBGCommand("Server.Port", tab_index);
+            // Send our command
+            SendBGCommand("Server.Port", tab_index);
 
-                // Wait for our result
-                while (bg_command_results[tab_index] == null)
-                {
-                    // Wait between checks
-                    System.Threading.Thread.Sleep(100);
-                }
+            // Wait for our result
+            while (bg_command_results[tab_index] == null)
+            {
+                // Wait between checks
+                System.Threading.Thread.Sleep(100);
+            }
 
-                // Copy the port
-                int port = Int32.Parse(bg_command_results[tab_index]);
+            // Copy the port
+            int port = Int32.Parse(bg_command_results[tab_index]);
 
-                // Copy the hostname we need from the main websocket for that tab
-                string hostname = websockets[tab_index].Url.Host;
+            // Copy the hostname we need from the main websocket for that tab
+            string hostname = websockets[tab_index].Url.Host;
 
-                // Figure out which control to read refresh time from
-                // Build the tab/console names
-                string tab_name = "tab" + tab_index.ToString();
-                string console_name = "txtRefreshSeconds";// + tab_index.ToString();
+            // Figure out which control to read refresh time from
+            // Build the tab/console names
+            string tab_name = "tab" + tab_index.ToString();
+            string console_name = "txtRefreshSeconds";// + tab_index.ToString();
 
-                // Target our textbox, which is under a tabcontrol
-                TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
-                TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
+            // Target our textbox, which is under a tabcontrol
+            TabPage target_tab = tabServers.Controls[tab_name] as TabPage;
+            TextBox target_textbox = target_tab.Controls[console_name] as TextBox;
 
-                // If we're not supposed to stop
-                while (bg_workers[tab_index].CancellationPending == false)
-                {
-                    // Ask the server for more detailed information
-                    var server_info = EldewritoJsonAPI.GetServerInfo(hostname, port);
+            // If we're not supposed to stop
+            while (bg_workers[tab_index].CancellationPending == false)
+            {
+                // Ask the server for more detailed information
+                var server_info = EldewritoJsonAPI.GetServerInfo(hostname, port);
 
                 // If we get a real response back
                 if (server_info != null)
@@ -228,17 +235,17 @@ namespace EldeRcon
                     string tab_label = null;
                     string server_name;
 
-                    
+
                     // If we do have a nickname, use it
-                    if (rcon_server_list[tab_index].nickname != String.Empty)
-                        server_name = rcon_server_list[tab_index].nickname;
+                    if (server_tabs[tab_index].nickname.IsNullOrEmpty())
+                        server_name = server_tabs[tab_index].nickname;
 
                     // If we don't have a nickname, user the server's name
                     else
                         server_name = server_info.name;
-                   
 
-                    
+
+
                     if (server_info.status == "InLobby")
                     {
                         tab_label = server_name + ": In Lobby " + server_info.numPlayers + "/" + server_info.maxPlayers;
@@ -247,12 +254,12 @@ namespace EldeRcon
                     {
                         tab_label = server_name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
                     }
-                    
+
                     // Update the tab's title
                     UpdateTabTitle(tab_label, tab_index);
 
 
-                    
+
                     // Sort
                     if (server_info.teams)
                         server_info.players = server_info.players.OrderBy(a => a.team).ThenByDescending(a => a.score).ToList();
@@ -310,7 +317,7 @@ namespace EldeRcon
                             scores = new ListViewItem[0];
                             //Dictionary<int, int> teamscores = new Dictionary<int, int>();
                             List<teamscore> teamscores = new List<teamscore>();
-                            
+
                             // Add the scores to the dictionary
                             for (int ctr = 0; ctr < 8; ctr++)
                             {
@@ -336,19 +343,19 @@ namespace EldeRcon
                             // Sort 
                             // https://stackoverflow.com/questions/3062513/how-can-i-sort-generic-list-desc-and-asc#3062524
                             teamscores.Sort(); // descending sort
-                            
+
                             // create lv array
                             scores = new ListViewItem[4];
 
                             // Prepare our rows
                             ListViewItem row1 = new ListViewItem();
-                                row1.UseItemStyleForSubItems = false;
+                            row1.UseItemStyleForSubItems = false;
                             ListViewItem row2 = new ListViewItem();
-                                row2.UseItemStyleForSubItems = false;
+                            row2.UseItemStyleForSubItems = false;
                             ListViewItem row3 = new ListViewItem();
-                                row3.UseItemStyleForSubItems = false;
+                            row3.UseItemStyleForSubItems = false;
                             ListViewItem row4 = new ListViewItem();
-                                row4.UseItemStyleForSubItems = false;
+                            row4.UseItemStyleForSubItems = false;
 
                             // Put our stuff in our cells
                             row1 = BuildTwoColumnTeamScore(teamscores, 0, 4);
@@ -398,7 +405,7 @@ namespace EldeRcon
                         teamscore_lv_items[tab_index] = players;
                     }
 
-                        
+
                 }
 
 
@@ -410,24 +417,24 @@ namespace EldeRcon
                 // Sleep it off!
                 System.Threading.Thread.Sleep(1000 * wait_time);
             }
-                /*}
+            /*}
 
-               catch (Exception update_ex)
-               {
-                   // If something goes wrong, at least report it
+           catch (Exception update_ex)
+           {
+               // If something goes wrong, at least report it
 
-                   // Build the error
-                   ListViewItem sad_row = new ListViewItem();
-                   sad_row.Text = "Unable to connect or process HTTP json";
+               // Build the error
+               ListViewItem sad_row = new ListViewItem();
+               sad_row.Text = "Unable to connect or process HTTP json";
 
-                   // Add it to our standard lv arrangement
-                   ListViewItem[] lv = new ListViewItem[1];
-                   lv[0] = sad_row;
+               // Add it to our standard lv arrangement
+               ListViewItem[] lv = new ListViewItem[1];
+               lv[0] = sad_row;
 
-                   // Copy it to our multi-tab lv list
-                   player_lv_items[tab_index] = lv;
+               // Copy it to our multi-tab lv list
+               player_lv_items[tab_index] = lv;
 
-               }*/
+           }*/
         }
 
         // Function to construct a 2 column team score LV item
@@ -436,7 +443,7 @@ namespace EldeRcon
             // Create the LV item
             String[] lv_row = new String[4];
             ListViewItem row = new ListViewItem(lv_row);
-                row.UseItemStyleForSubItems = false;
+            row.UseItemStyleForSubItems = false;
 
             // Assemble the row
             if (teamscores[team1].team_score != -1)
@@ -455,9 +462,46 @@ namespace EldeRcon
 
         }
 
+        // Clear the combobox from a thread
+        private void ClearComboBox()
+        {
+
+            // Bail out if the form is closing
+            if (form_closing)
+                return;
+
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action(ClearComboBox), new object[] { });
+                return;
+            }
+
+            cmbLoadExisting.Items.Clear();
+        }
+
+        // Set the combobox item from a thread?
+        // Not sure if we need this
+        private void SetComboBoxIndex(int index)
+        {
+
+            // Bail out if the form is closing
+            if (form_closing)
+                return;
+
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(SetComboBoxIndex), new object[] { index });
+                return;
+            }
+
+            // Set the index
+            cmbLoadExisting.SelectedIndex = index; 
+    }
 
         // Invoke function for our player listview
-            private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
+        private void UpdatePlayerLV (ListViewItem[] players, int tab_index)
         {
 
             // Bail out if the form is closing
@@ -628,13 +672,13 @@ namespace EldeRcon
 
 
         // Connect to the server async 
-        private void ConnectToServer (string hostname,int port,string password,int tab_index)
+        private void ConnectToServer (rcon_server server,int tab_index,bool from_combobox)
         {
             // Create the socket
             try
             {
                 // Prepare the socket
-                websockets[tabServers.SelectedIndex] = new WebSocket("ws://" + hostname + ":" + port, "dew-rcon");
+                websockets[tabServers.SelectedIndex] = new WebSocket("ws://" + server.hostname + ":" + server.port, "dew-rcon");
                 UpdateTabTitle("Connecting...", tab_index);
             }
             catch
@@ -682,7 +726,7 @@ namespace EldeRcon
                     // Securely hold the pw in memory
                     passwords[tab_index] = null;
                     SecureString sec_password = new SecureString();
-                    foreach (char c in txtPassword.Text)
+                    foreach (char c in server.password)
                         sec_password.AppendChar(c);
                     
 
@@ -700,6 +744,9 @@ namespace EldeRcon
                             System.Threading.Thread.Sleep(50);
                         
                     }
+
+                    // Store the tab's server info in our list
+                    server_tabs[tab_index] = server;
 
                     // Start our new background worker
                     bg_workers[tab_index] = new BackgroundWorker();
@@ -726,10 +773,12 @@ namespace EldeRcon
             websockets[tab_index].OnOpen += (sender2, e2) =>
             {
                 // The password has to be our first line to the server
-                websockets[tab_index].Send(password);
+                websockets[tab_index].Send(server.password);
 
                 // Save the server to the recent list
-                SaveRecentServer(txtHostname.Text, txtPort.Text, txtPassword.Text, cbSavePass.Checked);
+                // Only save it if we didn't come from the combobox, which means it's already been saved
+                if (!from_combobox)
+                    SaveRecentServer(server.hostname,server.port.ToString(),server.password, cbSavePass.Checked);
 
             };
 
@@ -753,7 +802,7 @@ namespace EldeRcon
             // Attempt to connect
             try
             {
-                UpdateConsole("\nConnecting to " + hostname + ":" + port + "...", tab_index);
+                UpdateConsole("\nConnecting to " + server.hostname + ":" + server.port + "...", tab_index);
 
                 // Use Async to not freeze up if we time out
                 websockets[tabServers.SelectedIndex].ConnectAsync();
@@ -779,9 +828,16 @@ namespace EldeRcon
             // Close the existing connection if needed
             if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
                     websockets[tabServers.SelectedIndex].Close();
-                        
+
+            // Create a server object to connect to
+            rcon_server server_to_connect_to = new rcon_server();
+            server_to_connect_to.hostname = txtHostname.Text;
+            server_to_connect_to.port = Int32.Parse(txtPort.Text);
+            server_to_connect_to.password = txtPassword.Text;
+
+
             // Do it live!
-            ConnectToServer(txtHostname.Text,Int32.Parse(txtPort.Text),txtPassword.Text, tabServers.SelectedIndex);
+            ConnectToServer(server_to_connect_to, tabServers.SelectedIndex,false);
             
         }
 
@@ -807,9 +863,10 @@ namespace EldeRcon
         private void LoadServerList(bool autoconnect = false)
         {
             // Remove any existing servers from our lists
-            cmbLoadExisting.Items.Clear();
+            //            cmbLoadExisting.Items.Clear();
+            ClearComboBox();
             AddToComboBox("Load Existing...");
-            cmbLoadExisting.SelectedIndex = 0;
+            SetComboBoxIndex(0);
 
             server_dictionary = new Dictionary<string, int>();
             rcon_server_list = new List<rcon_server>();            
@@ -977,8 +1034,8 @@ namespace EldeRcon
             const string logpath = @".\servers.csv";
 
             // Time to actually write it
-            try
-            {
+           // try
+           //{
                 // Write our servers
                 using (StreamWriter sw = File.CreateText(logpath))
                 {
@@ -992,12 +1049,12 @@ namespace EldeRcon
 
                 // Update the combobox
                 LoadServerList();
-            }
-            catch (Exception write_ex)
-            {
-                MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
-                return;
-            }
+            //}
+           // catch (Exception write_ex)
+           //{
+            //    MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
+            //    return;
+            //}
 
         }
 
@@ -1009,17 +1066,17 @@ namespace EldeRcon
                 return;
 
             // Load the fields
-            string selected_name = cmbLoadExisting.SelectedItem.ToString();
+            //string selected_name = cmbLoadExisting.SelectedItem.ToString();
             rcon_server selected_server = rcon_server_list[cmbLoadExisting.SelectedIndex - 1];// ; server_dictionary[selected_name].Split(',');
 
             // Copy the fields
-            txtHostname.Text = selected_server.hostname;
-            txtPort.Text = selected_server.port.ToString();
-            txtPassword.Text = selected_server.password;
+            //txtHostname.Text = selected_server.hostname;
+            //txtPort.Text = selected_server.port.ToString();
+            //txtPassword.Text = selected_server.password;
 
             // If we have the PW, try to connect now
             if (selected_server.password != String.Empty)
-                ConnectToServer(txtHostname.Text, Int32.Parse(txtPort.Text), txtPassword.Text, tabServers.SelectedIndex);
+                ConnectToServer(selected_server,tabServers.SelectedIndex,true);
 
             // If we don't have a PW, uncheck the save box to avoid writing one on accident
             else
@@ -1185,6 +1242,10 @@ namespace EldeRcon
                 // Create a bgresults string for our tab
                 String str = null;
                 bg_command_results.Add(str);
+
+                // Create a server entry for the tab
+                rcon_server server = new rcon_server();
+                server_tabs.Add(server);
 
                 // Create an empty player list for the tab
                 ListViewItem[] players = new ListViewItem[0];
