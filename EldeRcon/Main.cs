@@ -1034,8 +1034,8 @@ namespace EldeRcon
             const string logpath = @".\servers.csv";
 
             // Time to actually write it
-           // try
-           //{
+           try
+           {
                 // Write our servers
                 using (StreamWriter sw = File.CreateText(logpath))
                 {
@@ -1049,12 +1049,12 @@ namespace EldeRcon
 
                 // Update the combobox
                 LoadServerList();
-            //}
-           // catch (Exception write_ex)
-           //{
-            //    MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
-            //    return;
-            //}
+           }
+           catch (Exception write_ex)
+           {
+                MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
+                return;
+           }
 
         }
 
