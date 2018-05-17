@@ -237,7 +237,7 @@ namespace EldeRcon
 
 
                     // If we do have a nickname, use it
-                    if (server_tabs[tab_index].nickname.IsNullOrEmpty())
+                    if (!server_tabs[tab_index].nickname.IsNullOrEmpty())
                         server_name = server_tabs[tab_index].nickname;
 
                     // If we don't have a nickname, user the server's name
@@ -674,6 +674,11 @@ namespace EldeRcon
         // Connect to the server async 
         private void ConnectToServer (rcon_server server,int tab_index,bool from_combobox)
         {
+
+            // Close the existing connection if needed
+            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+                websockets[tabServers.SelectedIndex].Close();
+
             // Create the socket
             try
             {
@@ -823,18 +828,12 @@ namespace EldeRcon
         // Connect!
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            
-
-            // Close the existing connection if needed
-            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
-                    websockets[tabServers.SelectedIndex].Close();
 
             // Create a server object to connect to
             rcon_server server_to_connect_to = new rcon_server();
             server_to_connect_to.hostname = txtHostname.Text;
             server_to_connect_to.port = Int32.Parse(txtPort.Text);
             server_to_connect_to.password = txtPassword.Text;
-
 
             // Do it live!
             ConnectToServer(server_to_connect_to, tabServers.SelectedIndex,false);
@@ -1064,6 +1063,8 @@ namespace EldeRcon
             // Don't process our built-in item
             if (cmbLoadExisting.SelectedItem.ToString().Contains("Load Existing..."))
                 return;
+
+           
 
             // Load the fields
             //string selected_name = cmbLoadExisting.SelectedItem.ToString();
