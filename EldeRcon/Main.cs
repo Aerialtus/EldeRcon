@@ -197,6 +197,12 @@ namespace EldeRcon
             // Blank out our bg result
             bg_command_results[tab_index] = null;
 
+            // Blank out our current mode
+            //server_tabs[tab_index].current_map_mode = null;
+
+            // Blank the player list
+            //server_tabs[tab_index].players = null
+
             // Send our command
             SendBGCommand("Server.Port", tab_index);
 
@@ -245,15 +251,104 @@ namespace EldeRcon
                         server_name = server_info.name;
 
 
-
+                    // Build the tab label
+                    string current_mode;
+                    const string lobby_mode = "Entering the Lobby";
                     if (server_info.status == "InLobby")
                     {
                         tab_label = server_name + ": In Lobby " + server_info.numPlayers + "/" + server_info.maxPlayers;
+                        current_mode = lobby_mode;
                     }
                     else
                     {
                         tab_label = server_name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
+                        current_mode = "Game Started: " + server_info.map + " - " + server_info.variant;
                     }
+
+
+                    // If we're reporting joins/leaves, compare the current/last list
+                    // https://stackoverflow.com/a/3944816
+                    // When we first connect, we don't have a player list to compare to yet (check for null)
+                    if (cbReportJoinsLeaves.Checked && server_tabs[tab_index].players != null)
+                    {
+                        // Flag to see if we had to report
+                        bool user_change = false;
+
+                        // Get the time
+                        string time = DateTime.Now.ToUniversalTime().ToString("MM/dd/yy HH:mm:ss");
+
+
+
+                        // If we have anyone to report, insert a space before and after
+                        //if (leavers.Count() > 0 || new_friends.Count() > 0)
+                        //    UpdateConsole("", tab_index);
+
+                        // Check who has left
+                        var leavers = server_tabs[tab_index].players.Where(p => !server_info.players.Any(p2 => p2.name == p.name));
+
+                        // Report
+                        foreach (player leaver in leavers)
+                        {
+                            if (!leaver.name.IsNullOrEmpty())
+                            {
+                                UpdateConsole("[" + time + "] " + leaver.name + " has left the server.", tab_index);
+                                user_change = true;
+                            }
+                        }
+
+                        // If we have players in the server...
+                        if (server_info.players.Count > 0)
+                        { 
+                            // ...Check who has arrived
+                            var new_friends = server_info.players.Where(p => !server_tabs[tab_index].players.Any(p2 => p2.name == p.name));
+
+                            // Report
+                            foreach (player friend in new_friends)
+                            {
+                                if (!friend.name.IsNullOrEmpty())
+                                {
+                                    UpdateConsole("[" + time + "] " + friend.name + " has joined the server.", tab_index);
+                                    user_change = true;
+                                }
+
+                            }
+                        }
+                        // If we have anyone to report, insert a space before and after
+                        //if (user_change)
+                         //   UpdateConsole("", tab_index);
+                    }
+
+                    // Copy the server's player list
+                    server_tabs[tab_index].players = server_info.players;
+
+
+                    // Check if it's a new game or if a game has ended
+                    // If so, print it in chat (if desired)
+                    if (server_tabs[tab_index].current_map_mode != current_mode)
+                    {
+                        // Hold on to our previous status
+                        //string prev_status = server_tabs[tab_index].current_map_mode;
+
+                        // Update our stored state regardless of the checkbox
+                        server_tabs[tab_index].current_map_mode = current_mode;
+
+                        // If we came from the lobby, skip the first mode update to avoid a loading bug where the variant hasn't switched yet
+                        //if (prev_status == lobby_mode)
+                        //    return;
+
+
+                        // If we wanted a report, include it
+                        if (cbReportGameChange.Checked)
+                        {
+                            // https://blog.nicholasrogoff.com/2012/05/05/c-datetime-tostring-formats-quick-reference/
+                            string time = DateTime.Now.ToUniversalTime().ToString("MM/dd/yy HH:mm:ss");
+
+                            UpdateConsole("",tab_index);
+                            UpdateConsole("[" + time + "] " + current_mode, tab_index);
+                            UpdateConsole("", tab_index);
+                        }
+                    }
+
 
                     // Update the tab's title
                     UpdateTabTitle(tab_label, tab_index);
@@ -1290,6 +1385,8 @@ namespace EldeRcon
             public string hostname;
             public int port;
             public string password;
+            public string current_map_mode = null;
+            public List<player> players = null;
         }
 
         private void lvPlayers_MouseUp(object sender, MouseEventArgs e)

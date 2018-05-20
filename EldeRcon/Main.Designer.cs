@@ -73,6 +73,8 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnReloadVotingJson = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.cbReportGameChange = new System.Windows.Forms.CheckBox();
+            this.cbReportJoinsLeaves = new System.Windows.Forms.CheckBox();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -340,35 +342,35 @@
             this.kickPermaBanToolStripMenuItem});
             this.cmsPlayerLV.Name = "cmsPlayerLV";
             this.cmsPlayerLV.ShowImageMargin = false;
-            this.cmsPlayerLV.Size = new System.Drawing.Size(156, 114);
+            this.cmsPlayerLV.Size = new System.Drawing.Size(140, 92);
             this.cmsPlayerLV.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.cmsPlayerLV_Closing);
             this.cmsPlayerLV.Opening += new System.ComponentModel.CancelEventHandler(this.cmsPlayerLV_Opening);
             // 
             // sendMessageToolStripMenuItem
             // 
             this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
-            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.sendMessageToolStripMenuItem.Text = "Send Message";
             this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
             // 
             // kickNoBanToolStripMenuItem
             // 
             this.kickNoBanToolStripMenuItem.Name = "kickNoBanToolStripMenuItem";
-            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickNoBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickNoBanToolStripMenuItem.Text = "Kick (No Ban)";
             this.kickNoBanToolStripMenuItem.Click += new System.EventHandler(this.kickNoBanToolStripMenuItem_Click);
             // 
             // kickTempBanToolStripMenuItem
             // 
             this.kickTempBanToolStripMenuItem.Name = "kickTempBanToolStripMenuItem";
-            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickTempBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickTempBanToolStripMenuItem.Text = "Kick (Temp Ban)";
             this.kickTempBanToolStripMenuItem.Click += new System.EventHandler(this.kickTempBanToolStripMenuItem_Click);
             // 
             // kickPermaBanToolStripMenuItem
             // 
             this.kickPermaBanToolStripMenuItem.Name = "kickPermaBanToolStripMenuItem";
-            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kickPermaBanToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.kickPermaBanToolStripMenuItem.Text = "Kick (Perma Ban)";
             this.kickPermaBanToolStripMenuItem.Click += new System.EventHandler(this.kickPermaBanToolStripMenuItem_Click);
             // 
@@ -466,6 +468,30 @@
             this.label1.TabIndex = 31;
             this.label1.Text = "Team Scores:";
             // 
+            // cbReportGameChange
+            // 
+            this.cbReportGameChange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbReportGameChange.Checked = true;
+            this.cbReportGameChange.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbReportGameChange.Location = new System.Drawing.Point(389, 522);
+            this.cbReportGameChange.Name = "cbReportGameChange";
+            this.cbReportGameChange.Size = new System.Drawing.Size(138, 22);
+            this.cbReportGameChange.TabIndex = 25;
+            this.cbReportGameChange.Text = "Report Game Changes";
+            this.cbReportGameChange.UseVisualStyleBackColor = true;
+            // 
+            // cbReportJoinsLeaves
+            // 
+            this.cbReportJoinsLeaves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbReportJoinsLeaves.Checked = true;
+            this.cbReportJoinsLeaves.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbReportJoinsLeaves.Location = new System.Drawing.Point(256, 522);
+            this.cbReportJoinsLeaves.Name = "cbReportJoinsLeaves";
+            this.cbReportJoinsLeaves.Size = new System.Drawing.Size(127, 22);
+            this.cbReportJoinsLeaves.TabIndex = 25;
+            this.cbReportJoinsLeaves.Text = "Report Joins/Leaves";
+            this.cbReportJoinsLeaves.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
@@ -477,6 +503,8 @@
             this.Controls.Add(this.lvTeamScore);
             this.Controls.Add(this.btnShuffle);
             this.Controls.Add(this.btnEndGame);
+            this.Controls.Add(this.cbReportJoinsLeaves);
+            this.Controls.Add(this.cbReportGameChange);
             this.Controls.Add(this.cbTrimChat);
             this.Controls.Add(this.lblSeconds0);
             this.Controls.Add(this.txtRefreshSeconds);
@@ -555,6 +583,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Button btnReloadVotingJson;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox cbReportGameChange;
+        private System.Windows.Forms.CheckBox cbReportJoinsLeaves;
     }
 }
 
