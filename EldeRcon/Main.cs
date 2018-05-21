@@ -262,7 +262,7 @@ namespace EldeRcon
                     else
                     {
                         tab_label = server_name + ": " + server_info.map + " - " + server_info.variant + " " + server_info.numPlayers + "/" + server_info.maxPlayers;
-                        current_mode = "Game Started: " + server_info.map + " - " + server_info.variant;
+                        current_mode = "Currently Playing: " + server_info.map + " - " + server_info.variant;
                     }
 
 
