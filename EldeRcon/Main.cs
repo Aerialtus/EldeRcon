@@ -12,6 +12,7 @@ using Microsoft.VisualBasic.FileIO;
 using System.IO;
 using System.Security;
 using System.Reflection;
+using System.Threading;
 
 namespace EldeRcon
 {
@@ -216,9 +217,18 @@ namespace EldeRcon
             // Copy the port
             int port = Int32.Parse(bg_command_results[tab_index]);
 
+            // Add that port to our server's connection string
+            rcon_server_list[tab_index].connect_string += rcon_server_list[tab_index].hostname + ":" + port.ToString();
+            
+            // Set that if we're in the current tab
+            if (selected_tab_index == tab_index)
+            {
+                SetConnectText(rcon_server_list[tab_index].connect_string);
+            }
+
             // Copy the hostname we need from the main websocket for that tab
             string hostname = websockets[tab_index].Url.Host;
-
+            
             // Figure out which control to read refresh time from
             // Build the tab/console names
             string tab_name = "tab" + tab_index.ToString();
@@ -573,6 +583,24 @@ namespace EldeRcon
             }
 
             cmbLoadExisting.Items.Clear();
+        }
+
+        // Set the connect command text from a thread
+        private void SetConnectText(string text_to_set)
+        {
+
+            // Bail out if the form is closing
+            if (form_closing)
+                return;
+
+            // Invoke if needed
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(SetConnectText), new object[] { text_to_set });
+                return;
+            }
+
+            txtConnectCommand.Text = text_to_set;
         }
 
         // Set the combobox item from a thread?
@@ -1370,6 +1398,7 @@ namespace EldeRcon
                 //UpdatePlayerLV(players, tabServers.SelectedIndex);
 
                 // Switch the LV to that tab's info
+                txtConnectCommand.Text = rcon_server_list[tabServers.SelectedIndex].connect_string;
                 UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
                 UpdateScoreLV(teamscore_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
             }
@@ -1387,6 +1416,7 @@ namespace EldeRcon
             public string password;
             public string current_map_mode = null;
             public List<player> players = null;
+            public string connect_string = "Server.Connect ";
         }
 
         private void lvPlayers_MouseUp(object sender, MouseEventArgs e)
@@ -1423,6 +1453,13 @@ namespace EldeRcon
 
         private void btnEndGame_Click(object sender, EventArgs e)
         {
+            // Confirm first
+            DialogResult result = MessageBox.Show("Are you sure you want to end this game?", "EldeRcon",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Bail out if we didn't get a yes
+            if (result != DialogResult.Yes)
+                return;
+
             // Only send if we have a command AND an open connection
             if (websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
             {
@@ -1477,5 +1514,25 @@ namespace EldeRcon
         {
             playerLV_cmsOpen = false;
         }
+
+        // We need to have a special type of thread to put stuff on the clipboard
+        // This spawns the thread
+        // https://stackoverflow.com/a/13977171
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            Thread clipboardThread = new Thread(CopyText);
+            clipboardThread.SetApartmentState(ApartmentState.STA);
+            clipboardThread.IsBackground = false;
+            clipboardThread.Start();
+        }
+
+        // This is the thread
+        public void CopyText()
+        {
+            // Copy the connection string to the clipboard
+            System.Windows.Forms.Clipboard.SetText(rcon_server_list[selected_tab_index].connect_string);
+        }
+
+
     }
 }
