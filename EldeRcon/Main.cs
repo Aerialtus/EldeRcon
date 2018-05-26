@@ -1523,6 +1523,11 @@ namespace EldeRcon
             // Only half understand how this works, but it's way more reliable
             new SetClipboardHelper(DataFormats.Text, rcon_server_list[selected_tab_index].connect_string).Go();
 
+            // Show confirmation that we copied
+            // https://stackoverflow.com/a/11885952
+            ToolTip tt = new ToolTip();
+            IWin32Window win = this;
+            tt.Show("Copied!", btnCopy);
         }
 
         // Goes with StaHelper to copy stuff to the clipboard
