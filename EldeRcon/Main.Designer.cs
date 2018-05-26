@@ -498,7 +498,7 @@
             // txtConnectCommand
             // 
             this.txtConnectCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConnectCommand.Location = new System.Drawing.Point(656, 534);
+            this.txtConnectCommand.Location = new System.Drawing.Point(656, 529);
             this.txtConnectCommand.Name = "txtConnectCommand";
             this.txtConnectCommand.Size = new System.Drawing.Size(168, 20);
             this.txtConnectCommand.TabIndex = 32;
@@ -507,7 +507,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(653, 518);
+            this.label2.Location = new System.Drawing.Point(653, 513);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 13);
             this.label2.TabIndex = 33;
@@ -516,7 +516,7 @@
             // btnCopy
             // 
             this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCopy.Location = new System.Drawing.Point(831, 532);
+            this.btnCopy.Location = new System.Drawing.Point(831, 527);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(42, 23);
             this.btnCopy.TabIndex = 34;

@@ -744,8 +744,8 @@ namespace EldeRcon
             // Invoke if needed
             if (InvokeRequired)
             {
-                this.Invoke(new Action<string,int>(UpdateTabTitle), new object[] { title_text, tab_index });
-                return;
+                this.Invoke(new Action<string, int>(UpdateTabTitle), new object[] { title_text, tab_index });
+                return;              
             }
 
             // Figure out which tab we need to update
@@ -1530,7 +1530,20 @@ namespace EldeRcon
         public void CopyText()
         {
             // Copy the connection string to the clipboard
-            System.Windows.Forms.Clipboard.SetText(rcon_server_list[selected_tab_index].connect_string);
+            // Sometimes this fails for odd reasons, so catch it and try again until it works
+            // Horrible, but I'm not sure what to do better that isn't worse
+            while (true)
+            {
+                try
+                {
+                    Clipboard.SetText(rcon_server_list[selected_tab_index].connect_string);
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(100);
+                }
+            }
         }
 
 
