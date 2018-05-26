@@ -1520,32 +1520,32 @@ namespace EldeRcon
         // https://stackoverflow.com/a/13977171
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            Thread clipboardThread = new Thread(CopyText);
-            clipboardThread.SetApartmentState(ApartmentState.STA);
-            clipboardThread.IsBackground = false;
-            clipboardThread.Start();
+            // Only half understand how this works, but it's way more reliable
+            new SetClipboardHelper(DataFormats.Text, rcon_server_list[selected_tab_index].connect_string).Go();
+
         }
 
-        // This is the thread
-        public void CopyText()
+        // Goes with StaHelper to copy stuff to the clipboard
+        class SetClipboardHelper : StaHelper
         {
-            // Copy the connection string to the clipboard
-            // Sometimes this fails for odd reasons, so catch it and try again until it works
-            // Horrible, but I'm not sure what to do better that isn't worse
-            while (true)
+            readonly string _format;
+            readonly object _data;
+
+            public SetClipboardHelper(string format, object data)
             {
-                try
-                {
-                    Clipboard.SetText(rcon_server_list[selected_tab_index].connect_string);
-                    break;
-                }
-                catch
-                {
-                    Thread.Sleep(100);
-                }
+                _format = format;
+                _data = data;
+            }
+
+            protected override void Work()
+            {
+                var obj = new System.Windows.Forms.DataObject(
+                    _format,
+                    _data
+                );
+
+                Clipboard.SetDataObject(obj, true);
             }
         }
-
-
     }
 }

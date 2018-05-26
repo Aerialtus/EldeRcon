@@ -74,6 +74,7 @@
     <Compile Include="Server List Manager.Designer.cs">
       <DependentUpon>Server List Manager.cs</DependentUpon>
     </Compile>
+    <Compile Include="StaHelper.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
