@@ -218,7 +218,7 @@ namespace EldeRcon
             int port = Int32.Parse(bg_command_results[tab_index]);
 
             // Add that port to our server's connection string
-            rcon_server_list[tab_index].connect_string += rcon_server_list[tab_index].hostname + ":" + port.ToString();
+            rcon_server_list[tab_index].connect_string = "Server.Connect " + rcon_server_list[tab_index].hostname + ":" + port.ToString();
             
             // Set that if we're in the current tab
             if (selected_tab_index == tab_index)
@@ -1416,7 +1416,7 @@ namespace EldeRcon
             public string password;
             public string current_map_mode = null;
             public List<player> players = null;
-            public string connect_string = "Server.Connect ";
+            public string connect_string = null;
         }
 
         private void lvPlayers_MouseUp(object sender, MouseEventArgs e)
