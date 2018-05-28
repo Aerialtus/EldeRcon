@@ -78,6 +78,8 @@
             this.txtConnectCommand = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnCopy = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -230,7 +232,7 @@
             this.tabNew.Location = new System.Drawing.Point(4, 22);
             this.tabNew.Name = "tabNew";
             this.tabNew.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNew.Size = new System.Drawing.Size(638, 462);
+            this.tabNew.Size = new System.Drawing.Size(638, 495);
             this.tabNew.TabIndex = 1;
             this.tabNew.Text = "New...";
             this.tabNew.UseVisualStyleBackColor = true;
@@ -524,12 +526,30 @@
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1, 559);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(38, 13);
+            this.label3.TabIndex = 35;
+            this.label3.Text = "Name:";
+            // 
+            // txtName
+            // 
+            this.txtName.Location = new System.Drawing.Point(41, 556);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(134, 20);
+            this.txtName.TabIndex = 36;
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(879, 612);
+            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtConnectCommand);
@@ -623,6 +643,8 @@
         private System.Windows.Forms.TextBox txtConnectCommand;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnCopy;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtName;
     }
 }
 

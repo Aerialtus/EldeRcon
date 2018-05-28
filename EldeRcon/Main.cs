@@ -124,8 +124,32 @@ namespace EldeRcon
             // Only send if we have a command AND an open connection
             if (txtCommand.Text.Trim() != String.Empty && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
             {
-                // Send the command
-                websockets[tabServers.SelectedIndex].Send(txtCommand.Text.Trim());
+                // Split the command up
+                string[] split_command = txtCommand.Text.Trim().Split(' ');
+                
+
+                // Intercept say commands to put our name in them
+                if (!txtName.Text.IsNullOrEmpty() && split_command[0].ToLower() == "say" || split_command[0].ToLower() == "server.say")
+                {
+                    split_command[0] = "say " + txtName.Text.Trim() + ": ";
+
+                    string command = null;
+
+                    foreach (string part in split_command)
+                    {
+                        command += " " + part;
+                    }
+
+                    // Send the command
+                    websockets[tabServers.SelectedIndex].Send(command.Trim());
+                }
+                else
+                {
+                    // Send the command
+                    websockets[tabServers.SelectedIndex].Send(txtCommand.Text.Trim());
+                }
+
+                
                 //ws.Send(txtCommand.Text.Trim());
 
                 // Print our command in the console
@@ -1232,7 +1256,12 @@ namespace EldeRcon
             UpdatePlayerLV(player_lv_items[tabServers.SelectedIndex], tabServers.SelectedIndex);
 
             // Set up the PM command
-            txtCommand.Text = "Server.PM " + player_name + " \"   \"";
+            if (txtName.Text.IsNullOrEmpty())
+                txtCommand.Text = "Server.PM " + player_name + " \"   \"";
+            else
+                txtCommand.Text = "Server.PM " + player_name + " \"" + txtName.Text.Trim() + ": \"";
+
+            // FOCUS
             txtCommand.Focus();
         }
 
