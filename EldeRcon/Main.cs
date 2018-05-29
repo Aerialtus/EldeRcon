@@ -64,6 +64,9 @@ namespace EldeRcon
 
             InitializeComponent();
 
+            // Load our saved name from disk
+            LoadName();
+
             // Create a websocket for the first tab
             WebSocket ws = null;
             websockets.Add(ws);
@@ -991,7 +994,7 @@ namespace EldeRcon
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
             form_closing = true;
-
+            
             foreach (BackgroundWorker bw in bg_workers)
                 if (bw != null && bw.IsBusy)
                     bw.CancelAsync();
@@ -1001,6 +1004,7 @@ namespace EldeRcon
             foreach (WebSocket socket in bg_websockets)
                 if (socket != null && socket.ReadyState == WebSocketState.Open)
                     socket.CloseAsync();
+            SaveName();
         }
 
 
@@ -1579,6 +1583,51 @@ namespace EldeRcon
                 );
 
                 Clipboard.SetDataObject(obj, true);
+            }
+        }
+
+        // Save the name when we leave the textbox
+        private void txtName_Leave(object sender, EventArgs e)
+        {
+            SaveName();
+        }
+
+        // Save the name in the next box to disk
+        private void SaveName ()
+        {
+            try
+            {
+                // Write our servers
+                using (StreamWriter sw = File.CreateText(@".\name.txt"))
+                {
+                    // Write it
+                    sw.Write(txtName.Text.Trim());
+                }
+            }
+            catch (Exception name_save_ex)
+            {
+                MessageBox.Show("Error saving name to disk:\n\n" + name_save_ex.Message);
+            }
+        }
+
+        // Load the saved name from disk
+        private void LoadName()
+        {
+            // Path
+            const string path = @".\name.txt";
+
+            // Stop now if there's no existing server list to read
+            if (!File.Exists(path))
+                return;
+
+            // Read the file into the box
+            try
+            {
+                txtName.Text = File.ReadAllText(path);
+            }
+            catch (Exception name_read_ex)
+            {
+                MessageBox.Show("Error reading name from disk:\n\n" + name_read_ex.Message);
             }
         }
     }

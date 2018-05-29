@@ -539,8 +539,9 @@
             // 
             this.txtName.Location = new System.Drawing.Point(41, 556);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(134, 20);
+            this.txtName.Size = new System.Drawing.Size(98, 20);
             this.txtName.TabIndex = 36;
+            this.txtName.Leave += new System.EventHandler(this.txtName_Leave);
             // 
             // Main
             // 
