@@ -528,6 +528,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(1, 559);
             this.label3.Name = "label3";
@@ -537,6 +538,7 @@
             // 
             // txtName
             // 
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtName.Location = new System.Drawing.Point(41, 556);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(98, 20);
