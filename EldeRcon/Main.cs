@@ -1311,6 +1311,14 @@ namespace EldeRcon
         //  2: Perm
         private void KickPlayer(int tab_index, int ban_type)
         {
+            // Only allow kicking with an admin name
+            if (txtName.Text.Trim() == String.Empty)
+            {
+                MessageBox.Show("Please enter a name in the 'name' box near the bottom left corner before kicking!");
+                return;
+            }
+
+
             // Bail out if nobody is selected
             if (lvPlayers.SelectedItems.Count == 0)
                 return;
@@ -1358,6 +1366,7 @@ namespace EldeRcon
                 string command = kick_command + " " + player_uid;
 
                 // Send the command
+                websockets[tabServers.SelectedIndex].Send(txtName.Text + " has kicked " + player_name + " from the server.");
                 websockets[tabServers.SelectedIndex].Send(command);
                 
                 // Print our command in the console
@@ -1493,6 +1502,12 @@ namespace EldeRcon
             // Based on: http://stackoverflow.com/questions/1718389/right-click-context-menu-for-datagridview
             if (e.Button == MouseButtons.Right)
             {
+                // Disable PM option if we don't have typing rights
+                if (txtCommand.Enabled == false)
+                {
+                    cmsPlayerLV.Items[0].Enabled = false;
+                }
+
                 // Show our menu                
                 cmsPlayerLV.Show(lvPlayers, new Point(e.X, e.Y));
                
