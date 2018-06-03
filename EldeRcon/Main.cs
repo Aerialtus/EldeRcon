@@ -29,7 +29,7 @@ namespace EldeRcon
         List<String> bg_command_results = new List<String>();
 
         // Hold our tab passwords for BG commands
-        List<SecureString> passwords = new List<SecureString>();
+        //List<SecureString> passwords = new List<SecureString>();
 
         // Hold our LV arrays
         List<ListViewItem[]> player_lv_items = new List<ListViewItem[]>();
@@ -45,7 +45,7 @@ namespace EldeRcon
         Dictionary<int, string> team_colors;
 
         // Track which server is connected in which tab
-        List<rcon_server> server_tabs = new List<rcon_server>();
+        List<rcon_server> server_in_tab_list = new List<rcon_server>();
 
         // Store the index of our "New..." tab, since clicking on that makes a new one
         int new_tab_index = 1;
@@ -80,12 +80,12 @@ namespace EldeRcon
             bg_workers.Add(bg);
 
             // Create a password slot for our first tab
-            SecureString pw = null;
-            passwords.Add(pw);
+            //SecureString pw = null;
+            //passwords.Add(pw);
 
             // Create a server entry for the tab
             rcon_server server = new rcon_server();
-            server_tabs.Add(server);
+            server_in_tab_list.Add(server);
 
             // Create a bgresults string for our first tab
             String str = null;
@@ -203,7 +203,7 @@ namespace EldeRcon
             {
                 // Get the password from our securestring
                 // https://stackoverflow.com/a/25751722
-                bg_websockets[tab_index].Send(new System.Net.NetworkCredential(string.Empty, passwords[tab_index]).Password);
+                bg_websockets[tab_index].Send(new System.Net.NetworkCredential(string.Empty,server_in_tab_list[tab_index].password).Password);
             };
 
             // Connect
@@ -280,8 +280,8 @@ namespace EldeRcon
 
 
                     // If we do have a nickname, use it
-                    if (!server_tabs[tab_index].nickname.IsNullOrEmpty())
-                        server_name = server_tabs[tab_index].nickname;
+                    if (!server_in_tab_list[tab_index].nickname.IsNullOrEmpty())
+                        server_name = server_in_tab_list[tab_index].nickname;
 
                     // If we don't have a nickname, user the server's name
                     else
@@ -306,10 +306,10 @@ namespace EldeRcon
                     // If we're reporting joins/leaves, compare the current/last list
                     // https://stackoverflow.com/a/3944816
                     // When we first connect, we don't have a player list to compare to yet (check for null)
-                    if (cbReportJoinsLeaves.Checked && server_tabs[tab_index].players != null)
+                    if (cbReportJoinsLeaves.Checked && server_in_tab_list[tab_index].players != null)
                     {
                         // Flag to see if we had to report
-                        bool user_change = false;
+                        //bool user_change = false;
 
                         // Get the time
                         string time = DateTime.Now.ToUniversalTime().ToString("MM/dd/yy HH:mm:ss");
@@ -321,7 +321,7 @@ namespace EldeRcon
                         //    UpdateConsole("", tab_index);
 
                         // Check who has left
-                        var leavers = server_tabs[tab_index].players.Where(p => !server_info.players.Any(p2 => p2.name == p.name));
+                        var leavers = server_in_tab_list[tab_index].players.Where(p => !server_info.players.Any(p2 => p2.uid == p.uid));
 
                         // Report
                         foreach (player leaver in leavers)
@@ -329,7 +329,7 @@ namespace EldeRcon
                             if (!leaver.name.IsNullOrEmpty())
                             {
                                 UpdateConsole("[" + time + "] " + leaver.name + " has left the server.", tab_index);
-                                user_change = true;
+                               // user_change = true;
                             }
                         }
 
@@ -337,7 +337,7 @@ namespace EldeRcon
                         if (server_info.players.Count > 0)
                         { 
                             // ...Check who has arrived
-                            var new_friends = server_info.players.Where(p => !server_tabs[tab_index].players.Any(p2 => p2.name == p.name));
+                            var new_friends = server_info.players.Where(p => !server_in_tab_list[tab_index].players.Any(p2 => p2.uid == p.uid));
 
                             // Report
                             foreach (player friend in new_friends)
@@ -345,7 +345,7 @@ namespace EldeRcon
                                 if (!friend.name.IsNullOrEmpty())
                                 {
                                     UpdateConsole("[" + time + "] " + friend.name + " has joined the server.", tab_index);
-                                    user_change = true;
+                                    //user_change = true;
                                 }
 
                             }
@@ -356,18 +356,18 @@ namespace EldeRcon
                     }
 
                     // Copy the server's player list
-                    server_tabs[tab_index].players = server_info.players;
+                    server_in_tab_list[tab_index].players = server_info.players;
 
 
                     // Check if it's a new game or if a game has ended
                     // If so, print it in chat (if desired)
-                    if (server_tabs[tab_index].current_map_mode != current_mode)
+                    if (server_in_tab_list[tab_index].current_map_mode != current_mode)
                     {
                         // Hold on to our previous status
                         //string prev_status = server_tabs[tab_index].current_map_mode;
 
                         // Update our stored state regardless of the checkbox
-                        server_tabs[tab_index].current_map_mode = current_mode;
+                        server_in_tab_list[tab_index].current_map_mode = current_mode;
 
                         // If we came from the lobby, skip the first mode update to avoid a loading bug where the variant hasn't switched yet
                         //if (prev_status == lobby_mode)
@@ -826,7 +826,7 @@ namespace EldeRcon
         {
 
             // Close the existing connection if needed
-            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState != WebSocketState.Closed)
                 websockets[tabServers.SelectedIndex].Close();
 
             // Create the socket
@@ -879,14 +879,14 @@ namespace EldeRcon
                     UpdateConsole("Connected!", tab_index);
 
                     // Securely hold the pw in memory
-                    passwords[tab_index] = null;
-                    SecureString sec_password = new SecureString();
-                    foreach (char c in server.password)
-                        sec_password.AppendChar(c);
+                    //passwords[tab_index] = null;
+                    //SecureString sec_password = new SecureString();
+                    //foreach (char c in server.password)
+                    //    sec_password.AppendChar(c);
                     
 
                     // Add it to our list
-                    passwords[tab_index] = sec_password;
+                    //passwords[tab_index] = sec_password;
 
                     // Stop any existing backgroundworker for this tab
                     if (bg_workers[tab_index] != null && bg_workers[tab_index].IsBusy)
@@ -901,7 +901,7 @@ namespace EldeRcon
                     }
 
                     // Store the tab's server info in our list
-                    server_tabs[tab_index] = server;
+                    server_in_tab_list[tab_index] = server;
 
                     // Start our new background worker
                     bg_workers[tab_index] = new BackgroundWorker();
@@ -927,8 +927,9 @@ namespace EldeRcon
             // When it's opened, send our password
             websockets[tab_index].OnOpen += (sender2, e2) =>
             {
+
                 // The password has to be our first line to the server
-                websockets[tab_index].Send(server.password);
+                websockets[tab_index].Send(new System.Net.NetworkCredential(string.Empty, server.password).Password);
 
                 // Save the server to the recent list
                 // Only save it if we didn't come from the combobox, which means it's already been saved
@@ -983,7 +984,12 @@ namespace EldeRcon
             rcon_server server_to_connect_to = new rcon_server();
             server_to_connect_to.hostname = txtHostname.Text;
             server_to_connect_to.port = Int32.Parse(txtPort.Text);
-            server_to_connect_to.password = txtPassword.Text;
+
+            //SecureString sec_password = new SecureString();
+            foreach (char c in txtPassword.Text)
+                server_to_connect_to.password.AppendChar(c);
+
+            //server_to_connect_to.password = txtPassword.Text;
 
             // Do it live!
             ConnectToServer(server_to_connect_to, tabServers.SelectedIndex,false);
@@ -1064,7 +1070,20 @@ namespace EldeRcon
                     // Copy the other settings
                     current_server.hostname = fields[0];
                     current_server.port = Int32.Parse(fields[1]);
-                    current_server.password = fields[2];
+
+                    // Check if we have a saved password
+                    if (fields[2].IsNullOrEmpty())
+                        current_server.password = null;
+                    else
+                    {
+                        // Encrypt password in memory
+                        current_server.password = new SecureString();
+
+                        foreach (char c in fields[2])
+                            current_server.password.AppendChar(c);
+                    }
+
+                    
                 } 
                 
                 // New format
@@ -1081,11 +1100,26 @@ namespace EldeRcon
                     current_server.nickname = fields[1];
                     current_server.hostname = fields[2];
                     current_server.port = Int32.Parse(fields[3]);
-                    current_server.password = fields[4];
+
+
+                    // Check if we have a password
+                    if (fields[4].IsNullOrEmpty())
+                        current_server.password = null;
+                    else
+                    {
+                        // Encrypt password in memory
+                        current_server.password = new SecureString();
+
+                        foreach (char c in fields[4])
+                            current_server.password.AppendChar(c);
+                    }
+                    
+
+                    //current_server.password = fields[4];
                 }
 
                 // Add the server to our dictionary
-                server_dictionary.Add(server_name, line);
+                //server_dictionary.Add(server_name, line);
 
                 // Add it to our list
                 rcon_server_list.Add(current_server);
@@ -1096,6 +1130,7 @@ namespace EldeRcon
                 // If we're set to autoconnect, do it now
                 if (autoconnect && current_server.autoconnect == 1)
                 {
+
                     // Switch to the "New..." tab if we're past the first tab
                     if (num_autoconnects > 0)
                         tabServers.SelectedIndex = new_tab_index;
@@ -1122,7 +1157,7 @@ namespace EldeRcon
 
 
         // Add this server to our saved list
-        private void SaveRecentServer (string hostname, string port, string password, bool save_password)
+        private void SaveRecentServer (string hostname, string port, SecureString password, bool save_password)
         {
             // Prepare a new rcon server object
             rcon_server new_server = new rcon_server();
@@ -1138,9 +1173,9 @@ namespace EldeRcon
                     {
                         // Check if our saved copy matches the passed checkbox
                         // If it does, bail out now
-                        if (rcon_server_list[server_index].password == String.Empty && save_password == false)
+                        if (rcon_server_list[server_index].password == null && save_password == false)
                             return;
-                        else if (rcon_server_list[server_index].password != String.Empty && save_password == true)
+                        else if (rcon_server_list[server_index].password != null && save_password == true)
                             return;
                         else // If we got a hostname/port match and we need to update if the password should be stored or not, copy it
                             existing_index = server_index;
@@ -1161,7 +1196,7 @@ namespace EldeRcon
                 if (save_password)
                     new_server.password = password;
                 else 
-                    new_server.password = String.Empty;
+                    new_server.password = null;
 
                 // Add it to our list
                 rcon_server_list.Add(new_server);
@@ -1176,7 +1211,7 @@ namespace EldeRcon
 
                 // Erase it if it's already there
                 else
-                    rcon_server_list[existing_index].password = String.Empty;
+                    rcon_server_list[existing_index].password = null;
             }
 
             // Update our copy on disk
@@ -1193,7 +1228,7 @@ namespace EldeRcon
                     foreach (rcon_server current_server in rcon_server_list)
                     {
                         // Write it
-                        sw.WriteLine("\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + current_server.password + "\"");
+                        sw.WriteLine("\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + (new System.Net.NetworkCredential(string.Empty, current_server.password).Password) + "\"");
                     }
                 }
 
@@ -1215,24 +1250,24 @@ namespace EldeRcon
             if (cmbLoadExisting.SelectedItem.ToString().Contains("Load Existing..."))
                 return;
 
-           
-
             // Load the fields
-            //string selected_name = cmbLoadExisting.SelectedItem.ToString();
             rcon_server selected_server = rcon_server_list[cmbLoadExisting.SelectedIndex - 1];// ; server_dictionary[selected_name].Split(',');
 
-            // Copy the fields
-            //txtHostname.Text = selected_server.hostname;
-            //txtPort.Text = selected_server.port.ToString();
-            //txtPassword.Text = selected_server.password;
-
             // If we have the PW, try to connect now
-            if (selected_server.password != String.Empty)
-                ConnectToServer(selected_server,tabServers.SelectedIndex,true);
+            if (selected_server.password != null)
+            {
+                ConnectToServer(selected_server, tabServers.SelectedIndex, true);
+            }                
 
             // If we don't have a PW, uncheck the save box to avoid writing one on accident
             else
+            {   // Copy values
+                txtHostname.Text = selected_server.hostname;
+                txtPort.Text = selected_server.port.ToString();
                 cbSavePass.Checked = false;
+            }
+
+                
             
         }
 
@@ -1393,8 +1428,8 @@ namespace EldeRcon
                 bg_workers.Add(bg);
 
                 // Create a password slot for our tab
-                SecureString pw = null;
-                passwords.Add(pw);
+                //SecureString pw = null;
+                //passwords.Add(pw);
 
                 // Create a bgresults string for our tab
                 String str = null;
@@ -1402,7 +1437,7 @@ namespace EldeRcon
 
                 // Create a server entry for the tab
                 rcon_server server = new rcon_server();
-                server_tabs.Add(server);
+                server_in_tab_list.Add(server);
 
                 // Create an empty player list for the tab
                 ListViewItem[] players = new ListViewItem[0];
@@ -1446,7 +1481,7 @@ namespace EldeRcon
             public string nickname;
             public string hostname;
             public int port;
-            public string password;
+            public SecureString password;// = new SecureString();
             public string current_map_mode = null;
             public List<player> players = null;
             public string connect_string = null;

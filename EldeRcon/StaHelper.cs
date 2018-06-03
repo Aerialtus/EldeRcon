@@ -31,7 +31,7 @@ namespace EldeRcon
                 _complete.Reset();
                 Work();
             }
-            catch (Exception ex)
+            catch 
             {
                 if (DontRetryWorkOnFailed)
                     throw;
