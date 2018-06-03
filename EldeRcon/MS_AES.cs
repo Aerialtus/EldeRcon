@@ -7,6 +7,7 @@ namespace MS_AES
 {
     class MS_AES
     {
+        /*
         public static void Main()
         {
             try
@@ -19,6 +20,8 @@ namespace MS_AES
                 // vector (IV).
                 using (Aes myAes = Aes.Create())
                 {
+
+                    //myAes.IV = Encoding.ASCII.GetBytes("HAI");
 
                     // Encrypt the string to an array of bytes.
                     byte[] encrypted = EncryptStringToBytes_Aes(original, myAes.Key, myAes.IV);
@@ -37,6 +40,7 @@ namespace MS_AES
                 Console.WriteLine("Error: {0}", e.Message);
             }
         }
+        */
         static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             // Check arguments.
