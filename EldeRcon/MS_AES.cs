@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Security;
+using System.Text;
 
 // https://msdn.microsoft.com/en-us/library/system.security.cryptography.aes.aspx
 namespace MS_AES
@@ -41,7 +43,32 @@ namespace MS_AES
             }
         }
         */
-        static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
+
+        // My addition
+        // Create an IV for our encryption
+        public static byte[] CreateIV(SecureString password)
+        {
+            // Create a salt
+            // Create a byte array to hold the random value. 
+            byte[] salt = new byte[64];
+            using (RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider())
+            {
+                // Fill the array with a random value.
+                rngCsp.GetBytes(salt);
+            }
+
+            // Set a random number of iterations (within reason)
+            Random rnd = new Random();
+            int iterations = rnd.Next(100000, 500000);
+
+            // Generate our IV
+            // https://msdn.microsoft.com/en-us/library/system.security.cryptography.rfc2898derivebytes(v=vs.110).aspx
+            return new Rfc2898DeriveBytes(new System.Net.NetworkCredential(string.Empty, password).Password,salt,iterations).GetBytes(16);
+            
+
+        }
+
+        public static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (plainText == null || plainText.Length <= 0)
@@ -83,7 +110,7 @@ namespace MS_AES
 
         }
 
-        static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        public static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (cipherText == null || cipherText.Length <= 0)

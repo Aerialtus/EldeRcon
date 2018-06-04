@@ -18,6 +18,22 @@ namespace EldeRcon
         public Server_List_Manager()
         {
             InitializeComponent();
+
+            // Check the box if we're encrypted
+            if (Main.encrypted)
+            {
+                // Temporarily remove the evend handler
+                cbEncrypt.CheckedChanged -= new System.EventHandler(this.cbEncrypt_CheckedChanged);
+
+                // Check the box
+                cbEncrypt.Checked = true;
+
+                // Put the handler back on
+                cbEncrypt.CheckedChanged += new System.EventHandler(this.cbEncrypt_CheckedChanged);
+            }
+
+
+            // Load our list
             LoadServerList();
         }
 
@@ -29,14 +45,44 @@ namespace EldeRcon
         private void LoadServerList()
         {
             // Path
-            const string path = @".\servers.csv";
+            const string path = Main.csv_path;
 
             // Stop now if there's no existing server list to read
             if (!File.Exists(path))
                 return;
 
-            // Read the file
-            TextFieldParser csvdata = new TextFieldParser(path);
+            // Prepare a textfieldparser
+            TextFieldParser csvdata = null;
+
+            // Check for AES IV file
+            // If we're encrypted
+            if (Main.encrypted)
+            {
+
+                // Read files
+                byte[] server_bytes = File.ReadAllBytes(Main.csv_path);
+                byte[] iv_bytes = File.ReadAllBytes(Main.iv_path);
+
+                // Byte our key together
+                byte[] key = new byte[32];
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+
+                // Decrypt
+                string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, iv_bytes);
+
+                // Change response into a string
+                //string server_strings = System.Text.Encoding.Default.GetString(decrypted_file;
+
+                // Send the stream to TFP
+                csvdata = new TextFieldParser(new StringReader(decrypted_string));
+            }
+
+            // If we're not encrypted, read as plain text
+            else
+            {
+                csvdata = new TextFieldParser(Main.csv_path);
+            }
+
             csvdata.Delimiters = new string[] { "," };
 
             // Checkbox idea from:
@@ -197,23 +243,144 @@ namespace EldeRcon
             }
 
             // Write our list to disk
-            try
+            // If we're not encrypted...
+            if (Main.encrypted == false)
             {
-                // Write our servers
-                using (StreamWriter sw = File.CreateText(@".\servers.csv"))
+                // Delete the iv file if it exists
+                if (File.Exists(Main.iv_path))
                 {
-                    foreach (string line in servers)
+                    File.Delete(Main.iv_path);
+                }
+
+                // Save the servers
+                try
+                {
+                    // Write our servers
+                    using (StreamWriter sw = File.CreateText(Main.csv_path))
                     {
-                        sw.WriteLine(line);
+                        foreach (string line in servers)
+                        {
+                            sw.WriteLine(line);
+                        }
+                    }
+
+                    //MessageBox.Show("List saved!");
+                    Close();
+                }
+                catch (Exception write_ex)
+                {
+                    MessageBox.Show("Error writing server list to disk:\n\n" + write_ex.Message);
+                }
+            }
+
+            // If we are encrypted
+            else
+            {
+                // String to hold our file
+                String server_file = String.Empty;
+
+                // Go through the list
+                foreach (string line in servers)
+                {
+                    // Append
+                    server_file += line + "\r\n";
+                }
+
+                // Create an IV
+                byte[] iv = MS_AES.MS_AES.CreateIV(Main.enc_password);
+
+                // Byte our key together
+                byte[] key = new byte[32];
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0,32));
+
+                // Send it to our encryption function
+                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, key, iv);
+                key = null;
+
+                // Write both files to disk
+                try
+                {                    
+                    // CSV
+                    File.WriteAllBytes(Main.csv_path, encrypted_server_file);
+
+                    // IV
+                    File.WriteAllBytes(Main.iv_path, iv);
+
+                    Close();
+                }
+                catch (Exception enc_write_ex)
+                {
+                    MessageBox.Show("Error writing encrypted files to disk. Please try saving again:\n\n" + enc_write_ex.Message);
+                }
+            }
+
+        }
+
+        private void cbEncrypt_CheckedChanged(object sender, EventArgs e)
+        {
+            // If we're now checked
+            if (cbEncrypt.Checked)
+            {
+                // Prompt
+                DialogResult result = MessageBox.Show("Are you sure you want to encrypt your information?", "EldeRcon", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // If yes
+                if (result == DialogResult.Yes)
+                {
+                    // If we got a yes, get a password
+                    Form PWForm = new PasswordForm();
+                    PWForm.ShowDialog(this);
+
+                    // If we got a password                    
+                    if (Main.enc_password != null)
+                    {
+                        // Set the flag
+                        Main.encrypted = true;
+
+                        // Reminder
+                        MessageBox.Show("The change will take finish taking effect when you click save.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    // If they cancelled on us without a password, go back to decrypted
+                    else
+                    {
+                        MessageBox.Show("Encryption cancelled. Please try again if interested.");
+
+                        // Temporarily remove the event handler
+                        cbEncrypt.CheckedChanged -= new System.EventHandler(this.cbEncrypt_CheckedChanged);
+
+                        // Check the box
+                        cbEncrypt.Checked = false;
+
+                        // Put the handler back on
+                        cbEncrypt.CheckedChanged += new System.EventHandler(this.cbEncrypt_CheckedChanged);
+
                     }
                 }
 
-                //MessageBox.Show("List saved!");
-                Close();
+                // If we don't want to encrypt, uncheck the box and stop here
+                else
+                {
+                    cbEncrypt.Checked = false;
+                    return;
+                }
             }
-            catch (Exception write_ex)
+
+            // If we're now unchecked
+            else
             {
-                MessageBox.Show("Error writing server list to disk:\n\n" + write_ex.Message);
+                // Prompt
+                DialogResult result = MessageBox.Show("Are you sure you want to decrypt your information?", "EldeRcon", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // If yes
+                if (result == DialogResult.Yes)
+                {
+                    // Set the flag
+                    Main.encrypted = false;
+
+                    // Reminder
+                    MessageBox.Show("The change will take effect when you click save.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
     }

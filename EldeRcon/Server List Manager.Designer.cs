@@ -42,6 +42,7 @@
             this.clmPass = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHelp = new System.Windows.Forms.Label();
             this.lblAdd = new System.Windows.Forms.Label();
+            this.cbEncrypt = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvServers)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,7 +71,7 @@
             // btnRemove
             // 
             this.btnRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnRemove.Location = new System.Drawing.Point(268, 239);
+            this.btnRemove.Location = new System.Drawing.Point(207, 239);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(75, 23);
             this.btnRemove.TabIndex = 5;
@@ -173,11 +174,23 @@
             this.lblAdd.Text = "To add a server, click on the bottom row and start typing. Rows without a hostnam" +
     "e will be ignored.";
             // 
+            // cbEncrypt
+            // 
+            this.cbEncrypt.AutoSize = true;
+            this.cbEncrypt.Location = new System.Drawing.Point(308, 243);
+            this.cbEncrypt.Name = "cbEncrypt";
+            this.cbEncrypt.Size = new System.Drawing.Size(62, 17);
+            this.cbEncrypt.TabIndex = 11;
+            this.cbEncrypt.Text = "Encrypt";
+            this.cbEncrypt.UseVisualStyleBackColor = true;
+            this.cbEncrypt.CheckedChanged += new System.EventHandler(this.cbEncrypt_CheckedChanged);
+            // 
             // Server_List_Manager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(611, 279);
+            this.Controls.Add(this.cbEncrypt);
             this.Controls.Add(this.lblAdd);
             this.Controls.Add(this.lblHelp);
             this.Controls.Add(this.dgvServers);
@@ -210,5 +223,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmPass;
         private System.Windows.Forms.Label lblHelp;
         private System.Windows.Forms.Label lblAdd;
+        private System.Windows.Forms.CheckBox cbEncrypt;
     }
 }

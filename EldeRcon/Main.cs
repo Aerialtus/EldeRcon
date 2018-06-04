@@ -16,6 +16,7 @@ using System.Threading;
 
 namespace EldeRcon
 {
+
     public partial class Main : Form
     {
         // Hold our websockets
@@ -30,6 +31,16 @@ namespace EldeRcon
 
         // Hold our tab passwords for BG commands
         //List<SecureString> passwords = new List<SecureString>();
+
+        // Hold our encrypted file password
+        public static SecureString enc_password = null;// { get; set; }
+
+        // Flag on wether our data is encrypted or not
+        public static bool encrypted = false;
+
+        // Set our paths
+        public const string csv_path = @".\servers.csv";
+        public const string iv_path = @".\servers.iv";
 
         // Hold our LV arrays
         List<ListViewItem[]> player_lv_items = new List<ListViewItem[]>();
@@ -204,6 +215,8 @@ namespace EldeRcon
                 // Get the password from our securestring
                 // https://stackoverflow.com/a/25751722
                 bg_websockets[tab_index].Send(new System.Net.NetworkCredential(string.Empty,server_in_tab_list[tab_index].password).Password);
+
+                
             };
 
             // Connect
@@ -826,7 +839,7 @@ namespace EldeRcon
         {
 
             // Close the existing connection if needed
-            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState != WebSocketState.Closed)
+            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState != WebSocketState.Open)
                 websockets[tabServers.SelectedIndex].Close();
 
             // Create the socket
@@ -1027,15 +1040,68 @@ namespace EldeRcon
             server_dictionary = new Dictionary<string, int>();
             rcon_server_list = new List<rcon_server>();            
 
-            // Path
-            const string path = @".\servers.csv";
+            // Paths
+            // Global now
+            //const string csv_path = @".\servers.csv";
+            //const string iv_path = @".\servers.iv";
 
             // Stop now if there's no existing server list to read
-            if (!File.Exists(path))
-                return;            
+            if (!File.Exists(csv_path))
+                return;
+
+            // Prepare a textfieldparser
+            TextFieldParser csvdata = null;
+
+            // Check for AES IV file
+            // If we're encrypted
+            if (File.Exists(iv_path))
+            {
+                // Set our flag
+                encrypted = true;
+
+                // Read files
+                byte[] server_bytes = File.ReadAllBytes(csv_path);
+                byte[] iv_bytes = File.ReadAllBytes(iv_path);
+
+                // Stay in a loop until we've decrypted
+                while (true)
+                {
+                    // Prompt for a password (if needed)
+                    if (enc_password == null)
+                    {
+                        Form PWForm = new PasswordForm();
+                        PWForm.ShowDialog(this);
+                    }
+
+                    // Byte our key together
+                    byte[] key = new byte[32];
+                    key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+
+                    // Attempt to decrypt
+                    try
+                    {
+                        // Decrypt
+                        string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, iv_bytes);
+
+                        // Send the stream to our TFP
+                        csvdata = new TextFieldParser(new StringReader(decrypted_string));
+                        break;
+                    }
+                    catch (Exception read_enc_ex)
+                    {
+                        enc_password = null;
+                        MessageBox.Show("Error decrypting information. Please try again!\n\n" + read_enc_ex.Message);
+                    }
+                }
+            }
+
+            // If we're not encrypted, read as plain text
+            else
+            {
+                csvdata = new TextFieldParser(csv_path);
+            }
 
             // Read the file
-            TextFieldParser csvdata = new TextFieldParser(path);
             csvdata.Delimiters = new string[] { "," };
 
             // Go through the file
@@ -1215,32 +1281,73 @@ namespace EldeRcon
             }
 
             // Update our copy on disk
-            // Set our path
-            const string logpath = @".\servers.csv";
+            
 
             // Time to actually write it
-           try
-           {
-                // Write our servers
-                using (StreamWriter sw = File.CreateText(logpath))
+            if (encrypted == false)
+            {
+                try
                 {
-                    // Go through the list
-                    foreach (rcon_server current_server in rcon_server_list)
+                    // Write our servers
+                    using (StreamWriter sw = File.CreateText(csv_path))
                     {
-                        // Write it
-                        sw.WriteLine("\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + (new System.Net.NetworkCredential(string.Empty, current_server.password).Password) + "\"");
+                        // Go through the list
+                        foreach (rcon_server current_server in rcon_server_list)
+                        {
+                            // Write it
+                            sw.WriteLine("\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + (new System.Net.NetworkCredential(string.Empty, current_server.password).Password) + "\"");
+                        }
                     }
+
+                    // Update the combobox
+                    LoadServerList();
+                }
+                catch (Exception write_ex)
+                {
+                    MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
+                    return;
+                }
+            }
+
+            // If we're encrypted, build the string we were going to save
+            else
+            {
+                // String to hold our file
+                String server_file = String.Empty;
+
+                // Go through the list
+                foreach (rcon_server current_server in rcon_server_list)
+                {
+                    // Append
+                    server_file += "\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + (new System.Net.NetworkCredential(string.Empty, current_server.password).Password) + "\"\r\n";
                 }
 
-                // Update the combobox
-                LoadServerList();
-           }
-           catch (Exception write_ex)
-           {
-                MessageBox.Show("Error writing server file:\n\n" + write_ex.Message);
-                return;
-           }
+                // Create an IV
+                byte[] iv = MS_AES.MS_AES.CreateIV(enc_password);
 
+                // Byte our key together
+                byte[] key = new byte[32];
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+
+                // Send it to our encryption function
+                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, Encoding.ASCII.GetBytes(new System.Net.NetworkCredential(string.Empty, enc_password).Password), iv);
+                key = null;
+
+                // Write both files to disk
+                try
+                {
+                    // Write both files to disk
+                    // CSV
+                    File.WriteAllBytes(Main.csv_path, encrypted_server_file);
+
+                    // IV
+                    File.WriteAllBytes(Main.iv_path, iv);
+                }
+                catch (Exception enc_write_ex)
+                {
+                    MessageBox.Show("Error writing encrypted files to disk. Please try saving again though the server manager:\n\n" + enc_write_ex.Message);
+                }
+            }
         }
 
         // Connect to server from recent list
