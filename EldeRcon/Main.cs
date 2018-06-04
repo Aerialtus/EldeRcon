@@ -1425,7 +1425,6 @@ namespace EldeRcon
                 return;
             }
 
-
             // Bail out if nobody is selected
             if (lvPlayers.SelectedItems.Count == 0)
                 return;
@@ -1453,12 +1452,12 @@ namespace EldeRcon
                     break;
 
                 case 1:
-                    kick_prompt = "kick and temporarily ban (for 2 games by default)";
+                    kick_prompt = "kick and IP ban for 2 games";
                     kick_command = "Server.KickTempBanUid";
                     break;
 
                 case 2:
-                    kick_prompt = "kick and permanently ban";
+                    kick_prompt = "kick and IP ban";
                     kick_command = "Server.KickBanUid";
                     break;
             }
