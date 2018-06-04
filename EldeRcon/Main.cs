@@ -1473,7 +1473,7 @@ namespace EldeRcon
                 string command = kick_command + " " + player_uid;
 
                 // Send the command
-                websockets[tabServers.SelectedIndex].Send(txtName.Text + " has kicked " + player_name + " from the server.");
+                websockets[tabServers.SelectedIndex].Send("say " + txtName.Text + " has kicked " + player_name + " from the server.");
                 websockets[tabServers.SelectedIndex].Send(command);
                 
                 // Print our command in the console
