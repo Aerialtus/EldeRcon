@@ -1012,8 +1012,10 @@ namespace EldeRcon
         // If we're closing the form, also check if we need to close the connection
         private void Form1_FormClosed(object sender, FormClosingEventArgs e)
         {
+            // Let our threads know it's time to stop
             form_closing = true;
-            
+
+            // End the BW/Connections
             foreach (BackgroundWorker bw in bg_workers)
                 if (bw != null && bw.IsBusy)
                     bw.CancelAsync();
@@ -1023,8 +1025,11 @@ namespace EldeRcon
             foreach (WebSocket socket in bg_websockets)
                 if (socket != null && socket.ReadyState == WebSocketState.Open)
                     socket.CloseAsync();
+
+            // Save our name to disk, probably not needed, but better to be safe
             SaveName();
-        }
+
+           }        
 
 
 
@@ -1070,7 +1075,7 @@ namespace EldeRcon
                     if (enc_password == null)
                     {
                         Form PWForm = new PasswordForm();
-                        PWForm.ShowDialog(this);
+                        PWForm.ShowDialog(this);                    
                     }
 
                     // Byte our key together

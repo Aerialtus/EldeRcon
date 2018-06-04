@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security;
 
+
 namespace EldeRcon
 {
     public partial class PasswordForm : Form
@@ -26,8 +27,17 @@ namespace EldeRcon
             // Change the wording if we're setting a password
             if (setting_password == true)
             {
-                lblTop.Text = "Enter a password to protect the server information.";
+                lblTop.Text = "Please enter your password in both boxes below. Going forward, you'll put this in when the program starts.";
                 lblBottom.Text = "If you lose or forget this password, you'll have to delete the server files and start over.";
+            }
+            else
+            {
+                btnGo.Location = new Point(btnGo.Location.X, btnGo.Location.Y - 40);
+                btnCancel.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y - 40);
+                Height = Height - 40;
+
+                // Hide PW box #2 if we're logging in
+                txtPW2.Visible = false;
             }
         }
 
@@ -38,7 +48,12 @@ namespace EldeRcon
             // If we're starting up and the user attempts to bail out
             if (!setting_password)
             {
-                Application.Exit();
+                //Process.GetCurrentProcess().Kill();
+                Environment.Exit(1);
+               // Application.Exit();
+                //Environment.FailFast();
+
+                //Close();
             }
 
             // Null the password if we're going back to the main form
@@ -61,7 +76,14 @@ namespace EldeRcon
                 return;
             }
 
-            // If we did, encrypt it and send it back
+            // If we're setting a password, make sure our first and second passwords are equal
+            if (setting_password && !txtPW2.Text.Trim().Equals(txtPW.Text.Trim()))
+            {
+                MessageBox.Show("Your passwords don't match!\n\nPlease enter the same password twice.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            // If we're set, encrypt it and send it back
             Main.enc_password = new SecureString();
             
             foreach (char c in txtPW.Text)

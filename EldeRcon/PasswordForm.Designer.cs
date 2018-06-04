@@ -33,6 +33,7 @@
             this.btnGo = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblBottom = new System.Windows.Forms.Label();
+            this.txtPW2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblTop
@@ -54,7 +55,7 @@
             // 
             // btnGo
             // 
-            this.btnGo.Location = new System.Drawing.Point(158, 82);
+            this.btnGo.Location = new System.Drawing.Point(158, 123);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(75, 23);
             this.btnGo.TabIndex = 2;
@@ -65,7 +66,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(239, 82);
+            this.btnCancel.Location = new System.Drawing.Point(239, 123);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -83,16 +84,25 @@
             this.lblBottom.Text = "If you have lost or forgotten the password, please delete the \"servers\" files in " +
     "EldeRcon\'s folder.";
             // 
+            // txtPW2
+            // 
+            this.txtPW2.Location = new System.Drawing.Point(126, 82);
+            this.txtPW2.Name = "txtPW2";
+            this.txtPW2.Size = new System.Drawing.Size(220, 20);
+            this.txtPW2.TabIndex = 1;
+            this.txtPW2.UseSystemPasswordChar = true;
+            // 
             // PasswordForm
             // 
             this.AcceptButton = this.btnGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(473, 116);
+            this.ClientSize = new System.Drawing.Size(473, 157);
             this.Controls.Add(this.lblBottom);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnGo);
+            this.Controls.Add(this.txtPW2);
             this.Controls.Add(this.txtPW);
             this.Controls.Add(this.lblTop);
             this.Name = "PasswordForm";
@@ -110,5 +120,6 @@
         private System.Windows.Forms.Button btnGo;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblBottom;
+        private System.Windows.Forms.TextBox txtPW2;
     }
 }
