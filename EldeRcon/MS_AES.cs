@@ -80,7 +80,7 @@ namespace MS_AES
 
         // Hash it good
         // https://stackoverflow.com/a/50591182
-        public static byte[] hash_password(String value, byte[] salt)
+        public static byte[] GetKeyFromPassword(String value, byte[] salt)
         {
             StringBuilder Sb = new StringBuilder();
 

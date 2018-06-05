@@ -98,7 +98,7 @@ namespace EldeRcon
             Refresh();
 
             // Hash the password
-            byte[] hash = MS_AES.MS_AES.hash_password(txtPW.Text,Main.iv);
+            byte[] hash = MS_AES.MS_AES.GetKeyFromPassword(txtPW.Text,Main.iv);
 
             // If we're set, encrypt it and send it back
             Main.enc_password = new SecureString();
