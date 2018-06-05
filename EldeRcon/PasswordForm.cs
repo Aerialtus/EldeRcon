@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security;
-using System.Security.Cryptography;
-using System.IO;
 
 namespace EldeRcon
 {
@@ -31,8 +23,11 @@ namespace EldeRcon
                 lblTop.Text = "Please enter your password in both boxes below. Going forward, you'll put this in when the program starts.";
                 lblBottom.Text = "If you lose or forget this password, you'll have to delete the server files and start over.";
             }
+
+            // If we're not setting a password
             else
             {
+                // Move the buttons up and shrink the form
                 btnGo.Location = new Point(btnGo.Location.X, btnGo.Location.Y - 40);
                 btnCancel.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y - 40);
                 Height = Height - 40;
@@ -49,12 +44,8 @@ namespace EldeRcon
             // If we're starting up and the user attempts to bail out
             if (!setting_password)
             {
-                //Process.GetCurrentProcess().Kill();
+                // Exit
                 Environment.Exit(1);
-               // Application.Exit();
-                //Environment.FailFast();
-
-                //Close();
             }
 
             // Null the password if we're going back to the main form

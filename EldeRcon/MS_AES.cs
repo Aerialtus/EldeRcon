@@ -3,7 +3,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security;
 using System.Text;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 // https://msdn.microsoft.com/en-us/library/system.security.cryptography.aes.aspx

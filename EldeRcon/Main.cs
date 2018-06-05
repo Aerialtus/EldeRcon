@@ -5,14 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
 using System.Security;
 using System.Reflection;
-using System.Threading;
 
 namespace EldeRcon
 {
@@ -1054,7 +1052,6 @@ namespace EldeRcon
             TextFieldParser csvdata = null;
 
             // Check for AES IV file
-            // If we're encrypted
             if (File.Exists(iv_path))
             {
                 // Set our flag
@@ -1075,8 +1072,7 @@ namespace EldeRcon
                     }
 
                     // Byte our key together
-                    //byte[] key = new byte[32];
-                    byte[] key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
+                    byte[] key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));
 
                     // Attempt to decrypt
                     try
@@ -1088,7 +1084,7 @@ namespace EldeRcon
                         csvdata = new TextFieldParser(new StringReader(decrypted_string));
                         break;
                     }
-                    catch (Exception read_enc_ex)
+                    catch
                     {
                         enc_password = null;
                         MessageBox.Show("Error decrypting information. Please try again!","EldeRcon",MessageBoxButtons.OK,MessageBoxIcon.Warning);
@@ -1323,27 +1319,19 @@ namespace EldeRcon
                     server_file += "\"" + current_server.autoconnect + "\",\"" + current_server.nickname + "\",\"" + current_server.hostname + "\",\"" + current_server.port + "\",\"" + (new System.Net.NetworkCredential(string.Empty, current_server.password).Password) + "\"\r\n";
                 }
 
-                // Create an IV
-                // Now done in PW form
-                //byte[] iv = MS_AES.MS_AES.CreateIV(enc_password);
-
                 // Byte our key together
-                byte[] key = new byte[32];
-                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
+                byte[] key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));
 
                 // Send it to our encryption function
                 byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, key,iv);
                 key = null;
 
-                // Write both files to disk
+                // Write our CSV file to disk
                 try
                 {
-                    // Write both files to disk
                     // CSV
                     File.WriteAllBytes(Main.csv_path, encrypted_server_file);
 
-                    // IV
-                    // Already written by PW form
                 }
                 catch (Exception enc_write_ex)
                 {

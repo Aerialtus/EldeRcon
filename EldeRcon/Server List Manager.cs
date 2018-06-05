@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
@@ -55,7 +51,6 @@ namespace EldeRcon
             // Prepare a textfieldparser
             TextFieldParser csvdata = null;
 
-            // Check for AES IV file
             // If we're encrypted
             if (Main.encrypted)
             {
@@ -65,13 +60,10 @@ namespace EldeRcon
                 
                 // Byte our key together
                 byte[] key = new byte[32];
-                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));
 
                 // Decrypt
                 string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, Main.iv);
-
-                // Change response into a string
-                //string server_strings = System.Text.Encoding.Default.GetString(decrypted_file;
 
                 // Send the stream to TFP
                 csvdata = new TextFieldParser(new StringReader(decrypted_string));
