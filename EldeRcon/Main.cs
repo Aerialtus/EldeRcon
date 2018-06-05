@@ -32,8 +32,9 @@ namespace EldeRcon
         // Hold our tab passwords for BG commands
         //List<SecureString> passwords = new List<SecureString>();
 
-        // Hold our encrypted file password
+        // Hold our encrypted file password / iv
         public static SecureString enc_password = null;// { get; set; }
+        public static byte[] iv = null;
 
         // Flag on wether our data is encrypted or not
         public static bool encrypted = false;
@@ -1045,11 +1046,6 @@ namespace EldeRcon
             server_dictionary = new Dictionary<string, int>();
             rcon_server_list = new List<rcon_server>();            
 
-            // Paths
-            // Global now
-            //const string csv_path = @".\servers.csv";
-            //const string iv_path = @".\servers.iv";
-
             // Stop now if there's no existing server list to read
             if (!File.Exists(csv_path))
                 return;
@@ -1066,7 +1062,7 @@ namespace EldeRcon
 
                 // Read files
                 byte[] server_bytes = File.ReadAllBytes(csv_path);
-                byte[] iv_bytes = File.ReadAllBytes(iv_path);
+                iv = File.ReadAllBytes(iv_path);
 
                 // Stay in a loop until we've decrypted
                 while (true)
@@ -1079,14 +1075,14 @@ namespace EldeRcon
                     }
 
                     // Byte our key together
-                    byte[] key = new byte[32];
-                    key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+                    //byte[] key = new byte[32];
+                    byte[] key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
 
                     // Attempt to decrypt
                     try
                     {
                         // Decrypt
-                        string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, iv_bytes);
+                        string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, iv);
 
                         // Send the stream to our TFP
                         csvdata = new TextFieldParser(new StringReader(decrypted_string));
@@ -1095,7 +1091,7 @@ namespace EldeRcon
                     catch (Exception read_enc_ex)
                     {
                         enc_password = null;
-                        MessageBox.Show("Error decrypting information. Please try again!\n\n" + read_enc_ex.Message);
+                        MessageBox.Show("Error decrypting information. Please try again!","EldeRcon",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -1328,14 +1324,15 @@ namespace EldeRcon
                 }
 
                 // Create an IV
-                byte[] iv = MS_AES.MS_AES.CreateIV(enc_password);
+                // Now done in PW form
+                //byte[] iv = MS_AES.MS_AES.CreateIV(enc_password);
 
                 // Byte our key together
                 byte[] key = new byte[32];
-                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
 
                 // Send it to our encryption function
-                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, Encoding.ASCII.GetBytes(new System.Net.NetworkCredential(string.Empty, enc_password).Password), iv);
+                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, key,iv);
                 key = null;
 
                 // Write both files to disk
@@ -1346,7 +1343,7 @@ namespace EldeRcon
                     File.WriteAllBytes(Main.csv_path, encrypted_server_file);
 
                     // IV
-                    File.WriteAllBytes(Main.iv_path, iv);
+                    // Already written by PW form
                 }
                 catch (Exception enc_write_ex)
                 {

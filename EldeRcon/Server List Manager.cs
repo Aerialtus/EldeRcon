@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
+using System.Security;
 
 namespace EldeRcon
 {
@@ -61,14 +62,13 @@ namespace EldeRcon
 
                 // Read files
                 byte[] server_bytes = File.ReadAllBytes(Main.csv_path);
-                byte[] iv_bytes = File.ReadAllBytes(Main.iv_path);
-
+                
                 // Byte our key together
                 byte[] key = new byte[32];
-                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0, 32));
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0, 32));
 
                 // Decrypt
-                string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, iv_bytes);
+                string decrypted_string = MS_AES.MS_AES.DecryptStringFromBytes_Aes(server_bytes, key, Main.iv);
 
                 // Change response into a string
                 //string server_strings = System.Text.Encoding.Default.GetString(decrypted_file;
@@ -250,6 +250,7 @@ namespace EldeRcon
                 if (File.Exists(Main.iv_path))
                 {
                     File.Delete(Main.iv_path);
+                    Main.iv = null;
                 }
 
                 // Save the servers
@@ -286,15 +287,12 @@ namespace EldeRcon
                     server_file += line + "\r\n";
                 }
 
-                // Create an IV
-                byte[] iv = MS_AES.MS_AES.CreateIV(Main.enc_password);
-
                 // Byte our key together
                 byte[] key = new byte[32];
-                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password).PadRight(32).Substring(0,32));
+                key = Encoding.ASCII.GetBytes((new System.Net.NetworkCredential(string.Empty, Main.enc_password).Password));//.Substring(0,32));
 
                 // Send it to our encryption function
-                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, key, iv);
+                byte[] encrypted_server_file = MS_AES.MS_AES.EncryptStringToBytes_Aes(server_file, key, Main.iv);
                 key = null;
 
                 // Write both files to disk
@@ -303,8 +301,9 @@ namespace EldeRcon
                     // CSV
                     File.WriteAllBytes(Main.csv_path, encrypted_server_file);
 
-                    // IV
-                    File.WriteAllBytes(Main.iv_path, iv);
+                    // IV 
+                    if (!File.Exists(Main.iv_path))
+                        File.WriteAllBytes(Main.iv_path, Main.iv);
 
                     Close();
                 }
@@ -328,7 +327,7 @@ namespace EldeRcon
                 if (result == DialogResult.Yes)
                 {
                     // If we got a yes, get a password
-                    Form PWForm = new PasswordForm();
+                    Form PWForm = new PasswordForm(true);
                     PWForm.ShowDialog(this);
 
                     // If we got a password                    
@@ -370,16 +369,44 @@ namespace EldeRcon
             else
             {
                 // Prompt
-                DialogResult result = MessageBox.Show("Are you sure you want to decrypt your information?", "EldeRcon", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Are you sure you want to decrypt your information?\n\nYou will need to provide the current password.", "EldeRcon", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 // If yes
                 if (result == DialogResult.Yes)
                 {
-                    // Set the flag
-                    Main.encrypted = false;
+                    // Copy our existing securestring
+                    SecureString existing_securestring = Main.enc_password.Copy();
 
-                    // Reminder
-                    MessageBox.Show("The change will take effect when you click save.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Prompt for the password
+                    Form PWForm = new PasswordForm();
+                    PWForm.ShowDialog(this);
+
+                    // Compare it
+                    if (MS_AES.MS_AES.CompareSecureStrings(Main.enc_password,existing_securestring))
+                    {
+                        // Set the flag
+                        Main.encrypted = false;
+
+                        // Reminder
+                        MessageBox.Show("The change will take effect when you click save.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Copy the known securestring back
+                        Main.enc_password = existing_securestring.Copy();
+
+                        // Bad password
+                        MessageBox.Show("Invalid password. Please try again.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+
+                        // Temporarily remove the event handler
+                        cbEncrypt.CheckedChanged -= new System.EventHandler(this.cbEncrypt_CheckedChanged);
+
+                        // Check the box
+                        cbEncrypt.Checked = true;
+
+                        // Put the handler back on
+                        cbEncrypt.CheckedChanged += new System.EventHandler(this.cbEncrypt_CheckedChanged);
+                    }
                 }
             }
         }

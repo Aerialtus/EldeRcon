@@ -50,7 +50,7 @@
             this.txtPW.Location = new System.Drawing.Point(126, 56);
             this.txtPW.Name = "txtPW";
             this.txtPW.Size = new System.Drawing.Size(220, 20);
-            this.txtPW.TabIndex = 1;
+            this.txtPW.TabIndex = 0;
             this.txtPW.UseSystemPasswordChar = true;
             // 
             // btnGo
@@ -69,7 +69,7 @@
             this.btnCancel.Location = new System.Drawing.Point(239, 123);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

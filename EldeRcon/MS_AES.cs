@@ -3,6 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security;
 using System.Text;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 // https://msdn.microsoft.com/en-us/library/system.security.cryptography.aes.aspx
 namespace MS_AES
@@ -44,9 +46,63 @@ namespace MS_AES
         }
         */
 
+        // Compare securestrings
+        // https://stackoverflow.com/a/4502736
+        public static bool CompareSecureStrings(SecureString ss1, SecureString ss2)
+        {
+            IntPtr bstr1 = IntPtr.Zero;
+            IntPtr bstr2 = IntPtr.Zero;
+            try
+            {
+                bstr1 = Marshal.SecureStringToBSTR(ss1);
+                bstr2 = Marshal.SecureStringToBSTR(ss2);
+                int length1 = Marshal.ReadInt32(bstr1, -4);
+                int length2 = Marshal.ReadInt32(bstr2, -4);
+                if (length1 == length2)
+                {
+                    for (int x = 0; x < length1; ++x)
+                    {
+                        byte b1 = Marshal.ReadByte(bstr1, x);
+                        byte b2 = Marshal.ReadByte(bstr2, x);
+                        if (b1 != b2) return false;
+                    }
+                }
+                else return false;
+                return true;
+            }
+            finally
+            {
+                if (bstr2 != IntPtr.Zero) Marshal.ZeroFreeBSTR(bstr2);
+                if (bstr1 != IntPtr.Zero) Marshal.ZeroFreeBSTR(bstr1);
+            }
+        }
+
+
+        // Hash it good
+        // https://stackoverflow.com/a/50591182
+        public static byte[] hash_password(String value, byte[] salt)
+        {
+            StringBuilder Sb = new StringBuilder();
+
+            using (SHA512 hash = SHA512Managed.Create())
+            {
+                Encoding enc = Encoding.UTF8;
+                Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+                foreach (Byte b in result)
+                    Sb.Append(b.ToString("x2"));
+            }
+
+            // Get our hash
+            string resulting_hash = Sb.ToString();
+
+            // Create a key with it and send it back
+            return new Rfc2898DeriveBytes(resulting_hash, salt, 500000).GetBytes(256 / 8);
+        }
+
         // My addition
         // Create an IV for our encryption
-        public static byte[] CreateIV(SecureString password)
+        public static byte[] CreateIV(string password)
         {
             // Create a salt
             // Create a byte array to hold the random value. 

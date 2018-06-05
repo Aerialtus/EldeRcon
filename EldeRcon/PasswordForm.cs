@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security;
-
+using System.Security.Cryptography;
+using System.IO;
 
 namespace EldeRcon
 {
@@ -83,10 +84,26 @@ namespace EldeRcon
                 return;
             }
 
+            // If we're setting a password, generate an IV
+            if (setting_password)
+            {
+                // Create it
+                Main.iv = MS_AES.MS_AES.CreateIV(txtPW.Text);                                
+            }
+
+            // Give the user some indication of progress
+            btnGo.Text = "Working...";
+            btnGo.Enabled = false;
+            btnCancel.Enabled = false;
+            Refresh();
+
+            // Hash the password
+            byte[] hash = MS_AES.MS_AES.hash_password(txtPW.Text,Main.iv);
+
             // If we're set, encrypt it and send it back
             Main.enc_password = new SecureString();
             
-            foreach (char c in txtPW.Text)
+            foreach (char c in hash)
                 Main.enc_password.AppendChar(c);
 
             // Close window
