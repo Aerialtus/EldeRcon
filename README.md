@@ -26,7 +26,7 @@ The main features of this client are:
 * Right click a player to PM, kick, or ban a player
 * Easily save, restore, and update the saved server list
 * Automatically connect to servers at program startup
-* Optionally encrypt your server information (hostname, port, and password) to protect access to your servers
+* Optionally encrypt your server information (hostname, port, and password) on disk to protect access to your servers
 
 
 ## How do I use it?

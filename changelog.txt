@@ -7,6 +7,9 @@ You'll be prompted for your password:
 	* When you open the server manager
 	* If you decide to decrypt the server information
 
+Please keep in mind that your password is still sent in cleartext (as far as I know) to the server.
+This change makes it more difficult for someone to see the passwords stored on disk (which will make more sense in a future update).
+
 v6
 
 Added ability to log joins/leaves and when games start/finish
@@ -16,9 +19,9 @@ Added a copy button to copy the connection command. You can paste this in the ga
 v5
 
 Added the server list manager, which you can use to:
-* Add multiple servers easily 
-* Set nicknames for your servers
-* Set servers to automatically connect when the program starts.
+	* Add multiple servers easily 
+	* Set nicknames for your servers
+	* Set servers to automatically connect when the program starts.
 
 I also fixed the kick/message buttons, which I broke at some point.
 
