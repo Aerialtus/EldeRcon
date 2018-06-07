@@ -81,6 +81,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.btnList = new System.Windows.Forms.Button();
+            this.viewNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -342,13 +343,14 @@
             // cmsPlayerLV
             // 
             this.cmsPlayerLV.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewNameToolStripMenuItem,
             this.sendMessageToolStripMenuItem,
             this.kickNoBanToolStripMenuItem,
             this.kickTempBanToolStripMenuItem,
             this.kickPermaBanToolStripMenuItem});
             this.cmsPlayerLV.Name = "cmsPlayerLV";
             this.cmsPlayerLV.ShowImageMargin = false;
-            this.cmsPlayerLV.Size = new System.Drawing.Size(140, 92);
+            this.cmsPlayerLV.Size = new System.Drawing.Size(140, 114);
             this.cmsPlayerLV.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.cmsPlayerLV_Closing);
             this.cmsPlayerLV.Opening += new System.ComponentModel.CancelEventHandler(this.cmsPlayerLV_Opening);
             // 
@@ -557,6 +559,12 @@
             this.btnList.UseVisualStyleBackColor = true;
             this.btnList.Click += new System.EventHandler(this.btnList_Click);
             // 
+            // viewNameToolStripMenuItem
+            // 
+            this.viewNameToolStripMenuItem.Name = "viewNameToolStripMenuItem";
+            this.viewNameToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.viewNameToolStripMenuItem.Text = "View Name";
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
@@ -662,6 +670,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Button btnList;
+        private System.Windows.Forms.ToolStripMenuItem viewNameToolStripMenuItem;
     }
 }
 
