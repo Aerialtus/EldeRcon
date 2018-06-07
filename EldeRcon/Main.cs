@@ -1474,6 +1474,28 @@ namespace EldeRcon
 
         private void btnManage_Click(object sender, EventArgs e)
         {
+            // If we're encrypted, check the password before letting people see your passwords!
+            if (encrypted)
+            {
+                // Copy our existing securestring
+                SecureString existing_securestring = Main.enc_password.Copy();
+
+                // Prompt for the password
+                Form PWForm = new PasswordForm();
+                PWForm.ShowDialog(this);
+
+                // Compare it
+                if (!MS_AES.MS_AES.CompareSecureStrings(Main.enc_password, existing_securestring))
+                {
+                    // Copy the known securestring back
+                    Main.enc_password = existing_securestring.Copy();
+
+                    // Bail out if they don't match
+                    MessageBox.Show("Invalid password. Please try again.", "EldeRcon", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return;
+                }
+            }
+
             // Open the server management form
             Form ServerManager = new Server_List_Manager();
             ServerManager.ShowDialog(this);
