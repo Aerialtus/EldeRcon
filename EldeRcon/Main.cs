@@ -838,7 +838,7 @@ namespace EldeRcon
         {
 
             // Close the existing connection if needed
-            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState != WebSocketState.Open)
+            if (websockets[tabServers.SelectedIndex] != null && websockets[tabServers.SelectedIndex].ReadyState != WebSocketState.Closed)
                 websockets[tabServers.SelectedIndex].Close();
 
             // Create the socket
@@ -1019,10 +1019,10 @@ namespace EldeRcon
                 if (bw != null && bw.IsBusy)
                     bw.CancelAsync();
             foreach (WebSocket socket in websockets)
-                if (socket != null && socket.ReadyState == WebSocketState.Open)
+                if (socket != null && socket.ReadyState != WebSocketState.Closed)
                     socket.CloseAsync();
             foreach (WebSocket socket in bg_websockets)
-                if (socket != null && socket.ReadyState == WebSocketState.Open)
+                if (socket != null && socket.ReadyState != WebSocketState.Closed)
                     socket.CloseAsync();
 
             // Save our name to disk, probably not needed, but better to be safe
