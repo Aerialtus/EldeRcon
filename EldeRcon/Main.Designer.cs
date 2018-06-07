@@ -80,6 +80,7 @@
             this.btnCopy = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
+            this.btnList = new System.Windows.Forms.Button();
             this.tabServers.SuspendLayout();
             this.tab0.SuspendLayout();
             this.cmsPlayerLV.SuspendLayout();
@@ -405,7 +406,7 @@
             // btnShuffle
             // 
             this.btnShuffle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShuffle.Location = new System.Drawing.Point(798, 413);
+            this.btnShuffle.Location = new System.Drawing.Point(798, 431);
             this.btnShuffle.Name = "btnShuffle";
             this.btnShuffle.Size = new System.Drawing.Size(75, 23);
             this.btnShuffle.TabIndex = 27;
@@ -455,7 +456,7 @@
             // btnReloadVotingJson
             // 
             this.btnReloadVotingJson.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReloadVotingJson.Location = new System.Drawing.Point(798, 442);
+            this.btnReloadVotingJson.Location = new System.Drawing.Point(798, 456);
             this.btnReloadVotingJson.Name = "btnReloadVotingJson";
             this.btnReloadVotingJson.Size = new System.Drawing.Size(75, 23);
             this.btnReloadVotingJson.TabIndex = 30;
@@ -545,6 +546,17 @@
             this.txtName.TabIndex = 36;
             this.txtName.Leave += new System.EventHandler(this.txtName_Leave);
             // 
+            // btnList
+            // 
+            this.btnList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnList.Location = new System.Drawing.Point(798, 406);
+            this.btnList.Name = "btnList";
+            this.btnList.Size = new System.Drawing.Size(75, 23);
+            this.btnList.TabIndex = 27;
+            this.btnList.Text = "List Players";
+            this.btnList.UseVisualStyleBackColor = true;
+            this.btnList.Click += new System.EventHandler(this.btnList_Click);
+            // 
             // Main
             // 
             this.AcceptButton = this.btnSend;
@@ -559,6 +571,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnReloadVotingJson);
             this.Controls.Add(this.lvTeamScore);
+            this.Controls.Add(this.btnList);
             this.Controls.Add(this.btnShuffle);
             this.Controls.Add(this.btnEndGame);
             this.Controls.Add(this.cbReportJoinsLeaves);
@@ -648,6 +661,7 @@
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Button btnList;
     }
 }
 

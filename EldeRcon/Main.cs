@@ -1776,5 +1776,19 @@ namespace EldeRcon
                 MessageBox.Show("Error reading name from disk:\n\n" + name_read_ex.Message);
             }
         }
+
+        private void btnList_Click(object sender, EventArgs e)
+        {
+            // Only send if we have a command AND an open connection
+            if (websockets[tabServers.SelectedIndex].ReadyState == WebSocketState.Open)
+            {
+                // Send the command
+                websockets[tabServers.SelectedIndex].Send("Server.ListPlayers");
+                //ws.Send(txtCommand.Text.Trim());
+
+                // Print our command in the console
+                UpdateConsole("\nServer.ListPlayers", tabServers.SelectedIndex);
+            }
+        }
     }
 }

@@ -80,7 +80,7 @@ namespace MS_AES
         // Hash it good
         // https://stackoverflow.com/a/50591182
         public static byte[] GetKeyFromPassword(String value, byte[] salt)
-        {
+        {   /*
             StringBuilder Sb = new StringBuilder();
 
             using (SHA512 hash = SHA512Managed.Create())
@@ -94,9 +94,11 @@ namespace MS_AES
 
             // Get our hash
             string resulting_hash = Sb.ToString();
+            */
 
-            // Create a key with it and send it back
-            return new Rfc2898DeriveBytes(resulting_hash, salt, 500000).GetBytes(256 / 8);
+            // Create a key and send it back
+            // We want a 256 bit key
+            return new Rfc2898DeriveBytes(value, salt, 200000).GetBytes(256 / 8);
         }
 
         // My addition
