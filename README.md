@@ -2,16 +2,32 @@
 EldeRcon is a simple tool I made to help me admin my [Eldewrito](https://github.com/ElDewrito/ElDorito/) servers. I thought I'd share!
 
 ## So, what does it look like?
+These screenshots are outdated. I'll get new ones soon!
 <br />
 <img src="https://i.imgur.com/ZX1JO4W.png" width="1193" height="634">
 <br />
 
-Please keep in mind it doesn't normally look squished and funny like this. I took the screenshot too wide! [Click here for the unsquished version](https://i.imgur.com/ZX1JO4W.png).
+Please keep in mind it doesn't normally look squished and funny like this. I took the screenshot too wide. [Click here for the unsquished version](https://i.imgur.com/ZX1JO4W.png).
 
 The server list manager:
 <br />
 <img src="https://i.imgur.com/h8oX4Hy.png" width="611" height="310">
 <br />
+
+## Features
+
+The main features of this client are:
+* Tabbed server management
+* Detailed game status (map, mode, number of players, names, scores, k/d/a/b)
+* Buttons for some common commands
+* Button to copy the connect command for your server (you don't have to wait on the server browser)
+* See who joins/leaves your server
+* See when games start/stop (useful when you read about a bug on a map after the game has ended or seeeing how long a match was)
+* Right click a player to PM, kick, or ban a player
+* Easily save, restore, and update the saved server list
+* Automatically connect to servers at program startup
+* Optionally encrypt your server information (hostname, port, and password) to protect access to your servers
+
 
 ## How do I use it?
 Put in the hostname/IP address of your server, the RCON port (look for "Game.RconPort"  in your "dewrito_prefs.cfg"), the password, click Connect, and you're good to go.
@@ -25,6 +41,8 @@ The program attempts to connect to your server's HTTP port to get detailed playe
 Click on the "New..." tab to open a tab that lets you connect to another server inside the same window.
 
 Click on the "Manage" button near the top left corner to use the "Server Manager", which lets you easily add multiple servers and set some of them to automatically connect at program startup.
+
+Click on the "Encrypt" checkbox to encrypt your server details. If you forget your password, delete the two "servers" files in the directory. I don't and will never have any of your passwords.
 
 I'm working on buttons (or similar) for simple commands that might be useful to have quick access to. Please send any suggestions though the issue tracker.
 

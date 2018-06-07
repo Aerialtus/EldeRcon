@@ -1,4 +1,18 @@
 ﻿
+v7
+
+Added optional encryption (AES-256) to protect server information.
+You'll be prompted for your password: 
+	* When you start the program
+	* When you open the server manager
+	* If you decide to decrypt the server information
+
+v6
+
+Added ability to log joins/leaves and when games start/finish
+Added a box to show the connection command for your server.
+Added a copy button to copy the connection command. You can paste this in the game console to connect to your server.
+
 v5
 
 Added the server list manager, which you can use to:
