@@ -326,12 +326,6 @@ namespace EldeRcon
                         // Get the time
                         string time = DateTime.Now.ToUniversalTime().ToString("MM/dd/yy HH:mm:ss");
 
-
-
-                        // If we have anyone to report, insert a space before and after
-                        //if (leavers.Count() > 0 || new_friends.Count() > 0)
-                        //    UpdateConsole("", tab_index);
-
                         // Check who has left
                         var leavers = server_in_tab_list[tab_index].players.Where(p => !server_info.players.Any(p2 => p2.uid == p.uid));
 
@@ -340,8 +334,7 @@ namespace EldeRcon
                         {
                             if (!leaver.name.IsNullOrEmpty())
                             {
-                                UpdateConsole("[" + time + "] " + leaver.name + " has left the server.", tab_index);
-                               // user_change = true;
+                                UpdateConsole("[" + time + "] " + leaver.name + " (" + leaver.uid + ") has left the server.", tab_index);
                             }
                         }
 
@@ -356,15 +349,11 @@ namespace EldeRcon
                             {
                                 if (!friend.name.IsNullOrEmpty())
                                 {
-                                    UpdateConsole("[" + time + "] " + friend.name + " has joined the server.", tab_index);
-                                    //user_change = true;
+                                    UpdateConsole("[" + time + "] " + friend.name + " (" + friend.uid + ") has joined the server.", tab_index);
                                 }
-
                             }
                         }
-                        // If we have anyone to report, insert a space before and after
-                        //if (user_change)
-                         //   UpdateConsole("", tab_index);
+
                     }
 
                     // Copy the server's player list
